@@ -1,0 +1,15 @@
+{
+  "appName": "Restart",
+  "tagline": "Small habits, every day.",
+  "loading": "Loading…",
+  "retry": "Try again",
+  "cancel": "Cancel",
+  "close": "Close",
+  "save": "Save",
+  "back": "Back",
+  "comingSoon": "Coming soon",
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "offline": "You're offline. Changes will sync when you're back online."
+  }
+}
