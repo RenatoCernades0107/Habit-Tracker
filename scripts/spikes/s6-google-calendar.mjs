@@ -289,7 +289,10 @@ async function waitForAuthorizationCode(expectedState) {
       finish(400, "No authorization code. Close this tab and run the script again.");
       settle.reject(new SpikeError("The redirect had no authorization code."));
     } else {
-      finish(200, "Restart spike S6: signed in. You can close this tab and go back to the terminal.");
+      finish(
+        200,
+        "Restart spike S6: signed in. You can close this tab and go back to the terminal.",
+      );
       settle.resolve(code);
     }
   });
@@ -458,7 +461,12 @@ function localMidnightIso(date, timeZone) {
 const ymd = (date) => date.toISOString().slice(0, 10);
 const pad = (value) => String(value).padStart(2, "0");
 const weekdayName = (date) =>
-  date.toLocaleDateString("en-US", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" });
+  date.toLocaleDateString("en-US", {
+    timeZone: "UTC",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
 
 /** Local "YYYY-MM-DD" and "HH:MM" of an instance, from its dateTime in the calendar's zone. */
 function localStart(instance) {
@@ -530,7 +538,7 @@ async function runFullTest(options) {
   let firstDay = today;
   while (!BYDAY.has(firstDay.getUTCDay())) firstDay = addDays(firstDay, 1);
   // Next week runs from the Monday after today (a week later if today is Monday).
-  const nextMonday = addDays(today, ((8 - today.getUTCDay()) % 7) || 7);
+  const nextMonday = addDays(today, (8 - today.getUTCDay()) % 7 || 7);
 
   const created = await step(steps[1], async () => {
     const calendar = await api("POST", "/calendars", {
@@ -542,7 +550,11 @@ async function runFullTest(options) {
     });
     if (typeof calendar.id !== "string") fail("No calendar id in the response.");
     session.calendarId = calendar.id;
-    state.calendars.push({ id: calendar.id, created_at: new Date().toISOString(), time_zone: options.tz });
+    state.calendars.push({
+      id: calendar.id,
+      created_at: new Date().toISOString(),
+      time_zone: options.tz,
+    });
     const saved = loadTokenFile(options.tokenFile);
     if (saved) saveTokenFile(options.tokenFile, { ...saved, calendars: state.calendars });
     if (calendar.timeZone !== options.tz) fail(`The calendar's time zone is ${calendar.timeZone}.`);
@@ -589,14 +601,18 @@ async function runFullTest(options) {
   });
 
   const listInstances = async () => {
-    const page = await api("GET", `${calendarPath}/events/${encodeURIComponent(session.eventId)}/instances`, {
-      query: {
-        timeMin: localMidnightIso(nextMonday, options.tz),
-        timeMax: localMidnightIso(addDays(nextMonday, 7), options.tz),
-        timeZone: options.tz,
-        maxResults: "50",
+    const page = await api(
+      "GET",
+      `${calendarPath}/events/${encodeURIComponent(session.eventId)}/instances`,
+      {
+        query: {
+          timeMin: localMidnightIso(nextMonday, options.tz),
+          timeMax: localMidnightIso(addDays(nextMonday, 7), options.tz),
+          timeZone: options.tz,
+          maxResults: "50",
+        },
       },
-    });
+    );
     return page.items ?? [];
   };
 
@@ -635,9 +651,13 @@ async function runFullTest(options) {
   // EXDATE uses the same form as DTSTART (local time with TZID), or Google ignores it.
   const exdate = `EXDATE;TZID=${options.tz}:${excluded.date.replaceAll("-", "")}T${excluded.time.replace(":", "")}00`;
   const exdated = await step(steps[6], async () => {
-    const master = await api("PATCH", `${calendarPath}/events/${encodeURIComponent(session.eventId)}`, {
-      body: { recurrence: [RRULE, exdate] },
-    });
+    const master = await api(
+      "PATCH",
+      `${calendarPath}/events/${encodeURIComponent(session.eventId)}`,
+      {
+        body: { recurrence: [RRULE, exdate] },
+      },
+    );
     if (!master.recurrence?.includes(exdate)) {
       fail(`The series' recurrence is ${JSON.stringify(master.recurrence ?? [])}.`);
     }
@@ -767,7 +787,11 @@ async function runCleanup(options) {
 
   if (options.revoke) {
     if (remaining.length) {
-      report("SKIP", "Revoke the refresh token", "Some calendars couldn't be deleted; kept the token.");
+      report(
+        "SKIP",
+        "Revoke the refresh token",
+        "Some calendars couldn't be deleted; kept the token.",
+      );
     } else {
       const revoked = await step("Revoke the refresh token", async () => {
         await postForm(REVOKE_URL, { token: saved.refresh_token });

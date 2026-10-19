@@ -29,7 +29,7 @@ export function icuArguments(message: string): string[] {
   let depth = 0;
   for (let i = 0; i < message.length; i++) {
     const char = message[i];
-    if (char === "'" ) {
+    if (char === "'") {
       // ICU apostrophe quoting: skip quoted literal text.
       const end = message.indexOf("'", i + 1);
       if (end > i + 1) i = end;
