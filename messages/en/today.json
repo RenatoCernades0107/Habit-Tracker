@@ -1,1 +1,42 @@
-{}
+{
+  "eyebrow": "Today",
+  "empty": {
+    "title": "No habits yet",
+    "description": "Start small. How about a glass of water when you wake up?",
+    "action": "Add your first habit"
+  },
+  "setup": {
+    "title": "Get set up",
+    "description": "A few steps to make Restart part of your day.",
+    "hide": "Hide setup checklist",
+    "hidden": "Setup checklist hidden.",
+    "undo": "Undo",
+    "status": {
+      "done": "Done",
+      "todo": "Not done yet"
+    },
+    "items": {
+      "install": {
+        "title": "Install the app",
+        "description": "Open Restart from your Home Screen, like any other app.",
+        "descriptionDesktop": "Open Restart in its own window, one click away."
+      },
+      "notifications": {
+        "title": "Turn on notifications",
+        "description": "Get a reminder only when a habit is still pending."
+      },
+      "siri": {
+        "title": "Log with Siri",
+        "description": "Check in hands-free: “Hey Siri, log habit”."
+      },
+      "health": {
+        "title": "Connect Apple Health",
+        "description": "Let workouts and steps check off habits for you."
+      },
+      "calendar": {
+        "title": "Connect Google Calendar",
+        "description": "See your habits next to your events."
+      }
+    }
+  }
+}

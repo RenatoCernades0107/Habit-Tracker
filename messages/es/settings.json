@@ -1,1 +1,35 @@
-{}
+{
+  "title": "Ajustes",
+  "profile": {
+    "title": "Perfil",
+    "description": "La cuenta con la que iniciaste sesión.",
+    "name": "Nombre",
+    "email": "Correo electrónico"
+  },
+  "language": {
+    "title": "Idioma",
+    "description": "Se usa en la app, en las notificaciones y en los correos de acceso.",
+    "es": "Español",
+    "en": "English",
+    "changed": "Idioma cambiado a {language}."
+  },
+  "theme": {
+    "title": "Tema",
+    "description": "Sistema sigue el modo claro u oscuro de tu dispositivo.",
+    "system": "Sistema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "install": {
+    "title": "Instala la app",
+    "description": "Añade Restart a tu pantalla de inicio para abrirla como cualquier otra app. En iPhone, la necesitas para recibir notificaciones."
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "description": "Recordatorios, el resumen diario y la revisión semanal en este dispositivo."
+  },
+  "account": {
+    "title": "Cuenta",
+    "description": "Cerrar sesión en todos los dispositivos también la cierra en tus otros teléfonos y computadoras."
+  }
+}

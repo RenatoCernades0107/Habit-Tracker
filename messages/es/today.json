@@ -1,1 +1,42 @@
-{}
+{
+  "eyebrow": "Hoy",
+  "empty": {
+    "title": "Aún no tienes hábitos",
+    "description": "Empieza con algo pequeño. ¿Qué tal 1 vaso de agua al despertar?",
+    "action": "Añade tu primer hábito"
+  },
+  "setup": {
+    "title": "Prepara tu app",
+    "description": "Unos pasos para que Restart sea parte de tu día.",
+    "hide": "Ocultar la lista de configuración",
+    "hidden": "Lista de configuración oculta.",
+    "undo": "Deshacer",
+    "status": {
+      "done": "Hecho",
+      "todo": "Pendiente"
+    },
+    "items": {
+      "install": {
+        "title": "Instala la app",
+        "description": "Abre Restart desde tu pantalla de inicio, como cualquier otra app.",
+        "descriptionDesktop": "Ábrela en su propia ventana, a un clic."
+      },
+      "notifications": {
+        "title": "Activa las notificaciones",
+        "description": "Recibe un aviso solo cuando un hábito siga pendiente."
+      },
+      "siri": {
+        "title": "Registra con Siri",
+        "description": "Registra sin tocar la pantalla: “Oye Siri, registrar hábito”."
+      },
+      "health": {
+        "title": "Conecta Apple Health",
+        "description": "Deja que tus entrenamientos y pasos marquen hábitos por ti."
+      },
+      "calendar": {
+        "title": "Conecta Google Calendar",
+        "description": "Ve tus hábitos junto a tus eventos."
+      }
+    }
+  }
+}

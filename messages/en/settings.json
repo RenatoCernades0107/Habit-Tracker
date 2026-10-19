@@ -1,1 +1,35 @@
-{}
+{
+  "title": "Settings",
+  "profile": {
+    "title": "Profile",
+    "description": "The account you're signed in with.",
+    "name": "Name",
+    "email": "Email"
+  },
+  "language": {
+    "title": "Language",
+    "description": "Used in the app, in notifications and in sign-in emails.",
+    "es": "Español",
+    "en": "English",
+    "changed": "Language set to {language}."
+  },
+  "theme": {
+    "title": "Theme",
+    "description": "System follows your device's light or dark setting.",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "install": {
+    "title": "Install the app",
+    "description": "Add Restart to your Home Screen to open it like any other app. On iPhone, it's needed for notifications."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Reminders, the daily report and the weekly review on this device."
+  },
+  "account": {
+    "title": "Account",
+    "description": "Signing out of all devices also signs you out on your other phones and computers."
+  }
+}
