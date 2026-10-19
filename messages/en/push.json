@@ -1,1 +1,60 @@
-{}
+{
+  "settings": {
+    "checking": "Checking this device…",
+    "statusLabel": "This device",
+    "status": {
+      "on": "On",
+      "off": "Off",
+      "blocked": "Blocked",
+      "unavailable": "Not available"
+    },
+    "intro": "Get reminders on this device, even when Restart is closed.",
+    "enable": "Enable notifications",
+    "enabling": "Enabling…",
+    "enabled": "Notifications are on for this device.",
+    "testIntro": "Send a test to check that they arrive.",
+    "testNow": "Send test now",
+    "testScheduled": "Send test in 1 minute",
+    "testScheduledHint": "Goes through the scheduler, like a real reminder. Close the app or lock your phone to try it.",
+    "sending": "Sending…",
+    "disable": "Turn off on this device",
+    "disabling": "Turning off…",
+    "disabled": "Notifications are off for this device.",
+    "testSent": "{sent, plural, one {Test sent to # device.} other {Test sent to # devices.}}",
+    "testPartial": "Test sent to {sent} of {total} devices. The others didn't answer.",
+    "testNoDevices": "No device has notifications on yet.",
+    "testNotDelivered": "The test couldn't be delivered. Turn notifications off and on again on this device.",
+    "testScheduledFor": "Test scheduled for {time}. You can close the app now.",
+    "rateLimited": "You already have 5 tests waiting. Try again in a few minutes.",
+    "ios": {
+      "title": "Install Restart first",
+      "body": "On iPhone and iPad, notifications only work in the app on your Home Screen. Install it, open it from there and turn them on in Settings."
+    },
+    "iosTooOld": "Notifications need iOS 16.4 or later. Update in Settings → General → Software Update.",
+    "unsupported": "This browser can't show notifications. Try Safari, Chrome, Edge or Firefox.",
+    "denied": {
+      "title": "Notifications are blocked",
+      "ios": "Open the Settings app → Notifications → Restart, and turn on Allow Notifications. Then come back here.",
+      "android": "Long-press the Restart icon → App info → Notifications, and allow them. In the browser: tap the icon next to the address → Permissions → Notifications.",
+      "desktop": "Click the icon next to the address → Site settings → Notifications → Allow. Then reload this page."
+    },
+    "missingKey": "Push isn't set up on this server: NEXT_PUBLIC_VAPID_PUBLIC_KEY is missing or invalid. Generate keys with npx web-push generate-vapid-keys and restart the app.",
+    "errors": {
+      "permissionDismissed": "Notifications weren't allowed. Tap Enable when you're ready.",
+      "noServiceWorker": "Couldn't start notifications on this device. Reload the page and try again.",
+      "noServiceWorkerDev": "The service worker isn't running. In development it's off unless NEXT_PUBLIC_ENABLE_SW_IN_DEV=1 is set; or try npm run build && npm start.",
+      "subscribeFailed": "Couldn't turn on notifications. Try again.",
+      "saveFailed": "Couldn't save this device. Check your connection and try again.",
+      "signedOut": "Your session has ended. Sign in again.",
+      "testFailed": "Couldn't send the test. Try again.",
+      "disableFailed": "Couldn't turn off notifications. Try again."
+    }
+  },
+  "notifications": {
+    "test": {
+      "title": "🔔 Restart test",
+      "body": "It works! Reminders will arrive on this device.",
+      "scheduledBody": "It works! Due {due}, sent {sent}. Reminders will arrive on this device."
+    }
+  }
+}

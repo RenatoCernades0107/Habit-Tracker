@@ -1,3 +1,4 @@
+import { PushSubscriptionSync } from "@/components/push/push-subscription-sync";
 import { AppShell } from "@/components/shell/app-shell";
 import { requireUser } from "@/lib/auth/session";
 
@@ -9,5 +10,10 @@ import { requireUser } from "@/lib/auth/session";
  */
 export default async function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   await requireUser();
-  return <AppShell>{children}</AppShell>;
+  return (
+    <AppShell>
+      {children}
+      <PushSubscriptionSync />
+    </AppShell>
+  );
 }
