@@ -19,7 +19,7 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
-    "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
+    "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts",
     "check": "npm run lint && npm run typecheck && npm run i18n:check && npm run test"
   },
   "dependencies": {

@@ -157,11 +157,17 @@ max_indexes = 5
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "http://127.0.0.1:3000"
+site_url = "http://localhost:3000"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["https://127.0.0.1:3000"]
+# Port 3000 is `npm run dev`; port 3100 is the Playwright web server.
+additional_redirect_urls = [
+  "http://localhost:3000/auth/callback",
+  "http://127.0.0.1:3000/auth/callback",
+  "http://localhost:3100/auth/callback",
+  "http://127.0.0.1:3100/auth/callback",
+]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to auth.external_url.
@@ -224,6 +230,7 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
+# Off: sign-in is a 6-digit email code (signInWithOtp + verifyOtp), which already proves the address.
 enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
@@ -231,8 +238,8 @@ secure_password_change = false
 max_frequency = "1s"
 # Number of characters used in the email OTP.
 otp_length = 6
-# Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
+# Number of seconds before the email OTP expires. The templates below say "10 minutes": keep them in sync.
+otp_expiry = 600
 
 # Use a production-ready SMTP server
 # [auth.email.smtp]
@@ -243,6 +250,20 @@ otp_expiry = 3600
 # pass = "env(SENDGRID_API_KEY)"
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
+
+# Sign-in emails show only the 6-digit code ({{ .Token }}), never a link: the code is typed inside the
+# installed app, because a link would open Safari, which doesn't share storage with Home Screen apps
+# (docs/spec/03-architecture.md §6). signInWithOtp sends `magic_link` to existing users (and to new
+# users while confirmations are off) and `confirmation` to new users when confirmations are on, so both
+# use the same bilingual template. The language comes from the user metadata `locale` set at sign-up.
+# On the hosted project, paste the same subject and HTML in Authentication → Emails.
+[auth.email.template.magic_link]
+subject = '{{ if eq .Data.locale "es" }}Tu código de Restart{{ else }}Your Restart code{{ end }}'
+content_path = "./supabase/templates/sign-in-code.html"
+
+[auth.email.template.confirmation]
+subject = '{{ if eq .Data.locale "es" }}Tu código de Restart{{ else }}Your Restart code{{ end }}'
+content_path = "./supabase/templates/sign-in-code.html"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
@@ -333,6 +354,24 @@ url = ""
 # If enabled, the nonce check will be skipped. Required for local sign in with Google auth.
 skip_nonce_check = false
 # If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
+email_optional = false
+
+# Google sign-in (FR-ACC-1). Off locally, so the stack starts without Google credentials. On the hosted
+# project it is enabled in the dashboard (Authentication → Sign In / Providers → Google) with a Web OAuth
+# client from Google Cloud whose redirect URI is https://<project-ref>.supabase.co/auth/v1/callback; the
+# app's https://<app-domain>/auth/callback goes in Authentication → URL Configuration → Redirect URLs.
+# To try it locally: create a client with the redirect URI http://127.0.0.1:54321/auth/v1/callback,
+# export SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID and SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET, set
+# enabled = true, client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)" and skip_nonce_check = true,
+# then restart Supabase (`npm run db:stop && npm run db:start`).
+[auth.external.google]
+enabled = false
+client_id = ""
+# DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+redirect_uri = ""
+url = ""
+skip_nonce_check = false
 email_optional = false
 
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.

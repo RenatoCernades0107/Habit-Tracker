@@ -287,8 +287,8 @@ create table scheduled_notifications (
   id                 bigint generated always as identity primary key,
   user_id            uuid not null references auth.users on delete cascade,
   kind               notification_kind not null,
-  habit_id           uuid references habits on delete cascade,
-  routine_id         uuid references routines on delete cascade,
+  habit_id           uuid references habits on delete cascade,     -- FK added in Phase 1 (habits don't exist in Phase 0)
+  routine_id         uuid references routines on delete cascade,   -- FK added in Phase 1
   local_date         date not null,
   send_at            timestamptz not null,
   status             notification_status not null default 'pending',
@@ -399,6 +399,7 @@ create index on check_in_events (user_id, created_at desc);             -- undo,
 create index on pauses (user_id, habit_id);
 create index on scheduled_notifications (send_at) where status = 'pending';
 create index on scheduled_notifications (user_id, local_date);
+create index on scheduled_notifications (claimed_at) where status = 'sending';   -- stuck-row recovery
 create index on calendar_sync_jobs (next_attempt_at) where status = 'pending';
 create index on push_subscriptions (user_id);
 -- plus (user_id, updated_at) on every other synced table
@@ -408,7 +409,7 @@ create index on push_subscriptions (user_id);
 
 ## 6. Retention
 
-A nightly `pg_cron` job (pure SQL) deletes:
+A nightly `pg_cron` job, `restart-cleanup` (pure SQL, `srv_nightly_cleanup()`), deletes:
 
 | Data | Kept for |
 |---|---|
@@ -422,8 +423,10 @@ A nightly `pg_cron` job (pure SQL) deletes:
 
 | Function | Returns |
 |---|---|
+| `srv_local_date(at, timezone, day_start_hour)` | The habit day of an instant (`R-DAY-2`); used by `srv_user_today` |
 | `srv_user_today(user_id)` | `((now() at time zone tz) - make_interval(hours => day_start_hour))::date` (`R-DAY-2`) |
 | `srv_normalize(text)` | Lowercase text without accents, for matching |
+| `srv_nightly_cleanup()` | The retention job in §6 (cron job `restart-cleanup`); also trims `cron.job_run_details` older than 7 days |
 | `srv_tick_if_due()` | Called by `pg_cron` every minute. Calls `/api/internal/tick` through `pg_net` only if a notification or calendar job is due or a profile needs planning ([Architecture §5](03-architecture.md#5-scheduler)) |
 
 Database functions called by the app and the server are listed in [API §5](05-api.md#5-database-functions-rpc).

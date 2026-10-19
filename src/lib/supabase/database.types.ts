@@ -1,168 +1,370 @@
-// Placeholder written by hand for the Phase 0 schema (docs/spec/04-data-model.md).
-// Regenerate from the local database with `npm run db:types` once migrations change.
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
-  __InternalSupabase: {
-    PostgrestVersion: "13";
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: { extensions?: Json; operationName?: string; query?: string; variables?: Json };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
   public: {
     Tables: {
       profiles: {
         Row: {
-          id: string;
-          display_name: string | null;
-          locale: string;
-          timezone: string;
-          day_start_hour: number;
-          week_start: number;
-          reminder_lead_min: number;
+          created_at: string;
           daily_report_enabled: boolean;
           daily_report_time: string;
-          weekly_review_enabled: boolean;
-          weekly_review_dow: number;
-          weekly_review_time: string;
-          quiet_hours_start: string | null;
-          quiet_hours_end: string | null;
-          muted_until: string | null;
-          retro_edit_days: number;
+          day_start_hour: number;
+          display_name: string | null;
+          id: string;
+          last_health_sync_at: string | null;
+          locale: string;
           max_skips_per_month: number;
-          theme: string;
+          muted_until: string | null;
+          onboarding_completed_at: string | null;
           plan_dirty: boolean;
           planned_through: string | null;
-          last_health_sync_at: string | null;
-          onboarding_completed_at: string | null;
-          created_at: string;
+          quiet_hours_end: string | null;
+          quiet_hours_start: string | null;
+          reminder_lead_min: number;
+          retro_edit_days: number;
+          theme: string;
+          timezone: string;
           updated_at: string;
+          week_start: number;
+          weekly_review_dow: number;
+          weekly_review_enabled: boolean;
+          weekly_review_time: string;
         };
+        ComputedFields: never;
         Insert: {
-          id: string;
-          display_name?: string | null;
-          locale?: string;
-          timezone?: string;
-          day_start_hour?: number;
-          week_start?: number;
-          reminder_lead_min?: number;
+          created_at?: string;
           daily_report_enabled?: boolean;
           daily_report_time?: string;
-          weekly_review_enabled?: boolean;
-          weekly_review_dow?: number;
-          weekly_review_time?: string;
-          quiet_hours_start?: string | null;
-          quiet_hours_end?: string | null;
-          muted_until?: string | null;
-          retro_edit_days?: number;
+          day_start_hour?: number;
+          display_name?: string | null;
+          id: string;
+          last_health_sync_at?: string | null;
+          locale?: string;
           max_skips_per_month?: number;
-          theme?: string;
+          muted_until?: string | null;
+          onboarding_completed_at?: string | null;
           plan_dirty?: boolean;
           planned_through?: string | null;
-          last_health_sync_at?: string | null;
-          onboarding_completed_at?: string | null;
-          created_at?: string;
+          quiet_hours_end?: string | null;
+          quiet_hours_start?: string | null;
+          reminder_lead_min?: number;
+          retro_edit_days?: number;
+          theme?: string;
+          timezone?: string;
           updated_at?: string;
+          week_start?: number;
+          weekly_review_dow?: number;
+          weekly_review_enabled?: boolean;
+          weekly_review_time?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+        Update: {
+          created_at?: string;
+          daily_report_enabled?: boolean;
+          daily_report_time?: string;
+          day_start_hour?: number;
+          display_name?: string | null;
+          id?: string;
+          last_health_sync_at?: string | null;
+          locale?: string;
+          max_skips_per_month?: number;
+          muted_until?: string | null;
+          onboarding_completed_at?: string | null;
+          plan_dirty?: boolean;
+          planned_through?: string | null;
+          quiet_hours_end?: string | null;
+          quiet_hours_start?: string | null;
+          reminder_lead_min?: number;
+          retro_edit_days?: number;
+          theme?: string;
+          timezone?: string;
+          updated_at?: string;
+          week_start?: number;
+          weekly_review_dow?: number;
+          weekly_review_enabled?: boolean;
+          weekly_review_time?: string;
+        };
         Relationships: [];
       };
       push_subscriptions: {
         Row: {
-          id: string;
-          user_id: string;
-          endpoint: string;
-          p256dh: string;
           auth: string;
-          platform: string | null;
-          device_label: string | null;
           created_at: string;
-          last_success_at: string | null;
-          failure_count: number;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
+          device_label: string | null;
           endpoint: string;
+          failure_count: number;
+          id: string;
+          last_success_at: string | null;
           p256dh: string;
-          auth: string;
-          platform?: string | null;
-          device_label?: string | null;
-          created_at?: string;
-          last_success_at?: string | null;
-          failure_count?: number;
+          platform: string | null;
+          user_id: string;
         };
-        Update: Partial<Database["public"]["Tables"]["push_subscriptions"]["Insert"]>;
+        ComputedFields: never;
+        Insert: {
+          auth: string;
+          created_at?: string;
+          device_label?: string | null;
+          endpoint: string;
+          failure_count?: number;
+          id?: string;
+          last_success_at?: string | null;
+          p256dh: string;
+          platform?: string | null;
+          user_id: string;
+        };
+        Update: {
+          auth?: string;
+          created_at?: string;
+          device_label?: string | null;
+          endpoint?: string;
+          failure_count?: number;
+          id?: string;
+          last_success_at?: string | null;
+          p256dh?: string;
+          platform?: string | null;
+          user_id?: string;
+        };
         Relationships: [];
       };
       scheduled_notifications: {
         Row: {
-          id: number;
-          user_id: string;
-          kind: Database["public"]["Enums"]["notification_kind"];
+          attempts: number;
+          claimed_at: string | null;
+          created_at: string;
+          dedupe_key: string;
           habit_id: string | null;
-          routine_id: string | null;
+          id: number;
+          kind: Database["public"]["Enums"]["notification_kind"];
+          last_error: string | null;
           local_date: string;
+          routine_id: string | null;
           send_at: string;
+          sent_at: string | null;
           status: Database["public"]["Enums"]["notification_status"];
           suppressed_reason: string | null;
-          attempts: number;
-          last_error: string | null;
-          sent_at: string | null;
-          dedupe_key: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: never;
           user_id: string;
-          kind: Database["public"]["Enums"]["notification_kind"];
+        };
+        ComputedFields: never;
+        Insert: {
+          attempts?: number;
+          claimed_at?: string | null;
+          created_at?: string;
+          dedupe_key: string;
           habit_id?: string | null;
-          routine_id?: string | null;
+          id?: never;
+          kind: Database["public"]["Enums"]["notification_kind"];
+          last_error?: string | null;
           local_date: string;
+          routine_id?: string | null;
           send_at: string;
+          sent_at?: string | null;
           status?: Database["public"]["Enums"]["notification_status"];
           suppressed_reason?: string | null;
-          attempts?: number;
-          last_error?: string | null;
-          sent_at?: string | null;
-          dedupe_key: string;
-          created_at?: string;
+          user_id: string;
         };
-        Update: Partial<Database["public"]["Tables"]["scheduled_notifications"]["Insert"]>;
+        Update: {
+          attempts?: number;
+          claimed_at?: string | null;
+          created_at?: string;
+          dedupe_key?: string;
+          habit_id?: string | null;
+          id?: never;
+          kind?: Database["public"]["Enums"]["notification_kind"];
+          last_error?: string | null;
+          local_date?: string;
+          routine_id?: string | null;
+          send_at?: string;
+          sent_at?: string | null;
+          status?: Database["public"]["Enums"]["notification_status"];
+          suppressed_reason?: string | null;
+          user_id?: string;
+        };
         Relationships: [];
       };
     };
-    Views: { [_ in never]: never };
+    Views: {
+      [_ in never]: never;
+    };
     Functions: {
-      srv_user_today: {
-        Args: { p_user_id: string };
-        Returns: string;
-      };
       srv_claim_due_notifications: {
         Args: { p_max: number };
-        Returns: Database["public"]["Tables"]["scheduled_notifications"]["Row"][];
+        Returns: {
+          attempts: number;
+          claimed_at: string | null;
+          created_at: string;
+          dedupe_key: string;
+          habit_id: string | null;
+          id: number;
+          kind: Database["public"]["Enums"]["notification_kind"];
+          last_error: string | null;
+          local_date: string;
+          routine_id: string | null;
+          send_at: string;
+          sent_at: string | null;
+          status: Database["public"]["Enums"]["notification_status"];
+          suppressed_reason: string | null;
+          user_id: string;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "scheduled_notifications";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
       };
-      srv_tick_if_due: {
-        Args: Record<PropertyKey, never>;
-        Returns: undefined;
+      srv_local_date: {
+        Args: { p_at: string; p_day_start_hour: number; p_timezone: string };
+        Returns: string;
       };
+      srv_nightly_cleanup: { Args: Record<PropertyKey, never>; Returns: number };
+      srv_tick_if_due: { Args: Record<PropertyKey, never>; Returns: undefined };
+      srv_user_today: { Args: { p_user_id: string }; Returns: string };
     };
     Enums: {
       notification_kind:
-        | "habit_reminder"
-        | "routine_digest"
-        | "daily_report"
-        | "weekly_review"
-        | "test";
+        "habit_reminder" | "routine_digest" | "daily_report" | "weekly_review" | "test";
       notification_status: "pending" | "sending" | "sent" | "suppressed" | "failed";
     };
-    CompositeTypes: { [_ in never]: never };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
 };
 
-type PublicSchema = Database["public"];
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
-export type Tables<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Row"];
-export type TablesInsert<T extends keyof PublicSchema["Tables"]> =
-  PublicSchema["Tables"][T]["Insert"];
-export type TablesUpdate<T extends keyof PublicSchema["Tables"]> =
-  PublicSchema["Tables"][T]["Update"];
-export type Enums<T extends keyof PublicSchema["Enums"]> = PublicSchema["Enums"][T];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {
+      notification_kind: [
+        "habit_reminder",
+        "routine_digest",
+        "daily_report",
+        "weekly_review",
+        "test",
+      ],
+      notification_status: ["pending", "sending", "sent", "suppressed", "failed"],
+    },
+  },
+} as const;

@@ -90,7 +90,7 @@ Vercel Cron on the Hobby plan only runs once a day, so the per-minute "tick" com
 ```sql
 -- runs every minute; calls Vercel only when something is due.
 -- The app URL and the secret are read from Supabase Vault.
-select cron.schedule('tick', '* * * * *', $$ select srv_tick_if_due(); $$);
+select cron.schedule('restart-tick', '* * * * *', $$ select public.srv_tick_if_due(); $$);
 ```
 
 `srv_tick_if_due()` checks, with indexed queries, whether any notification is due, any calendar job is due, or any profile needs planning (`plan_dirty`, or `planned_through` before tomorrow). Only then does it call `net.http_post` to `/api/internal/tick` with the `x-cron-secret` header. With a handful of users, most minutes make no HTTP call at all.
@@ -125,7 +125,7 @@ sequenceDiagram
 3. **Send.** Claim due notifications: `send_at ≤ now()`, `status = 'pending'`, locked with `FOR UPDATE SKIP LOCKED`, marked `sending`. For each one, check suppression (`R-NTF-7`), render the text in the user's language, send to every device of the user (20 at a time), and mark it `sent`, `suppressed` or `failed` (up to 2 retries in later ticks).
 4. **Calendar.** Claim due `calendar_sync_jobs` and process them with backoff (see [Integrations §3](06-integrations.md#3-google-calendar)).
 5. **Time limit.** Stop taking new work after ~30 s. Whatever is left is picked up by the next tick.
-6. **Recovery.** Rows stuck in `sending` / `running` for more than 5 minutes go back to `pending`.
+6. **Recovery.** Rows stuck in `sending` / `running` for more than 5 minutes go back to `pending`, or become `failed` ("Stuck in sending") once they've used all 3 attempts.
 
 Ticks that overlap are safe because of `SKIP LOCKED`. A second nightly `pg_cron` job runs pure SQL cleanup (see [Data model §6](04-data-model.md#6-retention)).
 

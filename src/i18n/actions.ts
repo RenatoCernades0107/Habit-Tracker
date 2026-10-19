@@ -26,5 +26,10 @@ export async function setUserLocale(locale: Locale): Promise<void> {
   if (user) {
     const { error } = await supabase.from("profiles").update({ locale }).eq("id", user.id);
     if (error) throw new Error("Could not save the language");
+    // Sign-in emails take their language from the auth metadata, not the profile
+    // (supabase/templates/sign-in-code.html).
+    if (user.user_metadata?.locale !== locale) {
+      await supabase.auth.updateUser({ data: { locale } });
+    }
   }
 }

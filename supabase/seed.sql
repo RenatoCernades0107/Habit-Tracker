@@ -1,0 +1,13 @@
+-- Local seed, run by `npm run db:reset` after the migrations. Keep it minimal and free of secrets:
+-- users and profiles are created by signing in (Mailpit at http://127.0.0.1:54324 shows the code).
+--
+-- Scheduler (pg_cron → /api/internal/tick) for local push testing. srv_tick_if_due() does nothing
+-- until both Vault secrets exist. Set them once per reset in `psql` or Studio's SQL editor:
+--
+--   -- The app as seen from the database container (not localhost, which is the container itself).
+--   select vault.create_secret('http://host.docker.internal:3000', 'restart_app_url');
+--   -- The CRON_SECRET value from .env.local.
+--   select vault.create_secret('<CRON_SECRET from .env.local>', 'restart_cron_secret');
+--
+-- Change one later with vault.update_secret(id, new_secret), using the id from vault.secrets.
+-- Watch the calls in net._http_response, and the job runs in cron.job_run_details.
