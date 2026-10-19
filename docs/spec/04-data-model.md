@@ -73,6 +73,7 @@ create table profiles (
   quiet_hours_end         time,
   muted_until             timestamptz,                            -- "mute for today"
   retro_edit_days         smallint not null default 7 check (retro_edit_days between 0 and 30),
+  max_skips_per_month     smallint not null default 4 check (max_skips_per_month between 0 and 10),
   theme                   text not null default 'system' check (theme in ('system', 'light', 'dark')),
   plan_dirty              boolean not null default true,          -- notifications must be re-planned
   planned_through         date,                                   -- last habit day already planned
@@ -421,5 +422,6 @@ A nightly `pg_cron` job (pure SQL) deletes:
 |---|---|
 | `srv_user_today(user_id)` | `((now() at time zone tz) - make_interval(hours => day_start_hour))::date` (`R-DAY-2`) |
 | `srv_normalize(text)` | Lowercase text without accents, for matching |
+| `srv_tick_if_due()` | Called by `pg_cron` every minute. Calls `/api/internal/tick` through `pg_net` only if a notification or calendar job is due or a profile needs planning ([Architecture §5](03-architecture.md#5-scheduler)) |
 
 Database functions called by the app and the server are listed in [API §5](05-api.md#5-database-functions-rpc).

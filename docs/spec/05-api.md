@@ -27,7 +27,7 @@ The app reads and writes most data **directly in Supabase** (protected by RLS, s
   | 403 | `forbidden_scope` | Token lacks the scope |
   | 404 | `habit_not_found`, `nothing_to_undo` | |
   | 409 | `ambiguous_habit` | The query matches several habits; the response includes `choices` |
-  | 422 | `validation_error`, `outside_edit_window`, `not_allowed_for_habit` | Bad input, or a rule from `R-CHK` |
+  | 422 | `validation_error`, `outside_edit_window`, `not_allowed_for_habit`, `skip_limit_reached` | Bad input, or a rule from `R-CHK` / `R-SKIP` |
   | 429 | `rate_limited` | Includes `Retry-After` |
   | 500 | `internal` | |
 
@@ -198,7 +198,7 @@ Called every minute by `pg_cron`. Header `x-cron-secret`. Runs the steps in [Arc
 
 | Function | Does |
 |---|---|
-| `apply_check_in_op(op_id uuid, habit_id uuid, local_date date, op text, payload jsonb, source check_in_source) → check_ins` | The only way to write check-ins. Checks ownership, the edit window, the habit's kind and schedule (`R-CHK`), derives the state (`R-STATE`), writes `check_in_events` with `prev_state`, and is idempotent on `op_id`. `security definer`, `search_path = ''` |
+| `apply_check_in_op(op_id uuid, habit_id uuid, local_date date, op text, payload jsonb, source check_in_source) → check_ins` | The only way to write check-ins. Checks ownership, the edit window, the habit's kind and schedule (`R-CHK`), the skip limit (`R-SKIP`), derives the state (`R-STATE`), writes `check_in_events` with `prev_state`, and is idempotent on `op_id`. `security definer`, `search_path = ''` |
 | `undo_op(op_id uuid) → check_ins` | Restores `prev_state` of that operation. Used by the Undo toast |
 | `undo_last_op() → jsonb` | Undoes the user's last operation of today that hasn't been undone |
 

@@ -2,7 +2,7 @@
 
 ## 1. Vision
 
-A habit tracker that's fastest to use at the moment a habit happens. Say *"Hey Siri, log habit"* and it's recorded. Get reminded at the right time, and only when it's still needed. See honest progress on your phone or computer. Apple Health confirms some habits automatically, and your habits appear in Google Calendar.
+**Restart** is a habit tracker that's fastest to use at the moment a habit happens. Say *"Hey Siri, log habit"* and it's recorded. Get reminded at the right time, and only when it's still needed. See honest progress on your phone or computer. Apple Health confirms some habits automatically, and your habits appear in Google Calendar.
 
 ## 2. Goals
 
@@ -41,7 +41,7 @@ Everything below is in v1. The [roadmap](08-roadmap.md) says which phase deliver
 
 - **FR-ACC-1** Sign up and sign in with a 6-digit email code, or with Google.
 - **FR-ACC-2** On first sign-in, a profile is created with the browser language, the device timezone (IANA name), the day ending at 04:00, and the week start taken from the locale (Monday if unknown).
-- **FR-ACC-3** Settings: display name, language (es/en), timezone, day end (00:00–06:00), week start (Monday/Sunday), theme (system/light/dark), and how many past days can be edited (0–30, default 7).
+- **FR-ACC-3** Settings: display name, language (es/en), timezone, day end (00:00–06:00), week start (Monday/Sunday), theme (system/light/dark), how many past days can be edited (0–30, default 7), and skips allowed per habit per month (0–10, default 4).
 - **FR-ACC-4** When the app opens and the device timezone differs from the profile, ask: "You seem to be in *X*. Update your timezone?"
 - **FR-ACC-5** Delete account. This removes all data, revokes Google access, deletes push subscriptions and revokes API tokens. The user must type a confirmation word.
 - **FR-ACC-6** Sign out of all devices.
@@ -71,7 +71,7 @@ Everything below is in v1. The [roadmap](08-roadmap.md) says which phase deliver
 - **FR-HAB-2** A template gallery, in both languages, pre-fills the form. Examples: Drink water (8 glasses), Walk 5,000 steps (Health), Meditate 10 min, Read 20 pages, Work out 4×/week (Health), Journal, Sleep 7 h (Health), Stretch.
 - **FR-HAB-3** Categories: defaults (Health, Fitness, Mind, Learning, Productivity, Home) shown in the current language. Users can add, rename, recolor and delete categories. Deleting one leaves its habits uncategorized.
 - **FR-HAB-4** Reorder habits inside a routine by drag and drop, with a keyboard alternative. This order is the order of routine mode.
-- **FR-HAB-5** Pause a habit from a date, optionally until a date. While paused it isn't expected, isn't reminded, and doesn't count in scores or streaks. **Vacation mode** pauses every habit.
+- **FR-HAB-5** Pause a habit from today or a later date, optionally until a date. While paused it isn't expected, isn't reminded, and doesn't count in scores or streaks. **Vacation mode** pauses every habit. Pauses can't start in the past, so they can't be used to erase missed days (`R-SKIP-3`).
 - **FR-HAB-6** Archive a habit: it's hidden and its history is kept, and it can be restored. **Delete** removes the habit and its history after a confirmation.
 - **FR-HAB-7** Changing a schedule or target applies from today on. Past days keep being judged by the schedule that applied then (see `R-SCHED-0`).
 
@@ -85,7 +85,7 @@ Everything below is in v1. The [roadmap](08-roadmap.md) says which phase deliver
 ### 5.4 Check-ins — `FR-CHK`
 
 - **FR-CHK-1** Boolean habit: a tap toggles done. Measurable habit: a tap adds the step. A long press or the "…" menu lets the user type an exact value or mark it complete (value = target).
-- **FR-CHK-2** Skip with a reason (sick, travel, rest, other). Only for habits with fixed days. Flexible habits use pause instead.
+- **FR-CHK-2** Skip with a reason (sick, travel, rest, other). Only for habits with fixed days. Flexible habits use pause instead. **Skips are limited:** each habit allows `max_skips_per_month` skips per month (default 4). The skip sheet shows how many are left ("2 of 4 left this month"). When none are left, skip is disabled and the app suggests a pause if the user will be away (`R-SKIP`).
 - **FR-CHK-3** An optional note on any check-in.
 - **FR-CHK-4** **Undo:** every check-in action shows an *Undo* toast for 5 seconds. Entries in a habit's history can be edited at any time inside the edit window.
 - **FR-CHK-5** **Past days:** previous days inside the edit window can be logged from the day switcher on Today or from the habit history. Never before the habit's start date, never in the future.

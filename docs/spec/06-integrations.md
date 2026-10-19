@@ -123,16 +123,18 @@ Google Calendar has a REST API with OAuth and allows updating a single day of a 
 ### 3.2 Google Cloud setup
 
 - A Google Cloud project with the **Google Calendar API** enabled.
-- OAuth consent screen (type *External*) with the app name, logo, home page, privacy policy, terms and the verified domain.
+- OAuth consent screen (type *External*) with the app name (**Restart**), logo, support email, and links to the home page and privacy policy.
 - An OAuth client of type *Web application*. Redirect URIs: `https://<app-domain>/api/calendar/google/callback`, plus preview and local URLs for development.
 - **Scopes:** `https://www.googleapis.com/auth/calendar.app.created` (create secondary calendars and manage only the events in calendars the app created) plus `openid email` (to show which account is connected). The app never asks for access to the user's other calendars.
 
-### 3.3 Verification (start early)
+### 3.3 Verification: not needed for Restart
 
-Google treats Calendar scopes as sensitive. Check the exact classification of `calendar.app.created` in the console when setting it up.
+Google treats Calendar scopes as sensitive. Check the exact classification of `calendar.app.created` in the console when setting it up. Restart is for fewer than 100 people, so it **stays unverified**:
 
-- **Before verification** (publishing status *Testing*): at most **100 test users**, added by hand, and their refresh tokens **expire after 7 days**, so they must reconnect every week.
-- **To publish:** verified domain, home page, privacy policy, terms, a justification for each scope, and a demo video of the flow. Review can take weeks, so it starts in Phase 3 (see [Roadmap](08-roadmap.md)).
+- Set the publishing status to **In production** without submitting for verification. Users see a "Google hasn't verified this app" screen once and continue with *Advanced → Go to Restart*. Unverified apps are limited to **100 users**, which is enough.
+- Don't leave it in **Testing**: there, refresh tokens expire after **7 days**, so everyone would have to reconnect every week.
+- If Restart ever opens to the public, verification needs a verified domain, home page, privacy policy, terms, a justification for each scope and a demo video, and review can take weeks.
+- Confirm both behaviors (the warning screen and tokens that don't expire weekly) during spike S6, since Google may change them.
 
 ### 3.4 Connecting
 

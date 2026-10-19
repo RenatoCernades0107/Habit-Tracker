@@ -88,15 +88,12 @@ After a Siri check-in, the handler uses Next.js `after()` to process the calenda
 Vercel Cron on the Hobby plan only runs once a day, so the per-minute "tick" comes from Supabase:
 
 ```sql
--- runs every minute; the secret is read from Supabase Vault
-select cron.schedule('tick', '* * * * *', $$
-  select net.http_post(
-    url     := 'https://<app-domain>/api/internal/tick',
-    headers := jsonb_build_object('x-cron-secret', (select decrypted_secret from vault.decrypted_secrets where name = 'cron_secret')),
-    body    := '{}'::jsonb
-  );
-$$);
+-- runs every minute; calls Vercel only when something is due.
+-- The app URL and the secret are read from Supabase Vault.
+select cron.schedule('tick', '* * * * *', $$ select srv_tick_if_due(); $$);
 ```
+
+`srv_tick_if_due()` checks, with indexed queries, whether any notification is due, any calendar job is due, or any profile needs planning (`plan_dirty`, or `planned_through` before tomorrow). Only then does it call `net.http_post` to `/api/internal/tick` with the `x-cron-secret` header. With a handful of users, most minutes make no HTTP call at all.
 
 ```mermaid
 sequenceDiagram
@@ -268,6 +265,7 @@ Measured with Vercel Speed Insights (real users), Lighthouse CI on every PR, and
 ## 15. Hosting, regions and cost
 
 - Put Vercel functions and the Supabase project **in the same region**, close to most users (for example São Paulo for both if users are mostly in South America). Each extra region hop adds latency to every check-in.
-- **Vercel Hobby** is for personal, non-commercial use. A public product needs Vercel **Pro**.
-- **Supabase Free** has usage limits and pauses inactive projects. Use **Pro** for production.
-- A **custom domain** is needed for Google OAuth verification, email deliverability and a trustworthy push sender.
+- **Restart is free and for a small private group** (the owner, family and friends), so the free plans fit: **Vercel Hobby** (personal, non-commercial use) and **Supabase Free**. Moving to Vercel Pro and Supabase Pro is only needed if Restart ever becomes a public or paid product.
+- **Supabase Free** pauses projects after a period of inactivity. Daily use by a few people keeps it active; if it ever pauses, it's restored from the dashboard.
+- **Keep the tick cheap.** The `pg_cron` job only calls Vercel when there's work due (see §5), so an idle minute costs nothing on Vercel.
+- A **custom domain** is optional. It helps email deliverability and makes the Google consent screen look trustworthy, but the `*.vercel.app` domain works.

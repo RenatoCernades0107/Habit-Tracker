@@ -101,12 +101,26 @@ Current streak = **2**. If today becomes done, it's **3**. If today ends with no
 - **R-CHK-1** At most one check-in row per (habit, `local_date`). Operations: `complete`, `increment(amount)`, `set_value(value)`, `skip(reason)`, `clear`, `set_note(note)`.
 - **R-CHK-2** `complete` on a boolean habit → done. On a measurable habit → value = target, done.
 - **R-CHK-3** `increment` adds `amount` (default: the habit's `increment_step`). The state follows from the value. The value never goes below 0.
-- **R-CHK-4** `skip` is only allowed for fixed-schedule habits (flexible habits use pause).
+- **R-CHK-4** `skip` is only allowed for fixed-schedule habits (flexible habits use pause), and only while the habit has skips left (`R-SKIP`).
 - **R-CHK-5** Allowed dates: `start_date ≤ d ≤ today` and `today − d ≤ retro_edit_days`. The Shortcuts API accepts `today` and `yesterday`, inside that same window.
 - **R-CHK-6** Flexible habit: `complete` on a day that's already done does nothing.
 - **R-CHK-7** **Idempotency:** every operation has an `op_id` (UUID). An operation sent again with the same `op_id` is ignored and returns the current state.
 - **R-CHK-8** **Undo** restores the exact previous state of that check-in, which is saved in the event log.
 - **R-CHK-9** In the app, tapping a boolean habit that's already done performs `clear`.
+
+## R-SKIP · Skip limits
+
+- **R-SKIP-1** Each habit allows at most `max_skips_per_month` skips (profile setting, 0–10, default 4) per **calendar month of `local_date`**. The count includes skips logged for past days.
+- **R-SKIP-2** A `skip` that would exceed the limit is rejected (`skip_limit_reached`). Removing a skip (undo, clear, or replacing it with done) gives that skip back.
+- **R-SKIP-3** **Pauses can't start in the past** (`start_date ≥ today`) and aren't limited. They're the tool for planned absences; skips are for the unexpected. Ending a pause early is always allowed.
+- **R-SKIP-4** Lowering the limit doesn't remove skips already logged. It only blocks new ones.
+- **R-SKIP-5** Statistics show skips used per habit and month.
+
+| Habit | Month | Skips logged | Limit | New skip on 2026-10-20 |
+|---|---|---|---|---|
+| Meditate | October 2026 | 3 | 4 | allowed → 4 of 4 used |
+| Meditate | October 2026 | 4 | 4 | rejected, `skip_limit_reached` |
+| Meditate | (skip dated 2026-09-30) | 4 in September | 4 | rejected for September; October's count is separate |
 
 ## R-NTF · Notification timing and suppression
 

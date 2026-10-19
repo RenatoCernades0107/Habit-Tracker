@@ -1,6 +1,6 @@
-# Habit Tracker
+# Restart
 
-Track your habits from your phone or computer, log them by voice with Siri, get reminders only when you still need them, and see your progress. Apple Health can confirm some habits automatically, and habits can sync to Google Calendar.
+A habit tracker. Track your habits from your phone or computer, log them by voice with Siri, get reminders only when you still need them, and see your progress. Apple Health can confirm some habits automatically, and habits can sync to Google Calendar.
 
 A PWA built with **Next.js** and **Supabase**, deployed on **Vercel**, in Spanish and English.
 

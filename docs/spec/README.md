@@ -1,7 +1,7 @@
-# Habit Tracker — Specification
+# Restart — Specification
 
 > **Status:** Draft v1 · **Last updated:** 2026-10-19
-> **Source brief:** [`DESCRIPTION.md`](../../DESCRIPTION.md) (Spanish). This spec builds on it, fills the gaps found in review, and adds the features agreed on afterwards.
+> **Source brief:** [`DESCRIPTION.md`](../../DESCRIPTION.md) (Spanish). **Restart** is the app's name. This spec builds on it, fills the gaps found in review, and adds the features agreed on afterwards.
 
 ## Documents
 
@@ -32,6 +32,8 @@ Requirement IDs (`FR-HAB-3`, `NFR-PERF-1`, `R-STREAK-2`, …) are stable. Use th
 | D8 | **Spanish and English** from day one (`next-intl`) | Requested. The default comes from the browser language. |
 | D9 | **Email one-time code** as the main sign-in, plus Google | Apps on the iOS Home Screen don't share cookies with Safari, so a magic link would sign the user in to Safari instead of the app. |
 | D10 | **One shared domain module** (`src/domain`) for schedules, scores and streaks | Stats in the app and numbers in notifications or Siri replies must always match. |
+| D11 | **Free and private**: the owner, family and friends | Free Vercel and Supabase plans are enough; Google OAuth stays unverified (≤ 100 users) |
+| D12 | **Skips are limited** (default 4 per habit per month) | Keeps streaks honest; pauses cover planned absences (`R-SKIP`) |
 
 ## Glossary
 
