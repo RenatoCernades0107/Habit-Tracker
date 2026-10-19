@@ -1,4 +1,3 @@
-import { Sprout } from "lucide-react";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -7,6 +6,7 @@ import { LoginForm } from "@/components/auth/login-form";
 import { authErrorFromCallback } from "@/lib/auth/errors";
 import { safeNextPath } from "@/lib/auth/redirect";
 import { getUser } from "@/lib/auth/session";
+import { BrandMark } from "@/components/pwa/brand-mark";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("auth");
@@ -31,7 +31,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
     <div className="grid w-full max-w-sm gap-8">
       <div className="grid justify-items-center gap-3 text-center">
         <span className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
-          <Sprout className="size-7" aria-hidden="true" />
+          <BrandMark className="size-8" />
         </span>
         <div className="grid gap-1">
           <h1 className="text-3xl font-semibold tracking-tight">{t("appName")}</h1>

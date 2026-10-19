@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { signOut, signOutEverywhere } from "@/lib/auth/actions";
+import { clearPageCaches } from "@/lib/pwa/sw-client";
 import { cn } from "@/lib/utils";
 
 import { isNextNavigation } from "./is-next-navigation";
@@ -31,6 +32,8 @@ export function SignOutButton({
     if (isPending) return;
     startTransition(async () => {
       try {
+        // Cached pages may contain this user's data (public/sw.js CLEAR_CACHES).
+        await clearPageCaches();
         await (everywhere ? signOutEverywhere() : signOut());
       } catch (error) {
         if (isNextNavigation(error)) return; // Redirecting to /login.

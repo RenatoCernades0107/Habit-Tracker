@@ -6,6 +6,7 @@ import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TimezoneCookie } from "@/i18n/timezone-cookie";
+import { BRAND_COLORS } from "@/lib/pwa/brand";
 
 import "./globals.css";
 
@@ -27,8 +28,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfdfc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f1513" },
+    { media: "(prefers-color-scheme: light)", color: BRAND_COLORS.background },
+    { media: "(prefers-color-scheme: dark)", color: BRAND_COLORS.backgroundDark },
   ],
 };
 
@@ -39,7 +40,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang={locale} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
             <Toaster />
             <ServiceWorkerRegister />
