@@ -48,7 +48,8 @@ create type check_in_source     as enum ('app', 'routine_mode', 'siri', 'notific
 create type skip_reason         as enum ('sick', 'travel', 'rest', 'other');
 create type health_metric       as enum ('steps', 'exercise_minutes', 'active_energy_kcal', 'distance_km',
                                          'mindful_minutes', 'workouts', 'sleep_hours');
-create type notification_kind   as enum ('habit_reminder', 'routine_digest', 'daily_report', 'weekly_review');
+create type notification_kind   as enum ('habit_reminder', 'routine_digest', 'daily_report', 'weekly_review',
+                                         'test');  -- 'test': "Send test" button and spike S2
 create type notification_status as enum ('pending', 'sending', 'sent', 'suppressed', 'failed');
 create type job_status          as enum ('pending', 'running', 'done', 'failed');
 ```
@@ -59,7 +60,7 @@ create type job_status          as enum ('pending', 'running', 'done', 'failed')
 create table profiles (
   id                      uuid primary key references auth.users on delete cascade,
   display_name            text,
-  locale                  text not null default 'es' check (locale in ('es', 'en')),
+  locale                  text not null default 'en' check (locale in ('es', 'en')),  -- English fallback (FR-I18N-2)
   timezone                text not null default 'UTC',            -- IANA name
   day_start_hour          smallint not null default 4 check (day_start_hour between 0 and 6),
   week_start              smallint not null default 1 check (week_start in (1, 7)),  -- ISO: 1 Mon, 7 Sun
@@ -294,6 +295,7 @@ create table scheduled_notifications (
   suppressed_reason  text,
   attempts           smallint not null default 0,
   last_error         text,
+  claimed_at         timestamptz,                          -- set when a tick claims it; stuck rows are reset
   sent_at            timestamptz,
   dedupe_key         text not null unique,   -- e.g. 'habit_reminder:<habit>:2026-10-20', snoozes add ':snooze:<n>'
   created_at         timestamptz not null default now()

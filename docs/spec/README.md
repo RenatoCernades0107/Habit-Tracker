@@ -34,6 +34,7 @@ Requirement IDs (`FR-HAB-3`, `NFR-PERF-1`, `R-STREAK-2`, …) are stable. Use th
 | D10 | **One shared domain module** (`src/domain`) for schedules, scores and streaks | Stats in the app and numbers in notifications or Siri replies must always match. |
 | D11 | **Free and private**: the owner, family and friends | Free Vercel and Supabase plans are enough; Google OAuth stays unverified (≤ 100 users) |
 | D12 | **Skips are limited** (default 4 per habit per month) | Keeps streaks honest; pauses cover planned absences (`R-SKIP`) |
+| D13 | **Next.js Cache Components off** (`cacheComponents: false`) | Screens render from the local cache in the browser, and the session and language are read from cookies on every request, so server caching adds constraints (Suspense around every cookie read) without a benefit yet |
 
 ## Glossary
 
