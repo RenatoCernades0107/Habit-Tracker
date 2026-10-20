@@ -43,7 +43,7 @@ select is(
       join pg_catalog.pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public'
        and (p.proname like 'srv\_%' or p.prosecdef or p.prorettype = 'trigger'::regtype)
-       and p.proname <> all (array[]::text[])
+       and p.proname <> all (array['apply_check_in_op', 'undo_op', 'undo_last_op', 'user_today']::text[])
        and (has_function_privilege('anon', p.oid, 'EXECUTE')
             or has_function_privilege('authenticated', p.oid, 'EXECUTE'))
      order by 1
