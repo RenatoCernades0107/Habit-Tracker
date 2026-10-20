@@ -5,6 +5,7 @@ import {
   contentFor,
   instantOnHabitDay,
   planNotifications,
+  reviewedWeek,
   suppressionFor,
   type NotifyData,
   type NotifyHabit,
@@ -280,5 +281,16 @@ describe("badge and content", () => {
       best: { name: "Meditate", days: 3 },
       left: ["Read"],
     });
+  });
+});
+
+describe("R-NTF-5: the week a review is about", () => {
+  it("is the week that's ending", () => {
+    // Sunday 2026-10-25, weeks from Monday: this week.
+    expect(reviewedWeek("2026-10-25", 1)).toBe("2026-10-19");
+    // Sunday 2026-10-25, weeks from Sunday: Sunday starts a week, so the one before.
+    expect(reviewedWeek("2026-10-25", 7)).toBe("2026-10-18");
+    // Monday with weeks from Monday: last week.
+    expect(reviewedWeek("2026-10-19", 1)).toBe("2026-10-12");
   });
 });

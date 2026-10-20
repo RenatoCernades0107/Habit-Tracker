@@ -367,6 +367,25 @@ export function TodayView({ setup }: { setup: ReactNode }) {
           if (sheetItem) run(sheetItem, op, payload);
           setSheetFor(null);
         }}
+        onSnooze={
+          date === today
+            ? (minutes) => {
+                const habitId = sheetItem?.habit.id;
+                setSheetFor(null);
+                if (!habitId) return;
+                void fetch("/api/notifications/snooze", {
+                  method: "POST",
+                  headers: { "content-type": "application/json" },
+                  body: JSON.stringify({ habitId, date, minutes }),
+                })
+                  .then((res) => {
+                    if (!res.ok) throw new Error(String(res.status));
+                    toast(t("toast.snoozed", { minutes }));
+                  })
+                  .catch(() => toast.error(t("toast.snoozeFailed")));
+              }
+            : undefined
+        }
       />
     </div>
   );

@@ -51,3 +51,16 @@ test("a reminder in quiet hours is flagged in the editor", async ({ page }) => {
   await page.getByLabel("Time", { exact: true }).fill("23:00");
   await expect(page.getByText("This reminder falls in your quiet hours")).toBeVisible();
 });
+
+test("a pending habit can be snoozed from the app (iPhone has no buttons)", async ({ page }) => {
+  await signInWithEmailCode(page);
+  await page.goto("/habits/new?template=custom");
+  await page.getByLabel("Name", { exact: true }).fill("Water");
+  await page.getByRole("button", { name: "Create habit" }).click();
+  await page.waitForURL(/\/today/);
+
+  // A tapped reminder opens /today?habit=<id> with the habit's sheet.
+  await page.getByRole("button", { name: "More for Water" }).click();
+  await page.getByRole("button", { name: "30 min" }).click();
+  await expect(page.getByText("I'll remind you in 30 min.")).toBeVisible();
+});

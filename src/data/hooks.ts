@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { overlay, type PendingChange, type UpsertVariables } from "./overlay";
 import { CHANGE_KEY, snapshotKey, useUserId } from "./provider";
 import { EMPTY_SNAPSHOT, rowKey, type Snapshot } from "./snapshot";
-import { syncSnapshot } from "./sync";
+import { applyDelta, fetchDelta } from "./sync";
 
 function deviceTimeZone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
@@ -37,9 +37,13 @@ export function useData() {
   const isRestoring = useIsRestoring();
   const query = useQuery({
     queryKey: snapshotKey(userId),
-    queryFn: ({ client }) => {
+    queryFn: async ({ client }) => {
       const previous = client.getQueryData<Snapshot>(snapshotKey(userId)) ?? EMPTY_SNAPSHOT;
-      return syncSnapshot(createClient(), previous, todayFor(previous.profile));
+      const today = todayFor(previous.profile);
+      const delta = await fetchDelta(createClient(), previous, today);
+      // Changes confirmed while the delta was in flight are in the cache now; keep them.
+      const latest = client.getQueryData<Snapshot>(snapshotKey(userId)) ?? previous;
+      return applyDelta(latest, delta, today);
     },
     refetchOnWindowFocus: true,
   });

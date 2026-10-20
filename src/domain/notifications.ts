@@ -237,6 +237,15 @@ export function suppressionFor(
   }
 }
 
+/**
+ * R-NTF-5: the week a review sent on `date` is about: the week that's ending. On the first day
+ * of a week (e.g. Sunday with weeks starting on Sunday) that's the week before.
+ */
+export function reviewedWeek(date: IsoDate, weekStart: number): IsoDate {
+  const week = weekStartOf(date, weekStart);
+  return week === date ? addDays(week, -7) : week;
+}
+
 /** R-NTF-9: fixed-schedule occurrences still pending today. */
 export function badgeCount(data: NotifyData, today: IsoDate): number {
   return dayView(data, today, today)
@@ -324,7 +333,7 @@ export function contentFor(
       };
     }
     case "weekly_review": {
-      const week = weekStartOf(n.localDate, profile.week_start);
+      const week = reviewedWeek(n.localDate, profile.week_start);
       const hs = histories({
         ...data,
         today,

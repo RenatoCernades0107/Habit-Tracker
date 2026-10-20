@@ -128,7 +128,7 @@ Current streak = **2**. If today becomes done, it's **3**. If today ends with no
 - **R-NTF-2** **Habit reminder:** for each fixed-schedule occurrence with its own `time_of_day` and `reminder_enabled` → `send_at` = local (*d*, time) − lead time, where the lead time is the habit's override or the profile's `reminder_lead_min`. A flexible habit with a time gets a reminder on every active day until its weekly target is met.
 - **R-NTF-3** **Routine digest:** at the routine's `start_time`, on every day the routine has at least one scheduled occurrence and `digest_enabled` is on.
 - **R-NTF-4** **Daily report:** at `daily_report_time`, for each habit day. A report time after midnight but before the day ends (e.g. 00:30 with *h* = 4) belongs to the *previous* habit day.
-- **R-NTF-5** **Weekly review:** on `weekly_review_dow` at `weekly_review_time`, about the week that's ending.
+- **R-NTF-5** **Weekly review:** on `weekly_review_dow` at `weekly_review_time`, about the week that's ending. On the first day of a week (Sunday with weeks starting on Sunday) that's the week before.
 - **R-NTF-6** **Daylight saving time.** A local time that doesn't exist (clocks jump forward) moves to the first valid minute after it. A local time that happens twice (clocks go back) uses the first one.
 - **R-NTF-7** **Suppression** is checked again when the notification is sent, not only when it's planned:
 
@@ -139,7 +139,7 @@ Current streak = **2**. If today becomes done, it's **3**. If today ends with no
   | `daily_report` | Rest day with no flexible habits |
   | all kinds | `muted_until` > now · `send_at` falls in quiet hours · user has no push subscriptions · too late: reminders > 10 min, digests > 30 min, reports > 2 h |
 
-- **R-NTF-8** **Snooze** creates a new reminder at now + N minutes, under the same suppression rules.
+- **R-NTF-8** **Snooze** creates a new reminder at now + N minutes, under the same suppression rules. `dedupe_key`s are unique across users: reminders and digests name their habit or routine, reports and reviews name the user.
 - **R-NTF-9** **Badge** = the number of pending fixed-schedule occurrences today.
 - **R-NTF-10** Settings warn when a habit's reminder falls inside quiet hours (it would never be sent).
 

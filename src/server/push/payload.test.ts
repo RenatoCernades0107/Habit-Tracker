@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import en from "@messages/en/push.json";
 import es from "@messages/es/push.json";
 
-import { buildPushPayload } from "./payload";
+import { buildNotificationPayload, buildPushPayload } from "./payload";
 
 vi.mock("server-only", () => ({}));
 
@@ -83,5 +83,150 @@ describe("buildPushPayload", () => {
       { locale: "es", timeZone: "UTC", now: NOW },
     );
     expect(new TextEncoder().encode(JSON.stringify(payload)).length).toBeLessThan(1024);
+  });
+});
+
+describe("buildNotificationPayload (docs/spec/06-integrations.md §4.6)", () => {
+  const ctx = (locale: string, extra = {}) => ({ locale, today: "2026-10-20", badge: 3, ...extra });
+  const morning = {
+    id: "r1",
+    system_key: "morning",
+    name: null,
+    icon: "🌅",
+    start_time: "07:00:00",
+    sort_order: 0,
+    deleted_at: null,
+    digest_enabled: true,
+  };
+  const reminder = {
+    kind: "habit_reminder" as const,
+    habitId: "h1",
+    name: "Meditar",
+    icon: null,
+    cue: "Después de preparar el café",
+    leadMinutes: 5,
+    streak: 11,
+    weekly: false,
+  };
+
+  it("habit reminder, with buttons and a link to the habit", async () => {
+    const es = await buildNotificationPayload(
+      { id: 1, localDate: "2026-10-20", content: reminder },
+      ctx("es", { actionToken: "tok" }),
+    );
+    expect(es).toMatchObject({
+      title: "⏰ Meditar en 5 min",
+      body: "Después de preparar el café · 🔥 11 días",
+      tag: "habit:h1:2026-10-20",
+      url: "/today?habit=h1",
+      badge: 3,
+      actions: [
+        { action: "done", title: "Hecho" },
+        { action: "snooze", title: "15 min" },
+      ],
+      actionToken: "tok",
+    });
+    const en = await buildNotificationPayload(
+      {
+        id: 1,
+        localDate: "2026-10-19",
+        content: { ...reminder, name: "Meditate", cue: "After I brew coffee", leadMinutes: 0 },
+      },
+      ctx("en"),
+    );
+    expect(en).toMatchObject({
+      title: "⏰ Time for Meditate",
+      body: "After I brew coffee · 🔥 11 days",
+      url: "/today?habit=h1&day=2026-10-19",
+    });
+    expect(en.actions).toBeUndefined();
+  });
+
+  it("routine digest", async () => {
+    const content = {
+      kind: "routine_digest" as const,
+      routineId: "r1",
+      routine: morning,
+      names: ["Meditate", "Read", "Water", "Stretch"],
+    };
+    expect(
+      await buildNotificationPayload({ id: 2, localDate: "2026-10-20", content }, ctx("en")),
+    ).toMatchObject({
+      title: "🌅 Morning routine · 4 habits",
+      body: "Meditate, Read, Water, Stretch",
+      url: "/routine/r1",
+    });
+    const es = await buildNotificationPayload(
+      {
+        id: 2,
+        localDate: "2026-10-20",
+        content: { ...content, names: [...content.names, "Diario"] },
+      },
+      ctx("es"),
+    );
+    expect(es).toMatchObject({
+      title: "🌅 Rutina de mañana · 5 hábitos",
+      body: "Meditate, Read, Water, Stretch +1 más",
+    });
+  });
+
+  it("daily report and perfect day", async () => {
+    const content = {
+      kind: "daily_report" as const,
+      score: 0.8,
+      done: 8,
+      total: 10,
+      best: { name: "Meditar", days: 12 },
+      left: ["Leer", "Diario"],
+      attention: [],
+    };
+    expect(
+      await buildNotificationPayload({ id: 3, localDate: "2026-10-20", content }, ctx("es")),
+    ).toMatchObject({
+      title: "📊 Hoy: 80\u00a0% (8/10)",
+      body: "🔥 Meditar 12 días. Faltan: Leer, Diario",
+      url: "/today?mood=1",
+    });
+    expect(
+      await buildNotificationPayload(
+        {
+          id: 3,
+          localDate: "2026-10-20",
+          content: { ...content, best: { name: "Meditate", days: 12 }, left: ["Read", "Journal"] },
+        },
+        ctx("en"),
+      ),
+    ).toMatchObject({
+      title: "📊 Today: 80% (8/10)",
+      body: "🔥 Meditate 12 days. Left: Read, Journal",
+    });
+    const perfect = await buildNotificationPayload(
+      { id: 3, localDate: "2026-10-20", content: { ...content, score: 1, done: 10, left: [] } },
+      ctx("en"),
+    );
+    expect(perfect).toMatchObject({
+      title: "🎉 Perfect day! 100%",
+      body: "How did you feel today?",
+    });
+  });
+
+  it("weekly review", async () => {
+    const content = {
+      kind: "weekly_review" as const,
+      weekStart: "2026-10-19",
+      score: 0.76,
+      delta: 0.06,
+    };
+    expect(
+      await buildNotificationPayload({ id: 4, localDate: "2026-10-25", content }, ctx("en")),
+    ).toMatchObject({
+      title: "🗓️ Your week: 76% (+6%)",
+      body: "Tap to review it and plan the next one.",
+      url: "/review/2026-10-19",
+    });
+    expect(
+      (await buildNotificationPayload({ id: 4, localDate: "2026-10-25", content }, ctx("es")))
+        .title,
+    ).toBe("🗓️ Tu semana: 76\u00a0% (+6\u00a0%)");
   });
 });

@@ -41,15 +41,28 @@ async function fetchTable<T extends SyncedTable>(
   }
 }
 
+/** Rows changed on the server since a snapshot's cursors. */
+export type Delta = {
+  profile: Snapshot["profile"];
+  routines: Snapshot["routines"];
+  categories: Snapshot["categories"];
+  habits: Snapshot["habits"];
+  versions: Snapshot["versions"];
+  pauses: Snapshot["pauses"];
+  checkIns: Snapshot["checkIns"];
+  dailyEntries: Snapshot["dailyEntries"];
+  weeklyReviews: Snapshot["weeklyReviews"];
+};
+
 /**
- * Brings `previous` up to date: the profile, then only rows changed since each table's cursor.
- * Soft-deleted rows come too, so deletions reach every device (spec 03 §3).
+ * The profile, then only rows changed since each table's cursor. Soft-deleted rows come too,
+ * so deletions reach every device (spec 03 §3).
  */
-export async function syncSnapshot(
+export async function fetchDelta(
   supabase: Client,
   previous: Snapshot,
   today: string,
-): Promise<Snapshot> {
+): Promise<Delta> {
   const c = previous.cursors;
   const since = (t: SyncedTable) => cursorWithOverlap(c[t]);
   const historyStart = addDays(today, -CHECK_IN_HISTORY_DAYS);
@@ -76,28 +89,52 @@ export async function syncSnapshot(
     fetchTable(supabase, "weekly_reviews", since("weekly_reviews")),
   ]);
   if (profile.error) throw profile.error;
-
   return {
-    profile: profile.data ?? previous.profile,
-    routines: mergeRows(previous.routines, routines, rowKey.routines),
-    categories: mergeRows(previous.categories, categories, rowKey.categories),
-    habits: mergeRows(previous.habits, habits, rowKey.habits),
-    versions: mergeRows(previous.versions, versions, rowKey.habit_versions),
-    pauses: mergeRows(previous.pauses, pauses, rowKey.pauses),
-    checkIns: mergeRows(previous.checkIns, checkIns, rowKey.check_ins).filter(
+    profile: profile.data,
+    routines,
+    categories,
+    habits,
+    versions,
+    pauses,
+    checkIns,
+    dailyEntries,
+    weeklyReviews,
+  };
+}
+
+/**
+ * Merges a delta into a snapshot, row by row, keeping whichever copy is newer. Applied to the
+ * cache as it is when the delta arrives, not as it was when it was asked for: a change confirmed
+ * in between is newer than what the delta fetched, and stays.
+ */
+export function applyDelta(base: Snapshot, delta: Delta, today: string): Snapshot {
+  const c = base.cursors;
+  const historyStart = addDays(today, -CHECK_IN_HISTORY_DAYS);
+  const profile =
+    delta.profile && (!base.profile || base.profile.updated_at <= delta.profile.updated_at)
+      ? delta.profile
+      : base.profile;
+  return {
+    profile,
+    routines: mergeRows(base.routines, delta.routines, rowKey.routines),
+    categories: mergeRows(base.categories, delta.categories, rowKey.categories),
+    habits: mergeRows(base.habits, delta.habits, rowKey.habits),
+    versions: mergeRows(base.versions, delta.versions, rowKey.habit_versions),
+    pauses: mergeRows(base.pauses, delta.pauses, rowKey.pauses),
+    checkIns: mergeRows(base.checkIns, delta.checkIns, rowKey.check_ins).filter(
       (row) => row.local_date >= historyStart,
     ),
-    dailyEntries: mergeRows(previous.dailyEntries ?? [], dailyEntries, rowKey.daily_entries),
-    weeklyReviews: mergeRows(previous.weeklyReviews ?? [], weeklyReviews, rowKey.weekly_reviews),
+    dailyEntries: mergeRows(base.dailyEntries ?? [], delta.dailyEntries, rowKey.daily_entries),
+    weeklyReviews: mergeRows(base.weeklyReviews ?? [], delta.weeklyReviews, rowKey.weekly_reviews),
     cursors: {
-      routines: nextCursor(c.routines, routines),
-      categories: nextCursor(c.categories, categories),
-      habits: nextCursor(c.habits, habits),
-      habit_versions: nextCursor(c.habit_versions, versions),
-      pauses: nextCursor(c.pauses, pauses),
-      check_ins: nextCursor(c.check_ins, checkIns),
-      daily_entries: nextCursor(c.daily_entries, dailyEntries),
-      weekly_reviews: nextCursor(c.weekly_reviews, weeklyReviews),
+      routines: nextCursor(c.routines, delta.routines),
+      categories: nextCursor(c.categories, delta.categories),
+      habits: nextCursor(c.habits, delta.habits),
+      habit_versions: nextCursor(c.habit_versions, delta.versions),
+      pauses: nextCursor(c.pauses, delta.pauses),
+      check_ins: nextCursor(c.check_ins, delta.checkIns),
+      daily_entries: nextCursor(c.daily_entries, delta.dailyEntries),
+      weekly_reviews: nextCursor(c.weekly_reviews, delta.weeklyReviews),
     },
   };
 }

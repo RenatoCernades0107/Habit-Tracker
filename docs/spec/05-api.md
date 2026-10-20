@@ -169,6 +169,7 @@ Send Apple Health daily totals. Scope `health:write`. Sent by the "Sync Health" 
 | `POST` | `/api/push/subscriptions` | `{ "endpoint", "keys": { "p256dh", "auth" }, "platform", "device_label" }` | `201`. Upsert by `endpoint` |
 | `DELETE` | `/api/push/subscriptions` | `{ "endpoint" }` | `204` |
 | `POST` | `/api/push/test` | | `202`. Sends a test notification to all the user's devices |
+| `POST` | `/api/notifications/snooze` | `{ "habitId", "date", "minutes": 15 \| 30 \| 60 }` | `201 { "sendAt" }`. "Remind me later" from the app, for iPhone (`FR-NTF-8`). At most 3 waiting per habit and day |
 | `GET` | `/api/calendar/google/connect` | | `302` to Google's consent screen, with `state` bound to the session |
 | `GET` | `/api/calendar/google/callback` | `?code&state` | `302` to `/settings/integrations?calendar=connected` |
 | `POST` | `/api/calendar/google/disconnect` | `{ "delete_calendar": false }` | `204` |
@@ -212,6 +213,8 @@ Called every minute by `pg_cron`. Header `x-cron-secret`. Runs the steps in [Arc
 | `srv_match_habit(user_id uuid, query text) → setof (habit_id, name, score)` | Trigram similarity on `srv_normalize(name)` and aliases; candidates with score ≥ 0.3, best first |
 | `srv_apply_health_metrics(user_id uuid, metrics jsonb) → jsonb` | Upserts `health_metric_days` and applies `R-HLT-3` |
 | `srv_claim_due_notifications(max int) → setof scheduled_notifications` | Locks due rows with `FOR UPDATE SKIP LOCKED` and marks them `sending` |
+| `srv_claim_profiles_to_plan(max int) → setof (user_id, today)` | Users with `plan_dirty` or `planned_through` before their tomorrow; clears `plan_dirty` as it claims them |
+| `srv_replace_plan(user_id, from date, through date, rows jsonb) → int` | Atomically deletes the user's pending notifications from `from` on (not tests or snoozes), inserts `rows` with `on conflict (dedupe_key) do nothing`, sets `planned_through` |
 | `srv_claim_calendar_jobs(max int) → setof calendar_sync_jobs` | The same for calendar jobs, coalescing duplicates |
 | `srv_user_today(user_id uuid) → date` | `R-DAY-2` |
 

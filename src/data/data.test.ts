@@ -5,6 +5,7 @@ import type { Schedule } from "@/domain/schedule";
 import type { Tables } from "@/lib/supabase/database.types";
 
 import { overlay } from "./overlay";
+import { applyDelta, type Delta } from "./sync";
 import {
   cursorWithOverlap,
   EMPTY_SNAPSHOT,
@@ -143,5 +144,45 @@ describe("overlay of pending changes", () => {
     const next = overlay(base, [{ kind: "upsert", table: "habits", row: renamed }], NOW);
     expect(next.habits[0]?.name).toBe("Water");
     expect(base.habits[0]?.name).toBeUndefined();
+  });
+});
+
+describe("applying a delta", () => {
+  const routine = (digest: boolean, updated_at: string) =>
+    ({ id: "r", digest_enabled: digest, updated_at }) as unknown as Tables<"routines">;
+  const empty: Delta = {
+    profile: null,
+    routines: [],
+    categories: [],
+    habits: [],
+    versions: [],
+    pauses: [],
+    checkIns: [],
+    dailyEntries: [],
+    weeklyReviews: [],
+  };
+
+  it("keeps a change confirmed while the delta was in flight", () => {
+    // The delta was fetched before the change reached the server; the cache has the newer row.
+    const latest: Snapshot = {
+      ...EMPTY_SNAPSHOT,
+      routines: [routine(false, "2026-10-20T10:00:01Z")],
+    };
+    const delta = { ...empty, routines: [routine(true, "2026-10-20T09:00:00Z")] };
+    expect(applyDelta(latest, delta, "2026-10-20").routines[0]?.digest_enabled).toBe(false);
+  });
+
+  it("takes newer rows and moves the cursor", () => {
+    const latest: Snapshot = {
+      ...EMPTY_SNAPSHOT,
+      routines: [routine(false, "2026-10-20T09:00:00Z")],
+    };
+    const next = applyDelta(
+      latest,
+      { ...empty, routines: [routine(true, "2026-10-20T11:00:00Z")] },
+      "2026-10-20",
+    );
+    expect(next.routines[0]?.digest_enabled).toBe(true);
+    expect(next.cursors.routines).toBe("2026-10-20T11:00:00Z");
   });
 });

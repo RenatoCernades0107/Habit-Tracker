@@ -92,7 +92,9 @@
     "saveNote": "Save note",
     "clear": "Clear",
     "edit": "Edit habit",
-    "close": "Close"
+    "close": "Close",
+    "snooze": "Remind me later",
+    "snoozeIn": "{minutes} min"
   },
   "toast": {
     "done": "{name} done.",
@@ -100,7 +102,9 @@
     "skipped": "{name} skipped.",
     "cleared": "{name} cleared.",
     "noted": "Note saved.",
-    "undo": "Undo"
+    "undo": "Undo",
+    "snoozed": "I'll remind you in {minutes} min.",
+    "snoozeFailed": "Couldn't set the reminder. Check your connection."
   },
   "sync": {
     "synced": "Synced",

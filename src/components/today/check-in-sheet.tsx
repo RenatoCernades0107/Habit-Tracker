@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Pencil, Trash2 } from "lucide-react";
+import { BellRing, Check, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -26,20 +26,33 @@ type Props = {
   skipsLeft: number;
   onClose: () => void;
   onOp: (op: CheckInOp, payload?: CheckInPayload) => void;
+  /** "Remind me later" (FR-NTF-8); only for today's pending habits. */
+  onSnooze?: (minutes: 15 | 30 | 60) => void;
 };
 
 /** Everything beyond one tap: exact value, skip with a reason, note, clear (FR-CHK-1…3). */
-export function CheckInSheet({ item, skipsLeft, onClose, onOp }: Props) {
+export function CheckInSheet({ item, skipsLeft, onClose, onOp, onSnooze }: Props) {
   return (
     <Dialog open={item !== null} onOpenChange={(open) => !open && onClose()}>
       {item ? (
-        <SheetBody key={item.habit.id} item={item} skipsLeft={skipsLeft} onOp={onOp} />
+        <SheetBody
+          key={item.habit.id}
+          item={item}
+          skipsLeft={skipsLeft}
+          onOp={onOp}
+          onSnooze={onSnooze}
+        />
       ) : null}
     </Dialog>
   );
 }
 
-function SheetBody({ item, skipsLeft, onOp }: Omit<Props, "item" | "onClose"> & { item: DayItem }) {
+function SheetBody({
+  item,
+  skipsLeft,
+  onOp,
+  onSnooze,
+}: Omit<Props, "item" | "onClose"> & { item: DayItem }) {
   const t = useTranslations("today");
   const { habit, schedule, checkIn, state } = item;
   const measurable = schedule.kind === "measurable";
@@ -93,6 +106,20 @@ function SheetBody({ item, skipsLeft, onOp }: Omit<Props, "item" | "onClose"> & 
           <Check aria-hidden="true" />
           {t("sheet.complete")}
         </Button>
+      ) : null}
+
+      {onSnooze && (state === "pending" || state === "partial") ? (
+        <fieldset className="grid gap-2">
+          <legend className="mb-1 text-sm font-medium">{t("sheet.snooze")}</legend>
+          <div className="grid grid-cols-3 gap-2">
+            {([15, 30, 60] as const).map((minutes) => (
+              <Button key={minutes} variant="outline" onClick={() => onSnooze(minutes)}>
+                <BellRing aria-hidden="true" />
+                {t("sheet.snoozeIn", { minutes })}
+              </Button>
+            ))}
+          </div>
+        </fieldset>
       ) : null}
 
       {canSkip ? (

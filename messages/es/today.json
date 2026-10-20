@@ -92,7 +92,9 @@
     "saveNote": "Guardar nota",
     "clear": "Borrar",
     "edit": "Editar hábito",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "snooze": "Recordármelo más tarde",
+    "snoozeIn": "{minutes} min"
   },
   "toast": {
     "done": "{name} hecho.",
@@ -100,7 +102,9 @@
     "skipped": "{name} saltado.",
     "cleared": "{name} borrado.",
     "noted": "Nota guardada.",
-    "undo": "Deshacer"
+    "undo": "Deshacer",
+    "snoozed": "Te lo recuerdo en {minutes} min.",
+    "snoozeFailed": "No se pudo programar el recordatorio. Revisa tu conexión."
   },
   "sync": {
     "synced": "Sincronizado",
