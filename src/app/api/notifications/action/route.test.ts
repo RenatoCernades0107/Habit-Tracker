@@ -4,7 +4,9 @@ import { FakeSupabase } from "@/server/push/testing/fake-supabase";
 
 const m = vi.hoisted(() => ({ db: undefined as unknown }));
 vi.mock("server-only", () => ({}));
-vi.mock("@/lib/env.server", () => ({ getServerEnv: () => ({ CRON_SECRET: "c".repeat(40) }) }));
+vi.mock("@/lib/env.server", () => ({
+  getServerEnv: () => ({ CRON_SECRET: "c".repeat(40), SUPABASE_SECRET_KEY: "sb_secret_test" }),
+}));
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => m.db }));
 
 const { POST } = await import("./route");

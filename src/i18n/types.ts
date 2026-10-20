@@ -2,6 +2,7 @@ import type auth from "@messages/en/auth.json";
 import type common from "@messages/en/common.json";
 import type habits from "@messages/en/habits.json";
 import type nav from "@messages/en/nav.json";
+import type pages from "@messages/en/pages.json";
 import type push from "@messages/en/push.json";
 import type pwa from "@messages/en/pwa.json";
 import type settings from "@messages/en/settings.json";
@@ -21,4 +22,5 @@ export type Messages = {
   habits: typeof habits;
   stats: typeof stats;
   shortcuts: typeof shortcuts;
+  pages: typeof pages;
 };

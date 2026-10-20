@@ -20,9 +20,11 @@ export const redirectUri = () =>
 export const STATE_COOKIE = "restart_gc_state";
 const STATE_TTL_S = 10 * 60;
 
+/** From the Supabase secret key, which only the app holds (not CRON_SECRET, also in Vault). */
 function stateKey(): Buffer {
+  const env = getServerEnv();
   return createHash("sha256")
-    .update(`restart:calendar-state:${getServerEnv().CRON_SECRET}`)
+    .update(`restart:calendar-state:${env.ACTION_TOKEN_SECRET ?? env.SUPABASE_SECRET_KEY}`)
     .digest();
 }
 

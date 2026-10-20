@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
+import { reportError } from "@/lib/errors/report";
+
 import { Button } from "@/components/ui/button";
 
 import { EmptyState } from "./empty-state";
@@ -28,6 +30,7 @@ export function ErrorScreen({ error, retry }: { error: unknown; retry: () => voi
 
   useEffect(() => {
     console.error(error);
+    reportError(error, "boundary");
   }, [error]);
 
   return (

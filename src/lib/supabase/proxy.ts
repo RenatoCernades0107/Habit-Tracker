@@ -32,9 +32,19 @@ export type SessionUpdate = {
  * locally with the project's JWKS (cached), refreshing it first when it has expired, so most
  * requests make no network call. Pages still verify with `requireUser()`.
  */
-export async function updateSession(request: NextRequest): Promise<SessionUpdate> {
+export async function updateSession(
+  request: NextRequest,
+  /** Extra request headers for pages, e.g. the CSP nonce. */
+  extraHeaders: Record<string, string> = {},
+): Promise<SessionUpdate> {
   const env = getPublicEnv();
-  let response = NextResponse.next({ request });
+  // Rebuilt after cookies change, so pages see both the new cookies and the extra headers.
+  const next = () => {
+    const headers = new Headers(request.headers);
+    for (const [key, value] of Object.entries(extraHeaders)) headers.set(key, value);
+    return NextResponse.next({ request: { headers } });
+  };
+  let response = next();
   // Merged across calls: the latest value per cookie wins, and @supabase/ssr only passes
   // the cache headers with the first write.
   const cookiesToSet = new Map<string, CookieToSet>();
@@ -53,7 +63,7 @@ export async function updateSession(request: NextRequest): Promise<SessionUpdate
           Object.assign(cacheHeaders, headers);
           // Server Components in this request must see the new tokens too.
           for (const { name, value } of cookies) request.cookies.set(name, value);
-          response = NextResponse.next({ request });
+          response = next();
           applyTo(response);
         },
       },

@@ -3,7 +3,9 @@ import { describe, expect, it, vi } from "vitest";
 import { opIdFor, signActionToken, verifyActionToken, type ActionClaims } from "./action-token";
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/lib/env.server", () => ({ getServerEnv: () => ({ CRON_SECRET: "c".repeat(40) }) }));
+vi.mock("@/lib/env.server", () => ({
+  getServerEnv: () => ({ CRON_SECRET: "c".repeat(40), SUPABASE_SECRET_KEY: "sb_secret_test" }),
+}));
 
 const NOW = new Date("2026-10-20T12:00:00Z");
 const claims: ActionClaims = {

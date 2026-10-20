@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { addDays } from "@/domain/dates";
 import { getUser } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { apiError, json, parseJsonBody, unauthorized } from "@/server/push/http";
+import { underLimit } from "@/server/rate-limit";
 
 const bodySchema = z.object({
   habitId: z.uuid(),
@@ -38,6 +40,14 @@ export async function POST(request: Request) {
   if (!habit) return apiError(422, "validation_error", "Unknown habit");
 
   const admin = createAdminClient();
+  // Today's (or yesterday's, late at night) reminders only, and a few a minute.
+  const { data: today } = await admin.rpc("srv_user_today", { p_user_id: user.id });
+  if (typeof today === "string" && date !== today && date !== addDays(today, -1)) {
+    return apiError(422, "validation_error", "Only today's habits can be snoozed");
+  }
+  if (!(await underLimit(admin, `snooze:${user.id}`, 10, "1 minute"))) {
+    return apiError(429, "rate_limited", "Too many snoozes");
+  }
   const prefix = `habit_reminder:${habitId}:${date}:snooze:app:`;
   const { count, error: countError } = await admin
     .from("scheduled_notifications")

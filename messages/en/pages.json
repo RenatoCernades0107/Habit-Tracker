@@ -1,0 +1,78 @@
+{
+  "privacy": {
+    "title": "Privacy",
+    "updated": "Last updated: October 2026",
+    "intro": "Restart is a small, free habit tracker for the person who runs it, their family and friends. There are no ads, and your data is never sold or shared.",
+    "sections": [
+      {
+        "title": "What's stored",
+        "items": [
+          "Your email address, used to sign in.",
+          "Your settings, habits, routines and categories, check-ins, notes, mood and weekly reflections.",
+          "Apple Health: only daily totals (for example, 6,234 steps on 20 October) of the metrics your habits use. Other metrics are discarded when they arrive. Nothing more detailed is ever read.",
+          "Notifications: the push address of each device where you turned them on.",
+          "Siri & Shortcuts: tokens, stored only as a fingerprint (hash).",
+          "Google Calendar: an encrypted key that lets Restart manage the “Habits” calendar it created, and the IDs of its events. Restart can't see your other calendars."
+        ]
+      },
+      {
+        "title": "Where it lives",
+        "items": [
+          "The database is Supabase and the app runs on Vercel. Both encrypt data in transit and at rest.",
+          "Every person's data is separated in the database, so one account can never read another's.",
+          "The person who runs Restart administers the database. They won't look at your data unless you ask for help."
+        ]
+      },
+      {
+        "title": "Google user data",
+        "items": [
+          "Restart only asks for access to calendars it creates itself (calendar.app.created) and your email address, to show which account is connected.",
+          "It uses that access only to show your habits in that calendar. The data isn't shared, sold or used for anything else, in line with the Google API Services User Data Policy, including its Limited Use requirements."
+        ]
+      },
+      {
+        "title": "Your control",
+        "items": [
+          "Settings → Your data: download everything (JSON) or your check-ins (CSV).",
+          "Settings → Apple Health: delete the stored Health totals.",
+          "Settings → Google Calendar: disconnect, and optionally delete the Habits calendar.",
+          "Settings → Your data: delete your account. Everything is deleted for good, Google access is revoked and devices stop getting notifications."
+        ]
+      },
+      {
+        "title": "Questions",
+        "items": ["Ask the person who invited you to Restart."]
+      }
+    ],
+    "back": "Back"
+  },
+  "start": {
+    "title": "Getting started",
+    "intro": "Five minutes to make Restart part of your day.",
+    "steps": [
+      {
+        "title": "Install it",
+        "body": "iPhone: open the link in Safari, tap Share → Add to Home Screen, then open Restart from your Home Screen. Android and computers: use “Install” in the browser menu."
+      },
+      {
+        "title": "Sign in",
+        "body": "Type your email and the 6-digit code you get. You can also use Google."
+      },
+      {
+        "title": "Add a habit",
+        "body": "Start small: pick a template like “Drink water” and adjust it. Morning and Evening routines are already there."
+      },
+      {
+        "title": "Turn on notifications",
+        "body": "Settings → Notifications. You only get reminders for habits that are still pending, plus a short report at night."
+      },
+      {
+        "title": "Optional extras",
+        "body": "Log with Siri (Settings → Siri & Shortcuts), let Apple Health check off steps and workouts, and see your habits in Google Calendar."
+      }
+    ],
+    "tip": "Tap a habit to mark it done; “…” is for values, skips and notes. Everything works offline and syncs later.",
+    "cta": "Sign in",
+    "privacy": "Privacy"
+  }
+}

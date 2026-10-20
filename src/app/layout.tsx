@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
+import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { ErrorReporter } from "@/components/error-reporter";
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -34,7 +36,10 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const locale = await getLocale();
+  const [locale, nonce] = await Promise.all([
+    getLocale(),
+    headers().then((h) => h.get("x-nonce") ?? undefined),
+  ]);
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -45,11 +50,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
+            nonce={nonce}
           >
             {children}
             <Toaster />
             <ServiceWorkerRegister />
             <TimezoneCookie />
+            <ErrorReporter />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

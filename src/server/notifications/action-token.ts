@@ -21,13 +21,14 @@ export type ActionClaims = {
 export const ACTION_TOKEN_TTL_S = 24 * 60 * 60;
 
 /**
- * The signing key: ACTION_TOKEN_SECRET, or one derived from CRON_SECRET so a fresh deployment
- * works without another secret. The derivation keeps the two uses apart.
+ * The signing key: ACTION_TOKEN_SECRET, or one derived from SUPABASE_SECRET_KEY so a fresh
+ * deployment works without another secret. Never CRON_SECRET: that one is also in Supabase Vault
+ * and in every tick request.
  */
 function key(): Buffer {
   const env = getServerEnv();
   if (env.ACTION_TOKEN_SECRET) return Buffer.from(env.ACTION_TOKEN_SECRET);
-  return createHash("sha256").update(`restart:action-token:${env.CRON_SECRET}`).digest();
+  return createHash("sha256").update(`restart:action-token:${env.SUPABASE_SECRET_KEY}`).digest();
 }
 
 const b64 = (b: Buffer | string) => Buffer.from(b).toString("base64url");

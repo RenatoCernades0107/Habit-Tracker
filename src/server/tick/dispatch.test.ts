@@ -9,7 +9,9 @@ const m = vi.hoisted(() => ({ send: vi.fn() }));
 
 vi.mock("server-only", () => ({}));
 vi.mock("web-push", () => ({ sendNotification: m.send }));
-vi.mock("@/lib/env.server", () => ({ getServerEnv: () => ({ CRON_SECRET: "c".repeat(40) }) }));
+vi.mock("@/lib/env.server", () => ({
+  getServerEnv: () => ({ CRON_SECRET: "c".repeat(40), SUPABASE_SECRET_KEY: "sb_secret_test" }),
+}));
 
 const NOW = Date.parse("2026-10-19T15:00:00.000Z");
 const VAPID = { subject: "mailto:test@example.com", publicKey: "pub", privateKey: "priv" };

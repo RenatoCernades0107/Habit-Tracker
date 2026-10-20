@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { safeNextPath } from "@/lib/auth/redirect";
 import { isProtectedPath, LOGIN_PATH, loginPathFor } from "@/lib/auth/routes";
+import { getPublicEnv } from "@/lib/env";
+import { contentSecurityPolicy, createNonce } from "@/lib/security/csp";
 import { updateSession } from "@/lib/supabase/proxy";
 
 /**
@@ -12,12 +14,25 @@ import { updateSession } from "@/lib/supabase/proxy";
  *    themselves (`requireUser`), because a proxy is not an authorization layer.
  */
 export async function proxy(request: NextRequest) {
-  const session = await updateSession(request);
+  // 3. A Content-Security-Policy with a fresh nonce; Next.js adds it to its own scripts.
+  const nonce = createNonce();
+  const csp = contentSecurityPolicy(nonce, {
+    supabaseUrl: getPublicEnv().NEXT_PUBLIC_SUPABASE_URL,
+    dev: process.env.NODE_ENV === "development",
+  });
+  const session = await updateSession(request, {
+    "x-nonce": nonce,
+    "content-security-policy": csp,
+  });
   const { pathname, search } = request.nextUrl;
+  const withCsp = (res: NextResponse) => {
+    res.headers.set("content-security-policy", csp);
+    return res;
+  };
 
   // Only redirect page loads. Server Functions are POSTs to the page's URL; redirecting
   // them would break their response, and they check the session on their own.
-  if (request.method !== "GET" && request.method !== "HEAD") return session.response;
+  if (request.method !== "GET" && request.method !== "HEAD") return withCsp(session.response);
 
   if (session.state === "signed-out" && isProtectedPath(pathname)) {
     const url = new URL(loginPathFor(`${pathname}${search}`), request.url);
@@ -32,7 +47,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  return session.response;
+  return withCsp(session.response);
 }
 
 export const config = {

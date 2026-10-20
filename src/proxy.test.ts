@@ -11,6 +11,9 @@ const session = vi.hoisted(() => ({
   confirmed: "signed-in" as SessionState,
 }));
 
+vi.mock("@/lib/env", () => ({
+  getPublicEnv: () => ({ NEXT_PUBLIC_SUPABASE_URL: "https://abc.supabase.co" }),
+}));
 vi.mock("@/lib/supabase/proxy", () => ({
   updateSession: vi.fn(async () => ({
     state: session.state,
@@ -127,5 +130,15 @@ describe("proxy matcher", () => {
     "/images/hero.webp",
   ])("skips %s", (url) => {
     expect(matches(url)).toBe(false);
+  });
+});
+
+describe("Content-Security-Policy", () => {
+  it("sends a nonce-based policy and passes the nonce to pages", async () => {
+    const res = await proxy(new NextRequest("http://localhost:3000/login"));
+    const csp = res.headers.get("content-security-policy") ?? "";
+    expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    expect(csp).toContain("connect-src 'self' https://abc.supabase.co wss://abc.supabase.co");
+    expect(csp).toContain("frame-ancestors 'none'");
   });
 });

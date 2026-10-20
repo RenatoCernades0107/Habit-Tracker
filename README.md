@@ -6,7 +6,7 @@ A PWA built with **Next.js** and **Supabase**, deployed on **Vercel**, in Spanis
 
 ## Status
 
-**Phase 0 (foundations)** of the [roadmap](docs/spec/08-roadmap.md): sign-in with an email code or Google, the installable app shell, the service worker, the push notification chain and CI. Habit tracking starts in Phase 1.
+All phases of the [roadmap](docs/spec/08-roadmap.md) are built: habits and check-ins that work offline, streaks and stats, the weekly review, smart reminders, Siri and Shortcuts, Apple Health, Google Calendar, and the launch pages. What's left needs real devices and accounts: the spikes in [docs/spikes/](docs/spikes/README.md) and the [launch checklist](docs/launch.md).
 
 ## Tech stack
 
@@ -60,4 +60,6 @@ docs/           spec/ (product and technical spec), spikes/, setup.md
 - [docs/spec/](docs/spec/README.md): the full specification.
 - [docs/spikes/](docs/spikes/README.md): Phase 0 experiments and their results.
 - [docs/setup.md](docs/setup.md): local development and deployment.
+- [docs/launch.md](docs/launch.md): before inviting friends (SMTP, Google, domain, smoke test).
+- [shortcuts/](shortcuts/README.md): the Siri and Health shortcuts, step by step.
 - [DESCRIPTION.md](DESCRIPTION.md): the original brief (Spanish).

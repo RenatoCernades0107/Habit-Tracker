@@ -6,6 +6,7 @@ import { defaultLocale } from "@/i18n/config";
 import { getUser } from "@/lib/auth/session";
 import { testBodySchema } from "@/lib/push/schemas";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { underLimit } from "@/server/rate-limit";
 import { apiError, json, parseJsonBody, unauthorized } from "@/server/push/http";
 import { buildPushPayload } from "@/server/push/payload";
 import { DELIVERY_POLICY } from "@/server/push/policy";
@@ -53,6 +54,13 @@ export async function POST(request: NextRequest) {
   }
 
   const admin = createAdminClient();
+  // Each test goes to every device: a few a minute is plenty.
+  if (
+    body.data.mode !== "scheduled" &&
+    !(await underLimit(admin, `push-test:${user.id}`, 5, "1 minute"))
+  ) {
+    return apiError(429, "rate_limited", "Too many tests; try again in a minute");
+  }
   try {
     return body.data.mode === "scheduled"
       ? await scheduleTest(admin, user.id, body.data.delaySeconds)
