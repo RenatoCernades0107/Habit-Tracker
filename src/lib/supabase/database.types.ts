@@ -60,6 +60,131 @@ export type Database = {
         };
         Relationships: [];
       };
+      calendar_connections: {
+        Row: {
+          calendar_id: string | null;
+          connected_at: string;
+          google_email: string | null;
+          provider: string;
+          refresh_token_enc: string;
+          status: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          calendar_id?: string | null;
+          connected_at?: string;
+          google_email?: string | null;
+          provider?: string;
+          refresh_token_enc: string;
+          status?: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          calendar_id?: string | null;
+          connected_at?: string;
+          google_email?: string | null;
+          provider?: string;
+          refresh_token_enc?: string;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      calendar_series: {
+        Row: {
+          created_at: string;
+          google_event_id: string;
+          habit_id: string;
+          id: string;
+          rrule: string;
+          updated_at: string;
+          user_id: string;
+          valid_from: string;
+          valid_until: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          google_event_id: string;
+          habit_id: string;
+          id?: string;
+          rrule: string;
+          updated_at?: string;
+          user_id: string;
+          valid_from: string;
+          valid_until?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          google_event_id?: string;
+          habit_id?: string;
+          id?: string;
+          rrule?: string;
+          updated_at?: string;
+          user_id?: string;
+          valid_from?: string;
+          valid_until?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "calendar_series_habit_id_fkey";
+            columns: ["habit_id"];
+            isOneToOne: false;
+            referencedRelation: "habits";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      calendar_sync_jobs: {
+        Row: {
+          attempts: number;
+          claimed_at: string | null;
+          created_at: string;
+          habit_id: string | null;
+          id: number;
+          last_error: string | null;
+          local_date: string | null;
+          next_attempt_at: string;
+          op: string;
+          payload: NonNullable<Json>;
+          status: Database["public"]["Enums"]["job_status"];
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          attempts?: number;
+          claimed_at?: string | null;
+          created_at?: string;
+          habit_id?: string | null;
+          id?: never;
+          last_error?: string | null;
+          local_date?: string | null;
+          next_attempt_at?: string;
+          op: string;
+          payload?: NonNullable<Json>;
+          status?: Database["public"]["Enums"]["job_status"];
+          user_id: string;
+        };
+        Update: {
+          attempts?: number;
+          claimed_at?: string | null;
+          created_at?: string;
+          habit_id?: string | null;
+          id?: never;
+          last_error?: string | null;
+          local_date?: string | null;
+          next_attempt_at?: string;
+          op?: string;
+          payload?: NonNullable<Json>;
+          status?: Database["public"]["Enums"]["job_status"];
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       categories: {
         Row: {
           color: string;
@@ -832,6 +957,29 @@ export type Database = {
         };
       };
       srv_apply_health_metrics: { Args: { p_metrics: Json; p_user_id: string }; Returns: Json };
+      srv_claim_calendar_jobs: {
+        Args: { p_max: number; p_user_id?: string };
+        Returns: {
+          attempts: number;
+          claimed_at: string | null;
+          created_at: string;
+          habit_id: string | null;
+          id: number;
+          last_error: string | null;
+          local_date: string | null;
+          next_attempt_at: string;
+          op: string;
+          payload: NonNullable<Json>;
+          status: Database["public"]["Enums"]["job_status"];
+          user_id: string;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "calendar_sync_jobs";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
       srv_claim_due_notifications: {
         Args: { p_max: number };
         Returns: {
@@ -963,6 +1111,7 @@ export type Database = {
         | "mindful_minutes"
         | "workouts"
         | "sleep_hours";
+      job_status: "pending" | "running" | "done" | "failed";
       notification_kind:
         "habit_reminder" | "routine_digest" | "daily_report" | "weekly_review" | "test";
       notification_status: "pending" | "sending" | "sent" | "suppressed" | "failed";
@@ -1094,6 +1243,7 @@ export const Constants = {
         "workouts",
         "sleep_hours",
       ],
+      job_status: ["pending", "running", "done", "failed"],
       notification_kind: [
         "habit_reminder",
         "routine_digest",

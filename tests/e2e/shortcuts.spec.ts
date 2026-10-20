@@ -16,9 +16,8 @@ test("a Shortcuts token logs a habit, the open app updates live, and undo works"
 
   // FR-SIR-1: create a token; it's shown once.
   await page.goto("/settings#shortcuts");
-  // The page settles to one form (a second copy can show for a moment while it loads).
-  await expect(page.locator("#token-name")).toHaveCount(1);
-  await page.locator("#token-name").fill("My iPhone");
+  // Visible only: a hidden copy can exist for an instant while the page streams in.
+  await page.locator("#token-name:visible").fill("My iPhone");
   await page.getByRole("button", { name: "Create token" }).click();
   await expect(page.getByText("Copy it now. It won't be shown again.")).toBeVisible();
   const token = (await page.locator("code", { hasText: /^ht_[\w-]{40,}$/ }).textContent()) ?? "";

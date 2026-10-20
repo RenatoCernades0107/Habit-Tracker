@@ -12,8 +12,7 @@ export type SetupItemState = "done" | "todo" | "soon";
 
 /**
  * The setup checklist (FR-TOD-7): Install · Notifications · Siri · Health · Calendar.
- * Siri and Apple Health only exist on iPhone. Siri, Health and Calendar arrive in
- * Phases 4–6 (docs/spec/08-roadmap.md), so they show "Coming soon" for now.
+ * Siri and Apple Health only exist on iPhone.
  */
 export function setupItemsFor(platform: Platform): SetupItem[] {
   return [
@@ -21,11 +20,11 @@ export function setupItemsFor(platform: Platform): SetupItem[] {
     { id: "notifications", href: "/settings#notifications" },
     ...(platform === "ios"
       ? ([
-          { id: "siri", href: null },
-          { id: "health", href: null },
+          { id: "siri", href: "/settings#shortcuts" },
+          { id: "health", href: "/settings#health" },
         ] satisfies SetupItem[])
       : []),
-    { id: "calendar", href: null },
+    { id: "calendar", href: "/settings#calendar" },
   ];
 }
 

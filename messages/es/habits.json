@@ -128,7 +128,11 @@
     "healthNone": "Sin regla de Salud",
     "healthTarget": "sea al menos",
     "healthHint": "Necesita un iPhone y el atajo «Sincronizar Salud». Los registros manuales siempre ganan.",
-    "healthTargetRequired": "Pon un mínimo mayor que 0."
+    "healthTargetRequired": "Pon un mínimo mayor que 0.",
+    "calendar": "Mostrar en Google Calendar",
+    "calendarFlexible": "No para hábitos de «N veces por semana»: no tienen días fijos.",
+    "calendarNoTime": "Ponle una hora (o una rutina) para mostrarlo en el calendario.",
+    "calendarNotConnected": "Primero conecta Google Calendar en Ajustes."
   },
   "actions": {
     "title": "Gestionar",

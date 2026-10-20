@@ -88,5 +88,31 @@
     "skips": "Skips per habit per month",
     "timezone": "Timezone",
     "saved": "Saved."
+  },
+  "calendar": {
+    "title": "Google Calendar",
+    "description": "See your habits next to your events, in a calendar of their own.",
+    "notConfigured": "Google Calendar isn't set up on this server yet (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, TOKEN_ENCRYPTION_KEY).",
+    "intro": "Restart creates a “Habits” calendar and only ever touches that one. Habits with fixed days and a time appear as recurring events; done days get a ✅.",
+    "connect": "Connect Google Calendar",
+    "unverified": "Google may say the app isn't verified: choose Advanced → Go to Restart.",
+    "connectedAs": "Connected as {email}",
+    "connectedAnon": "Connected",
+    "needsReauth": "Google access expired. Reconnect to keep your calendar up to date.",
+    "reconnect": "Reconnect",
+    "resync": "Resync",
+    "resyncQueued": "Rebuilding your calendar…",
+    "disconnect": "Disconnect",
+    "disconnectTitle": "Disconnect Google Calendar?",
+    "disconnectDescription": "Syncing stops and Restart's access is revoked.",
+    "deleteCalendar": "Also delete the Habits calendar from Google",
+    "cancel": "Cancel",
+    "disconnected": "Google Calendar disconnected.",
+    "connectedToast": "Google Calendar connected. Your habits will appear in a minute.",
+    "errorToast": "Couldn't connect Google Calendar. Try again.",
+    "deniedToast": "Google Calendar wasn't connected.",
+    "failed": "Couldn't do that. Try again.",
+    "banner": "Google Calendar needs you to reconnect.",
+    "bannerAction": "Reconnect"
   }
 }

@@ -17,9 +17,8 @@ test("5,000 steps from Health complete the walk by themselves (FR-HLT-7)", async
   await page.waitForURL(/\/today/);
 
   await page.goto("/settings#shortcuts");
-  // The page settles to one form (a second copy can show for a moment while it loads).
-  await expect(page.locator("#token-name")).toHaveCount(1);
-  await page.locator("#token-name").fill("Health");
+  // Visible only: a hidden copy can exist for an instant while the page streams in.
+  await page.locator("#token-name:visible").fill("Health");
   await page.getByRole("button", { name: "Create token" }).click();
   const token = (await page.locator("code", { hasText: /^ht_[\w-]{40,}$/ }).textContent()) ?? "";
   await expect(page.getByText("Health hasn't synced yet.")).toBeVisible();

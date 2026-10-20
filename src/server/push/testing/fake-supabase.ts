@@ -144,6 +144,12 @@ class FakeQuery implements PromiseLike<Result> {
     return this;
   }
 
+  /** Only `is(column, null)`, compared like `eq` with null. */
+  is(column: string, value: null) {
+    this.filters.push({ kind: "eq", column, value });
+    return this;
+  }
+
   single() {
     this.singleRow = "single";
     return this;
@@ -166,7 +172,9 @@ class FakeQuery implements PromiseLike<Result> {
   private matches(row: Row): boolean {
     return this.filters.every((filter) => {
       const value = row[filter.column];
-      if (filter.kind === "eq") return value === filter.value;
+      // A missing column reads as null, as Postgres defaults it.
+      if (filter.kind === "eq")
+        return filter.value === null ? value == null : value === filter.value;
       if (filter.kind === "in") return filter.values.includes(value);
       return typeof value === typeof filter.value && (value as string | number) >= filter.value;
     });

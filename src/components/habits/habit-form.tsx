@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCalendarConnection } from "@/components/settings/calendar-setting";
 import { useData, useSave } from "@/data/hooks";
 import { minutesInQuietHours, minutesOf } from "@/domain/zoned";
 import type { Tables } from "@/lib/supabase/database.types";
@@ -41,6 +42,7 @@ type Draft = {
   aliases: string;
   health_metric: "" | NonNullable<Habit["health_metric"]>;
   health_target: string;
+  calendar_sync: boolean;
 };
 
 type Errors = Partial<Record<"name" | "target" | "days" | "health", string>>;
@@ -85,6 +87,7 @@ function draftFrom(habit: Habit): Draft {
     aliases: habit.voice_aliases.join(", "),
     health_metric: habit.health_metric ?? "",
     health_target: str(habit.health_target),
+    calendar_sync: habit.calendar_sync,
   };
 }
 
@@ -133,9 +136,24 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
       aliases: "",
       health_metric: tpl?.health_metric ?? "",
       health_target: str(tpl?.health_target),
+      calendar_sync: false,
     };
   });
   const [errors, setErrors] = useState<Errors>({});
+  const calendar = useCalendarConnection();
+  // FR-CAL-5: only fixed days with a time (own or the routine's) are synced.
+  const routineStart = data.routines.find(
+    (r) => r.id === draft.routine_id && !r.deleted_at,
+  )?.start_time;
+  const calendarReason:
+    "form.calendarNotConnected" | "form.calendarFlexible" | "form.calendarNoTime" | null =
+    !calendar.data
+      ? "form.calendarNotConnected"
+      : draft.schedule_type === "times_per_week"
+        ? "form.calendarFlexible"
+        : !draft.time_of_day && !routineStart
+          ? "form.calendarNoTime"
+          : null;
   const [showMore, setShowMore] = useState(false);
 
   if (habitId && !existing) {
@@ -174,7 +192,6 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
       ...(existing ?? {
         id: crypto.randomUUID(),
         user_id: data.profile?.id ?? "",
-        calendar_sync: false,
         sort_order: data.habits.length,
         archived_on: null,
         created_at: now,
@@ -206,6 +223,7 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
         .map((a) => a.trim())
         .filter(Boolean)
         .slice(0, 10),
+      calendar_sync: draft.calendar_sync && calendarReason === null,
       health_metric: draft.health_metric || null,
       health_target: draft.health_metric ? healthTarget : null,
     };
@@ -507,6 +525,25 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
           ) : null}
         </div>
         <p className="text-xs text-muted-foreground">{t("form.healthHint")}</p>
+      </FormSection>
+
+      <FormSection title={t("form.calendar")}>
+        <label className="flex min-h-11 items-center gap-3 text-sm font-medium">
+          <input
+            type="checkbox"
+            className="size-5 accent-[var(--primary)]"
+            checked={draft.calendar_sync && calendarReason === null}
+            disabled={calendarReason !== null}
+            aria-describedby={calendarReason ? "habit-calendar-why" : undefined}
+            onChange={(e) => set("calendar_sync", e.target.checked)}
+          />
+          {t("form.calendar")}
+        </label>
+        {calendarReason ? (
+          <p id="habit-calendar-why" className="text-xs text-muted-foreground">
+            {t(calendarReason)}
+          </p>
+        ) : null}
       </FormSection>
 
       <div className="rounded-xl border bg-card">

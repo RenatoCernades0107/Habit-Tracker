@@ -5,6 +5,8 @@ import { secretsMatch } from "@/lib/security/constant-time";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { apiError, json } from "@/server/push/http";
 import { getVapidDetails, PushConfigError } from "@/server/push/vapid";
+import { googleClient } from "@/server/calendar/setup";
+import { processCalendarJobs } from "@/server/calendar/worker";
 import { planDueUsers } from "@/server/notifications/planner";
 import { dispatchDueNotifications } from "@/server/tick/dispatch";
 
@@ -15,7 +17,7 @@ export const maxDuration = 60;
  * The scheduler tick (docs/spec/03-architecture.md §5, docs/spec/05-api.md §4). pg_cron's
  * srv_tick_if_due() calls it every minute when work is due, with `x-cron-secret` read from
  * Supabase Vault. It plans the users whose plan is out of date, then sends what's due.
- * Calendar jobs arrive in a later phase.
+ * Calendar jobs come last.
  * Other methods get 405 from Next.js. Not behind the session proxy (src/proxy.ts).
  */
 export async function POST(request: NextRequest) {
@@ -50,8 +52,22 @@ export async function POST(request: NextRequest) {
       console.error("[tick] planning failed:", error instanceof Error ? error.message : "unknown");
       return 0;
     });
-    const counts = { planned, ...(await dispatchDueNotifications({ admin, vapid })) };
-    if (counts.claimed > 0 || planned > 0) console.info("[tick]", JSON.stringify(counts));
+    const sent = await dispatchDueNotifications({ admin, vapid });
+    // Step 4: calendar jobs, after the pushes (they're less urgent).
+    const google = googleClient();
+    const calendar = google
+      ? await processCalendarJobs(admin, google, { budgetMs: 15_000 }).catch((error: unknown) => {
+          console.error(
+            "[tick] calendar failed:",
+            error instanceof Error ? error.message : "unknown",
+          );
+          return null;
+        })
+      : null;
+    const counts = { planned, ...sent, calendar_jobs: calendar?.claimed ?? 0 };
+    if (sent.claimed > 0 || planned > 0 || counts.calendar_jobs > 0) {
+      console.info("[tick]", JSON.stringify(counts));
+    }
     return json(counts);
   } catch (error) {
     const code =

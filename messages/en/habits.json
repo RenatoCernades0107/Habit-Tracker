@@ -128,7 +128,11 @@
     "healthNone": "No Health rule",
     "healthTarget": "is at least",
     "healthHint": "Needs an iPhone and the “Sync Health” shortcut. Manual check-ins always win.",
-    "healthTargetRequired": "Set a minimum above 0."
+    "healthTargetRequired": "Set a minimum above 0.",
+    "calendar": "Show in Google Calendar",
+    "calendarFlexible": "Not for “N times a week” habits: they have no fixed days.",
+    "calendarNoTime": "Give it a time (or a routine) to show it in the calendar.",
+    "calendarNotConnected": "Connect Google Calendar in Settings first."
   },
   "actions": {
     "title": "Manage",

@@ -20,6 +20,8 @@ import { skipsLeft, skipsUsed } from "@/domain/skips";
 import { cn } from "@/lib/utils";
 
 import { CheckInRow } from "./check-in-row";
+import { CalendarReauthBanner } from "@/components/settings/calendar-setting";
+
 import { useCelebrate } from "./celebrate";
 import { CheckInSheet } from "./check-in-sheet";
 import { MoodCard } from "./mood-card";
@@ -201,6 +203,7 @@ export function TodayView({ setup }: { setup: ReactNode }) {
           </p>
         ) : null}
         <SyncIndicator />
+        <CalendarReauthBanner />
       </div>
       {activeHabits.length > 0 ? (
         <div className="grid justify-items-center gap-1">

@@ -107,7 +107,13 @@ You need **Node 22** (see `.nvmrc`) and **Docker** running.
    2. Authorized redirect URI: `https://<your-project-ref>.supabase.co/auth/v1/callback`.
    3. In Supabase, *Auth → Providers → Google*: enable it and paste the client ID and secret.
 
-9. **Scheduler (push notifications):** the migrations create two `pg_cron` jobs, `restart-tick` (every minute) and `restart-cleanup` (nightly). The tick needs two secrets in Supabase Vault. In *SQL Editor*, run:
+9. **Google Calendar (optional, Phase 6):** in the same Google Cloud project, enable the **Google Calendar API** and create (or reuse) a *Web application* OAuth client.
+   1. Authorized redirect URI: `https://<your-app>.vercel.app/api/calendar/google/callback` (plus `http://localhost:3000/api/calendar/google/callback` for development).
+   2. Scopes on the consent screen: `openid`, `email` and `https://www.googleapis.com/auth/calendar.app.created`.
+   3. Publishing status **In production**, without verification (fine for under 100 users; see [Integrations §3.3](spec/06-integrations.md#33-verification-not-needed-for-restart)). Don't leave it in *Testing*: tokens would expire every 7 days.
+   4. In Vercel, set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `TOKEN_ENCRYPTION_KEY` (`openssl rand -base64 32`). Settings → Google Calendar shows the connect button once all three are set.
+
+10. **Scheduler (push notifications):** the migrations create two `pg_cron` jobs, `restart-tick` (every minute) and `restart-cleanup` (nightly). The tick needs two secrets in Supabase Vault. In *SQL Editor*, run:
 
    ```sql
    select vault.create_secret('https://<your-app>.vercel.app', 'restart_app_url');

@@ -152,6 +152,10 @@ vi.mock("@/components/settings/shortcuts-setting", () => ({
 vi.mock("@/components/settings/health-setting", () => ({
   HealthSetting: () => <div data-testid="health-setting" />,
 }));
+vi.mock("@/lib/env.server", () => ({ getServerEnv: () => ({}) }));
+vi.mock("@/components/settings/calendar-setting", () => ({
+  CalendarSetting: () => <div data-testid="calendar-setting" />,
+}));
 vi.mock("@/components/settings/data-setting", () => ({
   DataSetting: () => <div data-testid="data-setting" />,
 }));
@@ -300,6 +304,7 @@ describe("/settings", () => {
       "install",
       "notifications",
       "shortcuts",
+      "calendar",
       "health",
       "data",
       "account",

@@ -70,10 +70,9 @@ describe("SetupChecklist", () => {
       screen.getByRole("link", { name: `${setup.items.notifications.title} Not done yet` }),
     ).toHaveAttribute("href", "/settings#notifications");
 
-    const calendar = screen.getByText(setup.items.calendar.title).closest("li");
-    expect(calendar).not.toBeNull();
-    expect(within(calendar!).getByText(commonEn.comingSoon)).toBeInTheDocument();
-    expect(within(calendar!).queryByRole("link")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: `${setup.items.calendar.title} Not done yet` }),
+    ).toHaveAttribute("href", "/settings#calendar");
     expect(screen.queryByText(setup.items.siri.title)).not.toBeInTheDocument();
   });
 
@@ -83,7 +82,13 @@ describe("SetupChecklist", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(5);
     expect(screen.getByText(setup.items.siri.title)).toBeInTheDocument();
     expect(screen.getByText(setup.items.health.title)).toBeInTheDocument();
-    expect(screen.getAllByText(commonEn.comingSoon)).toHaveLength(3);
+    expect(screen.queryAllByText(commonEn.comingSoon)).toHaveLength(0);
+    expect(
+      screen.getByRole("link", { name: `${setup.items.siri.title} Not done yet` }),
+    ).toHaveAttribute("href", "/settings#shortcuts");
+    expect(
+      screen.getByRole("link", { name: `${setup.items.health.title} Not done yet` }),
+    ).toHaveAttribute("href", "/settings#health");
     expect(
       screen.getByRole("link", { name: `${setup.items.install.title} Not done yet` }),
     ).toHaveAccessibleDescription(setup.items.install.description);
@@ -93,7 +98,8 @@ describe("SetupChecklist", () => {
     stubSetUpDevice();
     await renderChecklist("android");
 
-    await waitFor(() => expect(screen.queryAllByRole("link")).toHaveLength(0));
+    // Only the calendar is left to do.
+    await waitFor(() => expect(screen.queryAllByRole("link")).toHaveLength(1));
     for (const title of [setup.items.install.title, setup.items.notifications.title]) {
       const row = screen.getByText(title).closest("li");
       expect(within(row!).getByText(setup.status.done)).toBeInTheDocument();

@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { PushSettings } from "@/components/push/push-settings";
 import { InstallGuide } from "@/components/pwa/install-guide";
+import { CalendarSetting } from "@/components/settings/calendar-setting";
 import { CategoriesSetting } from "@/components/settings/categories-setting";
 import { DataSetting } from "@/components/settings/data-setting";
 import { HealthSetting } from "@/components/settings/health-setting";
@@ -17,7 +18,18 @@ import { sectionHeadingId, SettingsSection } from "@/components/settings/setting
 import { ThemeSetting } from "@/components/settings/theme-setting";
 import { PageHeader } from "@/components/shell/page-header";
 import { requireUser } from "@/lib/auth/session";
+import { getServerEnv } from "@/lib/env.server";
 import { createClient } from "@/lib/supabase/server";
+
+/** Whether the Google client and the token key are set (the button needs both). */
+function calendarConfigured(): boolean {
+  try {
+    const env = getServerEnv();
+    return !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.TOKEN_ENCRYPTION_KEY);
+  } catch {
+    return false;
+  }
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("settings");
@@ -128,6 +140,14 @@ export default async function SettingsPage() {
         description={tShortcuts("description")}
       >
         <ShortcutsSetting />
+      </SettingsSection>
+
+      <SettingsSection
+        id="calendar"
+        title={t("calendar.title")}
+        description={t("calendar.description")}
+      >
+        <CalendarSetting configured={calendarConfigured()} />
       </SettingsSection>
 
       <SettingsSection id="health" title={tHealth("title")} description={tHealth("description")}>

@@ -79,6 +79,7 @@ describe("POST /api/internal/tick", () => {
       retried: 0,
       deferred: 0,
       ms: expect.any(Number),
+      calendar_jobs: 0,
     });
     expect(m.db?.rpcCalls).toEqual([
       { name: "srv_claim_profiles_to_plan", args: { p_max: 200 } },

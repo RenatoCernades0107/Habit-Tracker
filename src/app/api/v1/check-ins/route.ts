@@ -2,7 +2,11 @@ import { randomUUID } from "node:crypto";
 
 import { z } from "zod";
 
+import { after } from "next/server";
+
 import { addDays } from "@/domain/dates";
+import { googleClient } from "@/server/calendar/setup";
+import { processCalendarJobs } from "@/server/calendar/worker";
 import type { CheckInRow } from "@/domain/types";
 import { parseJsonBody } from "@/server/push/http";
 import {
@@ -132,6 +136,15 @@ export async function POST(request: Request) {
     if (error.message === "habit_not_found")
       return shortcutsError("habit_id_not_found", speaker.locale);
     return shortcutsError(RULE_ERRORS.has(code) ? code : "internal", speaker.locale);
+  }
+  // Integrations §3.7: a Siri check-in marks the calendar right away, not at the next tick.
+  const google = googleClient();
+  if (google) {
+    after(() =>
+      processCalendarJobs(admin, google, { userId, max: 5, budgetMs: 8_000 }).catch(
+        () => undefined,
+      ),
+    );
   }
   return reply(
     checkInBody(
