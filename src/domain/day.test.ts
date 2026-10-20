@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { dateOfHabitDay, habitDay } from "./habit-day";
+import { dateOfHabitDay, habitDay } from "./day";
 
 // R-DAY-2: local_date(t) = calendar date of (t in the user's timezone − day_start_hour).
 describe("habitDay", () => {

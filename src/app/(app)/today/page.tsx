@@ -6,7 +6,7 @@ import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 
 import { EmptyState } from "@/components/shell/empty-state";
 import { PageHeader } from "@/components/shell/page-header";
-import { dateOfHabitDay, habitDay } from "@/components/today/habit-day";
+import { dateOfHabitDay, habitDay } from "@/domain/day";
 import { RestIllustration } from "@/components/today/rest-illustration";
 import { SetupChecklist } from "@/components/today/setup-checklist";
 import { SETUP_HIDDEN_COOKIE } from "@/components/today/setup-items";

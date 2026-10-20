@@ -8,10 +8,7 @@ const DAY_MS = 24 * HOUR_MS;
  * The habit day of `now` as `YYYY-MM-DD` (R-DAY-2, R-DAY-3): the calendar date of the local
  * wall-clock time in `timeZone` minus `dayStartHour` hours. Working on the wall clock (not
  * the instant) keeps DST days right: at 03:30 on a spring-forward night it's still yesterday.
- *
- * TODO(R-DAY-2): Phase 0 uses the device timezone (cookie) and the default start hour.
- * Once Today reads the profile, pass its `timezone` and `day_start_hour`, and move this to
- * the shared domain code next to its twin, `srv_user_today`.
+ * Twin of `srv_local_date` in the database.
  */
 export function habitDay(
   now: Date,
