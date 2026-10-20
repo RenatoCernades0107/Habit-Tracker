@@ -29,12 +29,22 @@ export function histories(input: StatsInput): HabitHistory[] {
     if (!m) byHabit.set(c.habit_id, (m = new Map()));
     m.set(c.local_date, c);
   }
+  // Each habit only sees its own versions and pauses (plus global ones), so the per-day lookups
+  // in scheduleOn and isPaused stay short (NFR-PERF-8).
+  const versions = new Map<string, HabitVersionRow[]>();
+  for (const v of input.versions) {
+    const list = versions.get(v.habit_id);
+    if (list) list.push(v);
+    else versions.set(v.habit_id, [v]);
+  }
+  const live = input.pauses.filter((p) => p.deleted_at === null);
+  const global = live.filter((p) => p.habit_id === null);
   return input.habits
     .filter((h) => h.deleted_at === null)
     .map((habit) => ({
       habit,
-      versions: input.versions,
-      pauses: input.pauses,
+      versions: versions.get(habit.id) ?? [],
+      pauses: [...global, ...live.filter((p) => p.habit_id === habit.id)],
       checkIns: byHabit.get(habit.id) ?? new Map(),
     }));
 }

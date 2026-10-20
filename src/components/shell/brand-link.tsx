@@ -5,7 +5,7 @@ export function BrandLink({ name }: { name: string }) {
   return (
     <Link
       href="/today"
-      className="flex min-h-11 items-center gap-3 rounded-md px-2 text-lg font-semibold tracking-tight outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      className="flex min-h-11 items-center gap-3 rounded-md px-2 text-lg font-semibold tracking-tight outline-none focus-visible:ring-[3px] focus-visible:ring-ring"
     >
       {/* A plain <img>: the icon is a static PWA file the service worker caches, so it works
           offline, unlike an optimized /_next/image URL. Decorative: the name is next to it,

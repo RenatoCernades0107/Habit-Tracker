@@ -2,8 +2,9 @@
 
 import { Flame, Minus, Pause, Play, Plus, Timer, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { useGroupNames } from "@/components/habits/labels";
@@ -36,6 +37,8 @@ export function RoutineMode({ routineId }: { routineId: string }) {
   const { data, today, isLoading } = useData();
   const apply = useCheckIns(data);
   const celebrate = useCelebrate();
+  const router = useRouter();
+  const titleId = useId();
   const [queue, setQueue] = useState<string[] | null>(null);
   const [total, setTotal] = useState(0);
   const [results, setResults] = useState<Record<string, Result>>({});
@@ -88,16 +91,20 @@ export function RoutineMode({ routineId }: { routineId: string }) {
       source: "routine_mode",
       now: new Date().toISOString(),
     });
-    celebrate(data, today, next);
     apply(item.habit.id, today, op, payload, "routine_mode");
+    if (next.deleted_at === null && next.status === "done") {
+      window.setTimeout(() => celebrate(data, today, next), 0);
+    }
     advance(item.habit.id, next.status === "skipped" ? "skipped" : (next.status as Result));
   };
 
   return (
-    <FullScreen>
+    <FullScreen labelledBy={titleId} onEscape={() => router.push("/today")}>
       <header className="flex items-center justify-between gap-3 px-4 py-3">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-primary">{names.routine(routine)}</p>
+          <p id={titleId} className="text-sm font-medium break-words text-primary">
+            {names.routine(routine)}
+          </p>
           {current ? (
             <p className="text-xs text-muted-foreground" aria-live="polite">
               {t("progress", { current: step, total })}
@@ -420,15 +427,25 @@ function useWakeLock(active: boolean) {
  * Routine mode covers the whole app (docs/spec/07-ux.md §3): drawn on <body> above the tab bar,
  * with the app behind it made inert so focus can't reach it.
  */
-function FullScreen({ children }: { children: ReactNode }) {
+function FullScreen({
+  children,
+  labelledBy,
+  onEscape,
+}: {
+  children: ReactNode;
+  labelledBy: string;
+  onEscape: () => void;
+}) {
   // Only rendered on the client (after the cache is restored), so `document` exists.
   const [host] = useState(() =>
     typeof document === "undefined" ? null : document.createElement("div"),
   );
   useEffect(() => {
     if (!host) return;
+    // Toasts stay reachable: Undo and celebrations show while the routine runs.
     const behind = [...document.body.children].filter(
-      (c): c is HTMLElement => c instanceof HTMLElement && !c.inert,
+      (c): c is HTMLElement =>
+        c instanceof HTMLElement && !c.inert && !c.hasAttribute("data-react-aria-top-layer"),
     );
     document.body.appendChild(host);
     behind.forEach((c) => (c.inert = true));
@@ -442,6 +459,10 @@ function FullScreen({ children }: { children: ReactNode }) {
     <div
       role="dialog"
       aria-modal="true"
+      aria-labelledby={labelledBy}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && !e.defaultPrevented) onEscape();
+      }}
       className="fixed inset-0 z-50 flex flex-col bg-background pt-safe pr-safe pb-safe pl-safe"
     >
       {children}

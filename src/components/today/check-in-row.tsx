@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Check, CircleSlash, Flame, MoreHorizontal, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useId } from "react";
 
 import { useTimeFormat } from "@/components/habits/labels";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,7 @@ export function CheckInRow({ item, weekLabel, onTap, onMore }: Props) {
   const t = useTranslations("today");
   const tShortcuts = useTranslations("shortcuts");
   const time = useTimeFormat();
+  const id = useId();
   const { habit, state, schedule, checkIn } = item;
   const measurable = schedule.kind === "measurable";
   const done = state === "done";
@@ -53,15 +55,17 @@ export function CheckInRow({ item, weekLabel, onTap, onMore }: Props) {
       <button
         type="button"
         onClick={onTap}
+        // The name says what a tap does ("Mark … not done"), so it isn't also a pressed toggle;
+        // the state, time, progress and streak are read as its description.
         aria-label={tapLabel}
-        aria-pressed={!measurable ? done : undefined}
+        aria-describedby={`${id}-state ${id}-meta`}
         className={cn(
-          "relative flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+          "relative flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
           done && "border-success bg-success text-success-foreground",
-          state === "skipped" && "border-dashed border-muted-foreground/50 text-muted-foreground",
+          state === "skipped" && "border-dashed border-muted-foreground text-muted-foreground",
           state === "partial" && "border-warning text-foreground",
           (state === "pending" || state === "missed") &&
-            "border-border hover:border-primary hover:text-primary",
+            "border-muted-foreground hover:border-primary hover:text-primary",
         )}
       >
         {measurable && state !== "done" && state !== "skipped" ? (
@@ -80,16 +84,21 @@ export function CheckInRow({ item, weekLabel, onTap, onMore }: Props) {
       </button>
 
       <div className="min-w-0 flex-1">
-        <p className={cn("truncate font-medium", done && "text-muted-foreground")}>
+        <p className={cn("font-medium break-words", done && "text-muted-foreground")}>
           {habit.icon && StateIcon ? (
             <span aria-hidden="true" className="mr-1.5">
               {habit.icon}
             </span>
           ) : null}
           {habit.name}
-          <span className="sr-only">, {t(`state.${state}`)}</span>
+          <span id={`${id}-state`} className="sr-only">
+            , {t(`state.${state}`)}
+          </span>
         </p>
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+        <p
+          id={`${id}-meta`}
+          className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"
+        >
           {item.time ? <span>{time(item.time)}</span> : null}
           {measurable ? (
             <span className="tabular-nums">

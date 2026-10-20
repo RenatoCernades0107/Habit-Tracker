@@ -1,6 +1,5 @@
 "use client";
 
-import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { MutationCache, QueryClient, useQueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { del, get, set } from "idb-keyval";
@@ -11,6 +10,7 @@ import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 
 import type { PendingChange } from "./overlay";
+import { createIdbPersister } from "./persister";
 import { changeErrorCode, isNetworkError, sendChange, type ChangeResult } from "./send";
 import { mergeRows, rowKey, type Snapshot, type SyncedTable } from "./snapshot";
 import { applyRealtimeRow } from "./sync";
@@ -89,30 +89,18 @@ function makeClient(userId: string, onRejected: (code: string) => void) {
 /** Local-first data for the signed-in app (docs/spec/03-architecture.md §3). */
 export function DataProvider({ userId, children }: { userId: string; children: ReactNode }) {
   const t = useTranslations("habits.errors");
-  const [{ client, persister }] = useState(() => {
-    const store = {
-      getItem: (key: string) => get<string>(key).then((v) => v ?? null),
-      setItem: (key: string, value: string) => set(key, value),
-      removeItem: (key: string) => del(key),
-    };
-    return {
-      client: makeClient(userId, (code) => {
-        const known = [
-          "skip_limit_reached",
-          "outside_edit_window",
-          "not_allowed_for_habit",
-          "habit_not_found",
-        ];
-        toast.error(t(known.includes(code) ? (code as "skip_limit_reached") : "generic"));
-      }),
-      persister: createAsyncStoragePersister({
-        storage: store,
-        key: `restart:${userId}`,
-        // Short, so a change survives the app being closed right after it.
-        throttleTime: 100,
-      }),
-    };
-  });
+  const [{ client, persister }] = useState(() => ({
+    client: makeClient(userId, (code) => {
+      const known = [
+        "skip_limit_reached",
+        "outside_edit_window",
+        "not_allowed_for_habit",
+        "habit_not_found",
+      ];
+      toast.error(t(known.includes(code) ? (code as "skip_limit_reached") : "generic"));
+    }),
+    persister: createIdbPersister({ get, set, del }, `restart:${userId}`),
+  }));
 
   return (
     <PersistQueryClientProvider

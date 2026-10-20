@@ -47,7 +47,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
           onClick={() => choose(option)}
           className={cn(
             "inline-flex h-11 min-w-11 cursor-pointer items-center justify-center rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors outline-none",
-            "hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
+            "hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring",
             "aria-pressed:bg-secondary aria-pressed:text-secondary-foreground",
           )}
         >

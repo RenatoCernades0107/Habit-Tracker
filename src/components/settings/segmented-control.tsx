@@ -50,7 +50,7 @@ export function SegmentedControl<T extends string>({
           onClick={() => onChange(optionValue)}
           className={cn(
             "inline-flex min-h-11 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-md px-2 py-2 text-center text-sm leading-tight font-medium text-muted-foreground transition-colors outline-none",
-            "hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
+            "hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring",
             "aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-sm dark:aria-pressed:bg-input/50",
           )}
         >

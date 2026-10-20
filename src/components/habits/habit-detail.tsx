@@ -263,7 +263,7 @@ export function HabitDetail({ habitId }: { habitId: string }) {
                   {editable ? (
                     <Link
                       href={c.local_date === today ? "/today" : `/today?day=${c.local_date}`}
-                      className="flex min-h-11 items-center gap-3 rounded-md px-1 py-2 text-sm outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      className="flex min-h-11 items-center gap-3 rounded-md px-1 py-2 text-sm outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring"
                     >
                       {text}
                       <span className="sr-only">

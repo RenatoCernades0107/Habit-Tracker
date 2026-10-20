@@ -3,12 +3,28 @@ export type IsoDate = string;
 
 const DAY_MS = 86_400_000;
 
+// Statistics walk years of days for every habit, and parsing and formatting dates dominates
+// that work (NFR-PERF-8). Both directions are cached; the cache is cleared if it ever grows large.
+const msOf = new Map<IsoDate, number>();
+const dateOf = new Map<number, IsoDate>();
+const CACHE_MAX = 50_000;
+
 function toMs(date: IsoDate): number {
-  return Date.parse(`${date}T00:00:00Z`);
+  let ms = msOf.get(date);
+  if (ms === undefined) {
+    if (msOf.size >= CACHE_MAX) msOf.clear();
+    msOf.set(date, (ms = Date.parse(`${date}T00:00:00Z`)));
+  }
+  return ms;
 }
 
 function fromMs(ms: number): IsoDate {
-  return new Date(ms).toISOString().slice(0, 10);
+  let date = dateOf.get(ms);
+  if (date === undefined) {
+    if (dateOf.size >= CACHE_MAX) dateOf.clear();
+    dateOf.set(ms, (date = new Date(ms).toISOString().slice(0, 10)));
+  }
+  return date;
 }
 
 export function addDays(date: IsoDate, days: number): IsoDate {

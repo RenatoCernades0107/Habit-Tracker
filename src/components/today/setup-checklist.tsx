@@ -175,7 +175,7 @@ function SetupRow({
           aria-describedby={`${id}-description`}
           className={cn(
             rowClassName,
-            "transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50",
+            "transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring",
           )}
         >
           {content}

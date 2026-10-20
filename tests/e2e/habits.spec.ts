@@ -47,10 +47,9 @@ test("check-ins are saved on the server and survive a reload", async ({ page }) 
 
   const toggle = page.getByRole("button", { name: "Mark Meditate done" });
   await toggle.click();
-  await expect(page.getByRole("button", { name: "Mark Meditate not done" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  await expect(
+    page.getByRole("button", { name: "Mark Meditate not done" }),
+  ).toHaveAccessibleDescription(/done/i);
   await expect(page.getByText("Synced")).toBeVisible();
 
   await page.reload();
@@ -133,7 +132,7 @@ test("archiving hides a habit from Today; restoring brings it back", async ({ pa
   await page.waitForURL(/\/habits$/);
   await expect(page.getByRole("link", { name: /Floss/ })).toHaveCount(0);
 
-  await page.getByRole("radio", { name: "Archived" }).click();
+  await page.getByRole("button", { name: "Archived", exact: true }).click();
   await page.getByRole("link", { name: /Floss/ }).click();
   await page.getByRole("link", { name: "Edit habit" }).click();
   await page.getByRole("button", { name: "Restore" }).click();

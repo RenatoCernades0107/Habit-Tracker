@@ -32,7 +32,7 @@ export function NewHabit() {
         <li>
           <Link
             href="/habits/new?template=custom"
-            className="flex min-h-16 items-center gap-3 rounded-xl border border-dashed bg-card px-4 py-3 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="flex min-h-16 items-center gap-3 rounded-xl border border-dashed bg-card px-4 py-3 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring"
           >
             <Plus aria-hidden="true" className="size-6 text-primary" />
             <span className="grid">
@@ -45,7 +45,7 @@ export function NewHabit() {
           <li key={key}>
             <Link
               href={`/habits/new?template=${key}`}
-              className="flex min-h-16 items-center gap-3 rounded-xl border bg-card px-4 py-3 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="flex min-h-16 items-center gap-3 rounded-xl border bg-card px-4 py-3 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring"
             >
               <span aria-hidden="true" className="text-2xl">
                 {TEMPLATES[key].icon}

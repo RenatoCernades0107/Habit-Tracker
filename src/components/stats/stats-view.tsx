@@ -75,6 +75,8 @@ export function StatsView() {
       }
       return keys;
     };
+    // Group rates are asked for on every render; each list is worked out once per data change.
+    const rates = new Map<string, ReturnType<typeof groupRate>>();
     const streaks = active
       .map((h) => ({
         h,
@@ -86,7 +88,8 @@ export function StatsView() {
       .slice(0, 5);
     return {
       scores,
-      heat: dailyScores(hs, heatFrom, to, today),
+      // heatFrom is never before from, so the heatmap is the tail of the same scores.
+      heat: scores.filter((s) => s.date >= heatFrom),
       average,
       perfect: perfectDays(scores),
       weeks,
@@ -104,7 +107,13 @@ export function StatsView() {
           rate: completionRate(h, addDays(thisWeek, -21), addDays(thisWeek, -1), today, weekStart),
         })),
       streaks,
-      rate: (list: HabitHistory[]) => groupRate(list, from, to, today, weekStart),
+      rate: (list: HabitHistory[]) => {
+        const key = list.map((h) => h.habit.id).join();
+        let rate = rates.get(key);
+        if (rate === undefined)
+          rates.set(key, (rate = groupRate(list, from, to, today, weekStart)));
+        return rate;
+      },
     };
   }, [hs, from, to, today, weekStart]);
 
@@ -352,7 +361,7 @@ export function RateList({
           key={r.key}
           className="grid grid-cols-[minmax(0,7rem)_1fr_3rem] items-center gap-3 text-sm"
         >
-          <span className="truncate">{r.name}</span>
+          <span className="break-words">{r.name}</span>
           <RateBar value={r.rate} />
           <span className="text-right text-muted-foreground tabular-nums">{percent(r.rate)}</span>
         </li>
@@ -372,12 +381,12 @@ function HabitLink({
     <li>
       <Link
         href={`/habits/${habit.id}`}
-        className="flex min-h-11 items-center gap-3 rounded-md px-1 py-2 text-sm outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="flex min-h-11 items-center gap-3 rounded-md px-1 py-2 text-sm outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring"
       >
         <span aria-hidden="true" className="w-5 text-center">
           {habit.icon}
         </span>
-        <span className="min-w-0 flex-1 truncate font-medium">{habit.name}</span>
+        <span className="min-w-0 flex-1 font-medium break-words">{habit.name}</span>
         <span className="text-muted-foreground tabular-nums">{detail}</span>
       </Link>
     </li>

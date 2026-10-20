@@ -77,6 +77,9 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: placeholder
           NEXT_PUBLIC_APP_URL: http://localhost:3100
 
+      - name: Today route JavaScript size (NFR-PERF-5)
+        run: npm run size
+
   database:
     name: Database
     runs-on: ubuntu-24.04

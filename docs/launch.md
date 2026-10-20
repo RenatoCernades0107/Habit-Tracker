@@ -72,3 +72,8 @@ and notifications, and links to `/privacy`.
 - Sign-in runs on the server, so Supabase's per-IP auth limits see Vercel's addresses for
   everyone. With a handful of friends that's fine; raise *Auth → Rate Limits* if codes are refused.
 - Free plans: Supabase pauses projects after a week without activity; daily use keeps it awake.
+- Today loads about 300 KB of gzipped JavaScript, over the 170 KB budget (NFR-PERF-5): React and
+  Next.js are about 105 KB and supabase-js about 67 KB of it. `npm run size` prints the breakdown,
+  and CI fails above 320 KB so it can't grow unnoticed. Getting under budget means sending
+  changes without supabase-js on the client (plain `fetch` to the RPCs) and loading Realtime
+  after first paint.

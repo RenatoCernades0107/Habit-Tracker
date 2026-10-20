@@ -50,19 +50,18 @@ export function MoodCard({ date, entry }: { date: string; entry: Entry | undefin
       <h2 id="mood-title" className="text-sm font-semibold">
         {t("title")}
       </h2>
-      <div role="radiogroup" aria-labelledby="mood-title" className="flex justify-between gap-1">
+      <div role="group" aria-labelledby="mood-title" className="flex justify-between gap-1">
         {MOODS.map((m) => {
           const selected = live?.mood === m.value;
           return (
             <button
               key={m.value}
               type="button"
-              role="radio"
-              aria-checked={selected}
+              aria-pressed={selected}
               aria-label={t(`labels.${m.value}`)}
               onClick={() => write({ mood: selected ? null : m.value })}
               className={cn(
-                "flex size-12 cursor-pointer items-center justify-center rounded-full border-2 border-transparent text-2xl transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                "flex size-12 cursor-pointer items-center justify-center rounded-full border-2 border-transparent text-2xl transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
                 selected ? "border-primary bg-accent" : "opacity-70 hover:opacity-100",
               )}
             >
@@ -89,7 +88,7 @@ export function MoodCard({ date, entry }: { date: string; entry: Entry | undefin
           rows={2}
           placeholder={t("notePlaceholder")}
           onChange={(e) => setNote(e.target.value)}
-          className="min-h-16 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm"
+          className="min-h-16 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring md:text-sm"
         />
         <Button
           type="submit"

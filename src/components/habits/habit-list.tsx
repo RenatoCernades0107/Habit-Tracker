@@ -7,7 +7,9 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  type Announcements,
   type DragEndEvent,
+  type UniqueIdentifier,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -17,7 +19,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronRight, GripVertical, ListChecks, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, GripVertical, ListChecks, Plus } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -101,13 +103,34 @@ export function HabitList() {
     }))
     .filter((g) => g.items.length > 0);
 
-  const onDragEnd = (items: Habit[]) => (event: DragEndEvent) => {
-    const from = items.findIndex((h) => h.id === event.active.id);
-    const to = items.findIndex((h) => h.id === event.over?.id);
-    if (from < 0 || to < 0 || from === to) return;
+  const move = (items: Habit[], from: number, to: number) => {
+    if (from < 0 || to < 0 || to >= items.length || from === to) return;
     arrayMove(items, from, to).forEach((h, index) => {
       if (h.sort_order !== index) save({ table: "habits", row: { ...h, sort_order: index } });
     });
+  };
+  const onDragEnd = (items: Habit[]) => (event: DragEndEvent) =>
+    move(
+      items,
+      items.findIndex((h) => h.id === event.active.id),
+      items.findIndex((h) => h.id === event.over?.id),
+    );
+
+  // dnd-kit's screen reader messages, in the user's language.
+  const announcements = (items: Habit[]): Announcements => {
+    const name = (id: UniqueIdentifier) => items.find((h) => h.id === id)?.name ?? "";
+    const at = (id: UniqueIdentifier | undefined) => ({
+      position: items.findIndex((h) => h.id === id) + 1,
+      total: items.length,
+    });
+    return {
+      onDragStart: ({ active }) => t("list.drag.picked", { name: name(active.id) }),
+      onDragOver: ({ active, over }) =>
+        over ? t("list.drag.over", { name: name(active.id), ...at(over.id) }) : undefined,
+      onDragEnd: ({ active, over }) =>
+        over ? t("list.drag.dropped", { name: name(active.id), ...at(over.id) }) : undefined,
+      onDragCancel: ({ active }) => t("list.drag.cancelled", { name: name(active.id) }),
+    };
   };
 
   const note = (h: Habit) => {
@@ -124,12 +147,11 @@ export function HabitList() {
 
   return (
     <div className="grid gap-4">
-      <div role="radiogroup" aria-label={t("list.filters.label")} className="flex gap-2">
+      <div role="group" aria-label={t("list.filters.label")} className="flex gap-2">
         {(["active", "paused", "archived"] as const).map((f) => (
           <Button
             key={f}
-            role="radio"
-            aria-checked={filter === f}
+            aria-pressed={filter === f}
             size="sm"
             variant={filter === f ? "secondary" : "ghost"}
             onClick={() => setFilter(f)}
@@ -150,13 +172,17 @@ export function HabitList() {
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={onDragEnd(group.items)}
+            accessibility={{
+              announcements: announcements(group.items),
+              screenReaderInstructions: { draggable: t("list.drag.instructions") },
+            }}
           >
             <SortableContext
               items={group.items.map((h) => h.id)}
               strategy={verticalListSortingStrategy}
             >
               <ul className="divide-y">
-                {group.items.map((h) => (
+                {group.items.map((h, index) => (
                   <SortableHabit
                     key={h.id}
                     habit={h}
@@ -168,6 +194,15 @@ export function HabitList() {
                     }
                     sortable={filter === "active"}
                     reorderLabel={t("list.reorder", { name: h.name })}
+                    // Dragging isn't the only way to reorder (WCAG 2.5.7).
+                    onMoveUp={index > 0 ? () => move(group.items, index, index - 1) : undefined}
+                    onMoveDown={
+                      index < group.items.length - 1
+                        ? () => move(group.items, index, index + 1)
+                        : undefined
+                    }
+                    moveUpLabel={t("list.moveUp", { name: h.name })}
+                    moveDownLabel={t("list.moveDown", { name: h.name })}
                   />
                 ))}
               </ul>
@@ -185,12 +220,20 @@ function SortableHabit({
   category,
   sortable,
   reorderLabel,
+  onMoveUp,
+  onMoveDown,
+  moveUpLabel,
+  moveDownLabel,
 }: {
   habit: Habit;
   subtitle: string;
   category: string | null;
   sortable: boolean;
   reorderLabel: string;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  moveUpLabel: string;
+  moveDownLabel: string;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: habit.id,
@@ -210,7 +253,7 @@ function SortableHabit({
         <button
           type="button"
           aria-label={reorderLabel}
-          className="flex size-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="flex size-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring"
           {...attributes}
           {...listeners}
         >
@@ -219,20 +262,41 @@ function SortableHabit({
       ) : null}
       <Link
         href={`/habits/${habit.id}`}
-        className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-md px-2 py-2 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-md px-2 py-2 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring"
       >
         <span aria-hidden="true" className="w-6 text-center text-xl">
           {habit.icon}
         </span>
         <span className="grid min-w-0 flex-1">
-          <span className="truncate font-medium">{habit.name}</span>
-          <span className="truncate text-xs text-muted-foreground">
+          <span className="font-medium break-words">{habit.name}</span>
+          <span className="text-xs break-words text-muted-foreground">
             {subtitle}
             {category ? ` · ${category}` : ""}
           </span>
         </span>
         <ChevronRight aria-hidden="true" className="size-4 text-muted-foreground" />
       </Link>
+      {sortable ? (
+        <div className="grid shrink-0">
+          {(
+            [
+              [onMoveUp, moveUpLabel, ChevronUp],
+              [onMoveDown, moveDownLabel, ChevronDown],
+            ] as const
+          ).map(([onClick, label, Icon]) => (
+            <button
+              key={label}
+              type="button"
+              aria-label={label}
+              disabled={!onClick}
+              onClick={onClick}
+              className="flex h-7 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring disabled:invisible"
+            >
+              <Icon aria-hidden="true" className="size-4" />
+            </button>
+          ))}
+        </div>
+      ) : null}
     </li>
   );
 }

@@ -293,13 +293,12 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
       </FormSection>
 
       <FormSection title={t("form.howMuch")}>
-        <div role="radiogroup" aria-label={t("form.kind")} className="grid grid-cols-2 gap-2">
+        <div role="group" aria-label={t("form.kind")} className="grid grid-cols-2 gap-2">
           {(["boolean", "measurable"] as const).map((kind) => (
             <Button
               key={kind}
               type="button"
-              role="radio"
-              aria-checked={draft.kind === kind}
+              aria-pressed={draft.kind === kind}
               variant={draft.kind === kind ? "default" : "outline"}
               onClick={() => set("kind", kind)}
             >
@@ -340,7 +339,7 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
       </FormSection>
 
       <FormSection title={t("form.when")}>
-        <div role="radiogroup" aria-label={t("form.schedule")} className="grid grid-cols-3 gap-2">
+        <div role="group" aria-label={t("form.schedule")} className="grid grid-cols-3 gap-2">
           {(
             [
               ["daily", "form.scheduleDaily"],
@@ -351,8 +350,7 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
             <Button
               key={type}
               type="button"
-              role="radio"
-              aria-checked={draft.schedule_type === type}
+              aria-pressed={draft.schedule_type === type}
               variant={draft.schedule_type === type ? "default" : "outline"}
               className="h-auto min-h-11 px-2 text-xs whitespace-normal sm:text-sm"
               onClick={() => set("schedule_type", type)}
@@ -569,7 +567,7 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
                 maxLength={500}
                 value={draft.description}
                 onChange={(e) => set("description", e.target.value)}
-                className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm dark:bg-input/30"
+                className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring md:text-sm dark:bg-input/30"
               />
             </Field>
             <Field id="habit-cue" label={t("form.cue")} hint={t("form.cueHint")}>

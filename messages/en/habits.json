@@ -35,7 +35,14 @@
     "archivedOn": "Archived {date}",
     "reorder": "Reorder {name}",
     "moveUp": "Move {name} up",
-    "moveDown": "Move {name} down"
+    "moveDown": "Move {name} down",
+    "drag": {
+      "instructions": "To reorder, press Space or Enter on the handle, move with the arrow keys, and press Space or Enter again to drop. Press Escape to cancel.",
+      "picked": "Picked up {name}.",
+      "over": "{name} is at position {position} of {total}.",
+      "dropped": "{name} dropped at position {position} of {total}.",
+      "cancelled": "Reordering cancelled. {name} is back in its place."
+    }
   },
   "schedule": {
     "daily": "Every day",

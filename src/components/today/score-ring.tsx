@@ -16,7 +16,8 @@ export function ScoreRing({
   const filled = value === null ? 0 : Math.max(0, Math.min(1, value)) * circumference;
 
   return (
-    <div className={cn("relative size-16 shrink-0", className)} aria-hidden="true">
+    // Sized in em so the ring grows with the text inside it.
+    <div className={cn("relative size-[4.5em] shrink-0 text-sm", className)} aria-hidden="true">
       <svg viewBox="0 0 64 64" className="size-full -rotate-90">
         <circle cx="32" cy="32" r={radius} fill="none" strokeWidth="7" className="stroke-muted" />
         <circle
@@ -33,7 +34,7 @@ export function ScoreRing({
           )}
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold tabular-nums">
+      <span className="absolute inset-0 flex items-center justify-center font-semibold tabular-nums">
         {label}
       </span>
     </div>

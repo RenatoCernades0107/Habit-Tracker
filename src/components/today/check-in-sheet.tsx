@@ -154,7 +154,7 @@ function SheetBody({
             rows={2}
             placeholder={t("sheet.notePlaceholder")}
             onChange={(e) => setNote(e.target.value)}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm dark:bg-input/30"
+            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring md:text-sm dark:bg-input/30"
           />
           <Button type="submit" variant="secondary">
             {t("sheet.saveNote")}

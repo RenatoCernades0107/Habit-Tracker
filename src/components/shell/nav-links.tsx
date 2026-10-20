@@ -27,7 +27,7 @@ export function NavLinks({ variant }: { variant: "tabs" | "sidebar" }) {
               href={href}
               aria-current={current ? "page" : undefined}
               className={cn(
-                "group flex outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                "group flex outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
                 tabs
                   ? // 56 px tall, a quarter of the width: well above the 44 px minimum.
                     "min-h-14 flex-col items-center justify-center gap-1 rounded-lg px-1 py-1.5 text-xs leading-tight font-medium text-muted-foreground aria-[current=page]:text-foreground"

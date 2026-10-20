@@ -35,7 +35,14 @@
     "archivedOn": "Archivado el {date}",
     "reorder": "Reordenar {name}",
     "moveUp": "Subir {name}",
-    "moveDown": "Bajar {name}"
+    "moveDown": "Bajar {name}",
+    "drag": {
+      "instructions": "Para reordenar, pulsa Espacio o Intro en el asa, muévete con las flechas y vuelve a pulsar Espacio o Intro para soltar. Pulsa Escape para cancelar.",
+      "picked": "Has tomado {name}.",
+      "over": "{name} está en la posición {position} de {total}.",
+      "dropped": "{name} se ha soltado en la posición {position} de {total}.",
+      "cancelled": "Reordenación cancelada. {name} vuelve a su sitio."
+    }
   },
   "schedule": {
     "daily": "Todos los días",

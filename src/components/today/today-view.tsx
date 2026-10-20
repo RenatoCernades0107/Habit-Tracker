@@ -121,8 +121,11 @@ export function TodayView({ setup }: { setup: ReactNode }) {
       source: "app",
       now: new Date().toISOString(),
     });
-    celebrate(data, today, next);
     const undo = apply(item.habit.id, date, op, payload);
+    // After the tap has painted (NFR-PERF-1): the milestone check walks the whole history.
+    if (next.deleted_at === null && next.status === "done") {
+      window.setTimeout(() => celebrate(data, today, next), 0);
+    }
     const message =
       op === "set_note"
         ? t("toast.noted")

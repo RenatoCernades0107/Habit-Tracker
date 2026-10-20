@@ -232,3 +232,41 @@ describe("habit days on a day off", () => {
     ]);
   });
 });
+
+describe("NFR-PERF-8: a year of 20 habits", () => {
+  it("scores, weeks and weekday rates stay fast", () => {
+    const from = addDays(TODAY, -364);
+    const habits = Array.from({ length: 20 }, (_, i) =>
+      habit({
+        start_date: from,
+        ...(i % 3 === 1 ? { schedule_type: "days_of_week", days_of_week: [1, 3, 5] } : {}),
+        ...(i % 3 === 2 ? { schedule_type: "times_per_week", times_per_week: 3 } : {}),
+      }),
+    );
+    const checkIns: CheckInRow[] = [];
+    for (const h of habits) {
+      for (let d = from; d <= TODAY; d = addDays(d, 1)) {
+        if ((d.charCodeAt(9) + h.id.length) % 3 !== 0) checkIns.push(done(h, d));
+      }
+    }
+    const pauses = habits.slice(0, 5).map((h, i) => ({
+      id: `p${i}`,
+      habit_id: h.id,
+      start_date: addDays(from, 30 * i),
+      end_date: addDays(from, 30 * i + 6),
+      deleted_at: null,
+    }));
+    const run = () => {
+      const hs = histories({ today: TODAY, weekStart: 1, habits, versions: [], pauses, checkIns });
+      dailyScores(hs, from, TODAY, TODAY);
+      weeklyScores(hs, addDays(TODAY, -77), TODAY, TODAY, 1);
+      weekdayRates(hs, from, TODAY, TODAY);
+    };
+    run(); // warm up
+    const start = performance.now();
+    run();
+    const ms = performance.now() - start;
+    // The budget is 16 ms on a phone; CI machines vary, so this only catches large regressions.
+    expect(ms).toBeLessThan(100);
+  });
+});

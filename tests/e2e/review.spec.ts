@@ -58,8 +58,8 @@ test("mood and the weekly reflection are saved", async ({ page }) => {
   await signInWithEmailCode(page);
   await fromTemplate(page, "Journal");
 
-  await page.getByRole("radio", { name: "Great" }).click();
-  await expect(page.getByRole("radio", { name: "Great" })).toHaveAttribute("aria-checked", "true");
+  await page.getByRole("button", { name: "Great" }).click();
+  await expect(page.getByRole("button", { name: "Great" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("Synced")).toBeVisible();
 
   await page.goto("/review");
@@ -71,7 +71,7 @@ test("mood and the weekly reflection are saved", async ({ page }) => {
   await page.reload();
   await expect(page.getByLabel("Reflection")).toHaveValue("Evenings worked best.");
   await page.goto("/today");
-  await expect(page.getByRole("radio", { name: "Great" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("button", { name: "Great" })).toHaveAttribute("aria-pressed", "true");
 });
 
 test("data can be exported and the account deleted", async ({ page }) => {

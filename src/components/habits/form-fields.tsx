@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -19,10 +19,20 @@ export function Field({
   children: ReactNode;
   className?: string;
 }) {
+  // The control is described by the hint and error below it, on top of any description it has.
+  const describedBy = [hint ? `${id}-hint` : null, error ? `${id}-error` : null].filter(Boolean);
+  let control = children;
+  if (describedBy.length && isValidElement(children)) {
+    const child = children as ReactElement<{ "aria-describedby"?: string }>;
+    const own = child.props["aria-describedby"];
+    control = cloneElement(child, {
+      "aria-describedby": [own, ...describedBy].filter(Boolean).join(" "),
+    });
+  }
   return (
     <div className={cn("grid gap-2", className)}>
       <Label htmlFor={id}>{label}</Label>
-      {children}
+      {control}
       {hint ? (
         <p id={`${id}-hint`} className="text-xs text-muted-foreground">
           {hint}
@@ -38,7 +48,7 @@ export function Field({
 }
 
 export const selectClass =
-  "h-11 w-full rounded-md border border-input bg-transparent px-3 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm dark:bg-input/30";
+  "h-11 w-full rounded-md border border-input bg-transparent px-3 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring md:text-sm dark:bg-input/30";
 
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (

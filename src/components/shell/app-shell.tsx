@@ -16,7 +16,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-dvh">
       <a
         href={`#${MAIN_ID}`}
-        className="sr-only rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground shadow-md outline-none focus-visible:not-sr-only focus-visible:fixed focus-visible:top-[calc(env(safe-area-inset-top)+0.75rem)] focus-visible:left-4 focus-visible:z-50 focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="sr-only rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground shadow-md outline-none focus-visible:not-sr-only focus-visible:fixed focus-visible:top-[calc(env(safe-area-inset-top)+0.75rem)] focus-visible:left-4 focus-visible:z-50 focus-visible:ring-[3px] focus-visible:ring-ring"
       >
         {t("skipToContent")}
       </a>
