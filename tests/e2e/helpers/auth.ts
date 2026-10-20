@@ -79,7 +79,15 @@ export async function waitForEmailCode(
  * Opens /login, asks for a code for `email` and waits for the code step. Returns the ids
  * of emails that were already there, for `waitForEmailCode`.
  */
+/** Supabase sends one code per address per `max_frequency` (supabase/config.toml: 1 s). */
+const MIN_CODE_INTERVAL_MS = 1500;
+const lastCodeRequest = new Map<string, number>();
+
 export async function requestEmailCode(page: Page, email: string): Promise<Set<string>> {
+  // A second device signing in with the same address right away would be refused (429).
+  const wait = (lastCodeRequest.get(email) ?? 0) + MIN_CODE_INTERVAL_MS - Date.now();
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+  lastCodeRequest.set(email, Date.now());
   const alreadySeen = new Set(await messageIdsFor(email));
   await page.goto("/login");
   const emailField = page.locator("#login-email");
