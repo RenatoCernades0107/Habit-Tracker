@@ -3,6 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BellOff, Laptop, Smartphone, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 import { Field, selectClass } from "@/components/habits/form-fields";
@@ -49,16 +50,8 @@ export function NotificationPrefs() {
   // Until the next habit day starts (R-DAY-1).
   const muteUntil = () => dayStart(addDays(today, 1)).toISOString();
   const timeInput = (id: string, value: string | null, onSave: (v: string) => void) => (
-    <Input
-      // Keyed by the value: the cache renders first, the synced profile may follow.
-      key={value ?? ""}
-      id={id}
-      type="time"
-      defaultValue={hhmm(value)}
-      onBlur={(e) => {
-        if (e.target.value && e.target.value !== hhmm(value)) onSave(e.target.value);
-      }}
-    />
+    // Keyed by the value: the cache renders first, the synced profile may follow.
+    <TimeField key={value ?? ""} id={id} value={hhmm(value)} onSave={onSave} />
   );
 
   return (
@@ -200,6 +193,43 @@ export function NotificationPrefs() {
 
       <Devices />
     </div>
+  );
+}
+
+/**
+ * A time that saves itself: shortly after a change (phone time pickers may never blur), or
+ * right away on blur.
+ */
+function TimeField({
+  id,
+  value,
+  onSave,
+}: {
+  id: string;
+  value: string;
+  onSave: (v: string) => void;
+}) {
+  const timer = useRef<number | undefined>(undefined);
+  const saved = useRef(value);
+  const flush = (next: string) => {
+    window.clearTimeout(timer.current);
+    if (!/^\d{2}:\d{2}$/.test(next) || next === saved.current) return;
+    saved.current = next;
+    onSave(next);
+  };
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  return (
+    <Input
+      id={id}
+      type="time"
+      defaultValue={value}
+      onChange={(e) => {
+        const next = e.target.value;
+        window.clearTimeout(timer.current);
+        timer.current = window.setTimeout(() => flush(next), 800);
+      }}
+      onBlur={(e) => flush(e.target.value)}
+    />
   );
 }
 

@@ -83,7 +83,10 @@ export function RoutinesSetting() {
               <input
                 type="checkbox"
                 className="size-4 accent-[var(--primary)]"
-                checked={r.digest_enabled}
+                // Uncontrolled, keyed by the saved value: the click shows at once, and the change
+                // reaches the cache a moment later through the change queue.
+                key={String(r.digest_enabled)}
+                defaultChecked={r.digest_enabled}
                 onChange={(e) => update(r, { digest_enabled: e.target.checked })}
               />
               {t("digest")}

@@ -45,7 +45,9 @@ test("a reminder in quiet hours is flagged in the editor", async ({ page }) => {
   const from = page.getByLabel("From");
   await from.fill("22:00");
   await from.blur();
-  await expect(page.getByText("Saved.").first()).toBeVisible();
+  await expect(page.getByText("Saved.").first()).toBeVisible({ timeout: 10_000 });
+  await page.reload();
+  await expect(page.getByLabel("From")).toHaveValue("22:00");
 
   await page.goto("/habits/new?template=custom");
   await page.getByLabel("Time", { exact: true }).fill("23:00");
