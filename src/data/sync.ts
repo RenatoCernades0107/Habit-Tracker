@@ -54,7 +54,17 @@ export async function syncSnapshot(
   const since = (t: SyncedTable) => cursorWithOverlap(c[t]);
   const historyStart = addDays(today, -CHECK_IN_HISTORY_DAYS);
 
-  const [profile, routines, categories, habits, versions, pauses, checkIns] = await Promise.all([
+  const [
+    profile,
+    routines,
+    categories,
+    habits,
+    versions,
+    pauses,
+    checkIns,
+    dailyEntries,
+    weeklyReviews,
+  ] = await Promise.all([
     supabase.from("profiles").select("*").maybeSingle(),
     fetchTable(supabase, "routines", since("routines")),
     fetchTable(supabase, "categories", since("categories")),
@@ -62,6 +72,8 @@ export async function syncSnapshot(
     fetchTable(supabase, "habit_versions", since("habit_versions")),
     fetchTable(supabase, "pauses", since("pauses")),
     fetchTable(supabase, "check_ins", since("check_ins"), c.check_ins ? undefined : historyStart),
+    fetchTable(supabase, "daily_entries", since("daily_entries")),
+    fetchTable(supabase, "weekly_reviews", since("weekly_reviews")),
   ]);
   if (profile.error) throw profile.error;
 
@@ -75,6 +87,8 @@ export async function syncSnapshot(
     checkIns: mergeRows(previous.checkIns, checkIns, rowKey.check_ins).filter(
       (row) => row.local_date >= historyStart,
     ),
+    dailyEntries: mergeRows(previous.dailyEntries ?? [], dailyEntries, rowKey.daily_entries),
+    weeklyReviews: mergeRows(previous.weeklyReviews ?? [], weeklyReviews, rowKey.weekly_reviews),
     cursors: {
       routines: nextCursor(c.routines, routines),
       categories: nextCursor(c.categories, categories),
@@ -82,6 +96,8 @@ export async function syncSnapshot(
       habit_versions: nextCursor(c.habit_versions, versions),
       pauses: nextCursor(c.pauses, pauses),
       check_ins: nextCursor(c.check_ins, checkIns),
+      daily_entries: nextCursor(c.daily_entries, dailyEntries),
+      weekly_reviews: nextCursor(c.weekly_reviews, weeklyReviews),
     },
   };
 }
@@ -125,6 +141,24 @@ export function applyRealtimeRow(snapshot: Snapshot, table: SyncedTable, row: un
       return {
         ...snapshot,
         pauses: mergeRows(snapshot.pauses, [row as Snapshot["pauses"][number]], rowKey.pauses),
+      };
+    case "daily_entries":
+      return {
+        ...snapshot,
+        dailyEntries: mergeRows(
+          snapshot.dailyEntries,
+          [row as Snapshot["dailyEntries"][number]],
+          rowKey.daily_entries,
+        ),
+      };
+    case "weekly_reviews":
+      return {
+        ...snapshot,
+        weeklyReviews: mergeRows(
+          snapshot.weeklyReviews,
+          [row as Snapshot["weeklyReviews"][number]],
+          rowKey.weekly_reviews,
+        ),
       };
     case "check_ins":
       return {

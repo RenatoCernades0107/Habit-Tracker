@@ -28,7 +28,7 @@ export function useUserId(): string {
 export const snapshotKey = (userId: string) => ["snapshot", userId] as const;
 
 /** Bump when the cached shape changes; old caches are then discarded. */
-const CACHE_VERSION = "1";
+const CACHE_VERSION = "2";
 
 function mergeResult(snapshot: Snapshot, result: ChangeResult): Snapshot {
   switch (result.table) {
@@ -48,6 +48,16 @@ function mergeResult(snapshot: Snapshot, result: ChangeResult): Snapshot {
       };
     case "pauses":
       return { ...snapshot, pauses: mergeRows(snapshot.pauses, [result.row], rowKey.pauses) };
+    case "daily_entries":
+      return {
+        ...snapshot,
+        dailyEntries: mergeRows(snapshot.dailyEntries, [result.row], rowKey.daily_entries),
+      };
+    case "weekly_reviews":
+      return {
+        ...snapshot,
+        weeklyReviews: mergeRows(snapshot.weeklyReviews, [result.row], rowKey.weekly_reviews),
+      };
   }
 }
 
@@ -133,6 +143,8 @@ const TABLES: SyncedTable[] = [
   "habit_versions",
   "pauses",
   "check_ins",
+  "daily_entries",
+  "weekly_reviews",
 ];
 
 /** Live changes from other devices, Siri or Health (FR-TOD-5). */

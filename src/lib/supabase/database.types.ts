@@ -174,6 +174,37 @@ export type Database = {
           },
         ];
       };
+      daily_entries: {
+        Row: {
+          created_at: string;
+          deleted_at: string | null;
+          local_date: string;
+          mood: number | null;
+          note: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          deleted_at?: string | null;
+          local_date: string;
+          mood?: number | null;
+          note?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          deleted_at?: string | null;
+          local_date?: string;
+          mood?: number | null;
+          note?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       habit_versions: {
         Row: {
           days_of_week: number[] | null;
@@ -610,6 +641,34 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      weekly_reviews: {
+        Row: {
+          completed_at: string | null;
+          created_at: string;
+          reflection: string | null;
+          updated_at: string;
+          user_id: string;
+          week_start: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          completed_at?: string | null;
+          created_at?: string;
+          reflection?: string | null;
+          updated_at?: string;
+          user_id?: string;
+          week_start: string;
+        };
+        Update: {
+          completed_at?: string | null;
+          created_at?: string;
+          reflection?: string | null;
+          updated_at?: string;
+          user_id?: string;
+          week_start?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {

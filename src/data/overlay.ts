@@ -29,13 +29,16 @@ export type UndoVariables = {
   restore: CheckIn | undefined;
 };
 
-export type EditableTable = "habits" | "routines" | "categories" | "pauses";
+export type EditableTable =
+  "habits" | "routines" | "categories" | "pauses" | "daily_entries" | "weekly_reviews";
 
 export type UpsertVariables =
   | { kind: "upsert"; table: "habits"; row: Tables<"habits"> }
   | { kind: "upsert"; table: "routines"; row: Tables<"routines"> }
   | { kind: "upsert"; table: "categories"; row: Tables<"categories"> }
-  | { kind: "upsert"; table: "pauses"; row: Tables<"pauses"> };
+  | { kind: "upsert"; table: "pauses"; row: Tables<"pauses"> }
+  | { kind: "upsert"; table: "daily_entries"; row: Tables<"daily_entries"> }
+  | { kind: "upsert"; table: "weekly_reviews"; row: Tables<"weekly_reviews"> };
 
 export type PendingChange = CheckInVariables | UndoVariables | UpsertVariables;
 
@@ -73,6 +76,20 @@ export function overlay(
           break;
         case "pauses":
           next.pauses = replaceRow(next.pauses, row as Tables<"pauses">, rowKey.pauses);
+          break;
+        case "daily_entries":
+          next.dailyEntries = replaceRow(
+            next.dailyEntries,
+            row as Tables<"daily_entries">,
+            rowKey.daily_entries,
+          );
+          break;
+        case "weekly_reviews":
+          next.weeklyReviews = replaceRow(
+            next.weeklyReviews,
+            row as Tables<"weekly_reviews">,
+            rowKey.weekly_reviews,
+          );
           break;
       }
       continue;

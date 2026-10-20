@@ -9,7 +9,9 @@ export type ChangeResult =
   | { table: "habits"; row: Tables<"habits"> }
   | { table: "routines"; row: Tables<"routines"> }
   | { table: "categories"; row: Tables<"categories"> }
-  | { table: "pauses"; row: Tables<"pauses"> };
+  | { table: "pauses"; row: Tables<"pauses"> }
+  | { table: "daily_entries"; row: Tables<"daily_entries"> }
+  | { table: "weekly_reviews"; row: Tables<"weekly_reviews"> };
 
 /** Sends one change to Supabase and returns the row the server stored. */
 export async function sendChange(

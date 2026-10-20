@@ -9,12 +9,21 @@ export type Snapshot = {
   versions: Tables<"habit_versions">[];
   pauses: Tables<"pauses">[];
   checkIns: Tables<"check_ins">[];
+  dailyEntries: Tables<"daily_entries">[];
+  weeklyReviews: Tables<"weekly_reviews">[];
   /** Highest `updated_at` seen per table: the next sync asks only for newer rows. */
   cursors: Partial<Record<SyncedTable, string>>;
 };
 
 export type SyncedTable =
-  "routines" | "categories" | "habits" | "habit_versions" | "pauses" | "check_ins";
+  | "routines"
+  | "categories"
+  | "habits"
+  | "habit_versions"
+  | "pauses"
+  | "check_ins"
+  | "daily_entries"
+  | "weekly_reviews";
 
 export const EMPTY_SNAPSHOT: Snapshot = {
   profile: null,
@@ -24,6 +33,8 @@ export const EMPTY_SNAPSHOT: Snapshot = {
   versions: [],
   pauses: [],
   checkIns: [],
+  dailyEntries: [],
+  weeklyReviews: [],
   cursors: {},
 };
 
@@ -35,6 +46,8 @@ export const rowKey = {
   habit_versions: (r: { habit_id: string; valid_from: string }) => `${r.habit_id}|${r.valid_from}`,
   // By habit and day: an optimistic row and the server's row share this key.
   check_ins: (r: { habit_id: string; local_date: string }) => `${r.habit_id}|${r.local_date}`,
+  daily_entries: (r: { local_date: string }) => r.local_date,
+  weekly_reviews: (r: { week_start: string }) => r.week_start,
 } as const;
 
 /**
