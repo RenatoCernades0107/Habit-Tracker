@@ -30,7 +30,9 @@ const sizes = [...chunks]
 const total = sizes.reduce((sum, s) => sum + s.kb, 0);
 
 for (const s of sizes.slice(0, 8)) console.log(`${s.kb.toFixed(1).padStart(7)} KB  ${s.chunk}`);
-console.log(`Today: ${total.toFixed(1)} KB gzip in ${sizes.length} files (ceiling ${CEILING_KB} KB)`);
+console.log(
+  `Today: ${total.toFixed(1)} KB gzip in ${sizes.length} files (ceiling ${CEILING_KB} KB)`,
+);
 if (total > CEILING_KB) {
   console.error("The Today route's JavaScript is over its ceiling.");
   process.exit(1);
