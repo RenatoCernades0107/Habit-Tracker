@@ -32,6 +32,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-heat-0: var(--heat-0);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -80,6 +85,12 @@
   --border: oklch(0.91 0.008 165);
   --input: oklch(0.91 0.008 165);
   --ring: oklch(0.5 0.1 168);
+  /* Sequential teal for scores (heatmaps, bars): light = little done, dark = all done. */
+  --heat-0: oklch(0.94 0.008 165);
+  --heat-1: oklch(0.88 0.05 168);
+  --heat-2: oklch(0.76 0.08 168);
+  --heat-3: oklch(0.63 0.1 168);
+  --heat-4: oklch(0.5 0.1 168);
 }
 
 .dark {
@@ -105,6 +116,28 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.74 0.12 168);
+  /* Selected for the dark card, not flipped: dim = little done, bright = all done. */
+  --heat-0: oklch(0.27 0.012 165);
+  --heat-1: oklch(0.36 0.05 168);
+  --heat-2: oklch(0.48 0.08 168);
+  --heat-3: oklch(0.61 0.1 168);
+  --heat-4: oklch(0.74 0.12 168);
+}
+
+/* Celebrations (FR-STK-4/5). Never shown with reduced motion (see celebrate.ts). */
+.confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  animation: confetti-fall 1.4s ease-in forwards;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translate(var(--drift, 0), 70vh) rotate(540deg);
+    opacity: 0;
+  }
 }
 
 /* iPhone safe areas (notch, home indicator) for the installed app. */

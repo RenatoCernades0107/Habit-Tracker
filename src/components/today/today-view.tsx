@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
@@ -20,7 +20,9 @@ import { skipsLeft, skipsUsed } from "@/domain/skips";
 import { cn } from "@/lib/utils";
 
 import { CheckInRow } from "./check-in-row";
+import { useCelebrate } from "./celebrate";
 import { CheckInSheet } from "./check-in-sheet";
+import { MoodCard } from "./mood-card";
 import { RestIllustration } from "./rest-illustration";
 import { ScoreRing } from "./score-ring";
 import { SyncIndicator } from "./sync-indicator";
@@ -31,6 +33,8 @@ const DATE_PARAM = "day";
 export function TodayView({ setup }: { setup: ReactNode }) {
   const t = useTranslations("today");
   const tHabits = useTranslations("habits");
+  const tRoutine = useTranslations("stats.routine");
+  const celebrate = useCelebrate();
   const format = useFormatter();
   const names = useGroupNames();
   const time = useTimeFormat();
@@ -93,6 +97,7 @@ export function TodayView({ setup }: { setup: ReactNode }) {
       source: "app",
       now: new Date().toISOString(),
     });
+    celebrate(data, today, next);
     const undo = apply(item.habit.id, date, op, payload);
     const message =
       op === "set_note"
@@ -249,8 +254,23 @@ export function TodayView({ setup }: { setup: ReactNode }) {
                     </span>
                   ) : null}
                 </span>
-                <span className="font-normal text-muted-foreground tabular-nums">
+                <span className="flex items-center gap-2 font-normal text-muted-foreground tabular-nums">
                   {sectionDone}/{section.items.length}
+                  {section.routine &&
+                  date === today &&
+                  section.items.some((i) => i.state === "pending" || i.state === "partial") ? (
+                    <Button asChild size="sm" variant="secondary" className="h-8">
+                      <Link
+                        href={`/routine/${section.routine.id}`}
+                        aria-label={tRoutine("startLabel", {
+                          name: names.routine(section.routine),
+                        })}
+                      >
+                        <Play aria-hidden="true" />
+                        {tRoutine("start")}
+                      </Link>
+                    </Button>
+                  ) : null}
                 </span>
               </h2>
               <ul className="divide-y">
@@ -282,6 +302,11 @@ export function TodayView({ setup }: { setup: ReactNode }) {
             </ul>
           </section>
         ) : null}
+        <MoodCard
+          key={date}
+          date={date}
+          entry={data.dailyEntries.find((e) => e.local_date === date)}
+        />
       </div>
     );
   }

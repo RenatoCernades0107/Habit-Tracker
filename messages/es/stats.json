@@ -1,0 +1,179 @@
+{
+  "title": "Estadísticas",
+  "periods": {
+    "label": "Periodo",
+    "7d": "7 días",
+    "30d": "30 días",
+    "90d": "90 días",
+    "12m": "12 meses",
+    "all": "Todo"
+  },
+  "empty": {
+    "title": "Aún no hay nada que mostrar",
+    "description": "Registra algunos días y aquí verás tus tendencias."
+  },
+  "overview": {
+    "score": "Puntaje promedio",
+    "perfectDays": "Días perfectos",
+    "thisWeek": "Esta semana",
+    "lastWeek": "Semana pasada",
+    "change": "{delta, number, ::sign-always percent} vs. la semana pasada",
+    "noChange": "Igual que la semana pasada"
+  },
+  "heatmap": {
+    "title": "Puntaje diario",
+    "description": "Cada cuadro es un día. Más oscuro significa más hecho.",
+    "less": "Menos",
+    "more": "Más",
+    "rest": "Día de descanso",
+    "cell": "{date}: {score}",
+    "cellRest": "{date}: día de descanso",
+    "table": "Ver como tabla",
+    "date": "Fecha",
+    "scoreCol": "Puntaje"
+  },
+  "weekly": {
+    "title": "Puntaje semanal",
+    "description": "Las últimas 12 semanas.",
+    "bar": "Semana del {date}: {score}"
+  },
+  "weekdays": {
+    "title": "Por día de la semana",
+    "best": "Mejor: {day}",
+    "worst": "Más difícil: {day}"
+  },
+  "groups": {
+    "routines": "Por rutina",
+    "categories": "Por categoría"
+  },
+  "attention": {
+    "title": "Necesitan atención",
+    "description": "Por debajo del 50% en las últimas 3 semanas.",
+    "none": "Nada por aquí. Bien hecho."
+  },
+  "strongest": {
+    "title": "Mejores rachas",
+    "none": "Las rachas aparecen tras unos días seguidos."
+  },
+  "rate": "{rate, number, percent}",
+  "noData": "–",
+  "reviewLink": "Revisión semanal",
+  "habit": {
+    "current": "Racha actual",
+    "best": "Mejor racha",
+    "days": "{count, plural, one {# día} other {# días}}",
+    "weeks": "{count, plural, one {# semana} other {# semanas}}",
+    "rates": "Cumplimiento",
+    "rate7": "7 días",
+    "rate30": "30 días",
+    "rate90": "90 días",
+    "rateAll": "Siempre",
+    "values": "Valores",
+    "target": "Meta {value}",
+    "history": "Historial",
+    "historyEmpty": "Aún no hay registros.",
+    "notes": "Notas",
+    "edit": "Editar hábito",
+    "skipsUsed": "Saltos este mes",
+    "skipsValue": "{used} de {max}",
+    "state": {
+      "done": "Hecho",
+      "partial": "A medias",
+      "skipped": "Saltado",
+      "missed": "No hecho",
+      "pending": "Pendiente"
+    },
+    "openDay": "Abrir el {date} en Hoy",
+    "source": {
+      "app": "App",
+      "routine_mode": "Modo rutina",
+      "siri": "Siri",
+      "notification": "Notificación",
+      "health": "Apple Salud",
+      "import": "Importación"
+    }
+  },
+  "routine": {
+    "start": "Empezar",
+    "startLabel": "Empezar {name}",
+    "progress": "Paso {current} de {total}",
+    "done": "Hecho",
+    "skip": "Saltar",
+    "later": "Después",
+    "subtract": "Restar {step} a {name}",
+    "timer": "Iniciar temporizador",
+    "timerRunning": "Quedan {time}",
+    "timerDone": "Se acabó el tiempo",
+    "pause": "Pausar temporizador",
+    "exit": "Salir de la rutina",
+    "summaryTitle": "Rutina terminada",
+    "summary": "{done} de {total} hechos",
+    "allDone": "No queda nada en esta rutina.",
+    "streaks": "Rachas mantenidas",
+    "backToToday": "Volver a Hoy",
+    "skipReason": "Saltado desde el modo rutina"
+  },
+  "celebrate": {
+    "milestone": "🔥 ¡Racha de {days} días en {name}!",
+    "milestoneWeeks": "🔥 ¡{days} semanas seguidas con {name}!",
+    "perfectDay": "🎉 ¡Día perfecto! Todo hecho."
+  },
+  "mood": {
+    "title": "¿Cómo estuvo hoy?",
+    "note": "Una nota sobre tu día",
+    "notePlaceholder": "¿Algo que valga la pena recordar?",
+    "save": "Guardar",
+    "saved": "Guardado.",
+    "labels": {
+      "1": "Fatal",
+      "2": "Mal",
+      "3": "Normal",
+      "4": "Bien",
+      "5": "Genial"
+    }
+  },
+  "review": {
+    "title": "Revisión semanal",
+    "week": "Semana del {date}",
+    "previous": "Semana anterior",
+    "next": "Semana siguiente",
+    "score": "Puntaje de la semana",
+    "vsLast": "{delta, number, ::sign-always percent} vs. la semana anterior",
+    "perHabit": "Hábitos",
+    "wins": "Logros",
+    "misses": "Fallos",
+    "perfectDays": "{count, plural, =0 {Ningún día perfecto} one {# día perfecto} other {# días perfectos}}",
+    "streakKept": "{name}: racha de {days, plural, one {# día} other {# días}}",
+    "missed": "{name}: no hecho {count, plural, one {# vez} other {# veces}}",
+    "noWins": "Sigue así, aquí aparecerán tus logros.",
+    "noMisses": "Ningún fallo. 👏",
+    "notes": "Notas de la semana",
+    "moodTrend": "Ánimo",
+    "reflection": "Reflexión",
+    "reflectionPrompt": "¿Qué funcionó? ¿Qué vas a cambiar?",
+    "save": "Guardar reflexión",
+    "saved": "Reflexión guardada.",
+    "suggestions": "Sugerencias",
+    "suggestion": "{name} lleva {weeks, plural, one {# semana} other {# semanas}} por debajo del 50%.",
+    "suggestTarget": "Bajar la meta a {value}",
+    "suggestTimes": "Dejarlo en {count, plural, one {una vez por semana} other {# veces por semana}}",
+    "suggestEdit": "Editar hábito",
+    "applied": "{name} actualizado.",
+    "habitProgress": "{done} de {total}",
+    "noHabits": "Ningún hábito esa semana."
+  },
+  "data": {
+    "title": "Tus datos",
+    "description": "Descarga todo o elimina tu cuenta.",
+    "exportJson": "Exportar todo (JSON)",
+    "exportCsv": "Exportar registros (CSV)",
+    "delete": "Eliminar cuenta",
+    "deleteTitle": "¿Eliminar tu cuenta?",
+    "deleteDescription": "Se eliminarán para siempre todos tus hábitos, registros y ajustes. No se puede deshacer.",
+    "deleteConfirmLabel": "Escribe {word} para confirmar",
+    "deleteWord": "BORRAR",
+    "deleteConfirm": "Eliminar mi cuenta",
+    "deleteFailed": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
+    "close": "Cancelar"
+  }
+}

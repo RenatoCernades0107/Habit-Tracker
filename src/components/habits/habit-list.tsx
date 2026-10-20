@@ -218,7 +218,7 @@ function SortableHabit({
         </button>
       ) : null}
       <Link
-        href={`/habits/${habit.id}/edit`}
+        href={`/habits/${habit.id}`}
         className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-md px-2 py-2 outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <span aria-hidden="true" className="w-6 text-center text-xl">

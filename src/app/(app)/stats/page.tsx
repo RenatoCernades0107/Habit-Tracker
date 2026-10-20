@@ -1,29 +1,24 @@
-import { ChartColumn } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { EmptyState } from "@/components/shell/empty-state";
 import { PageHeader } from "@/components/shell/page-header";
+import { StatsView } from "@/components/stats/stats-view";
 import { requireUser } from "@/lib/auth/session";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("nav");
-  return { title: t("stats") };
+  const t = await getTranslations("stats");
+  return { title: t("title") };
 }
 
-/** Placeholder until statistics arrive in Phase 2 (FR-STA). */
+/** Statistics (FR-STA), computed on the device from local data. */
 export default async function StatsPage() {
   await requireUser("/stats");
-  const t = await getTranslations("nav");
+  const t = await getTranslations("stats");
 
   return (
     <div className="grid gap-6">
-      <PageHeader title={t("stats")} />
-      <EmptyState
-        icon={ChartColumn}
-        title={t("placeholder.stats.title")}
-        description={t("placeholder.stats.description")}
-      />
+      <PageHeader title={t("title")} />
+      <StatsView />
     </div>
   );
 }

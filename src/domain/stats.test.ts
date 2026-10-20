@@ -3,7 +3,10 @@ import { describe, expect, it } from "vitest";
 import { addDays } from "./dates";
 import {
   bestStreak,
+  celebrationFor,
   completionRate,
+  groupRate,
+  habitDays,
   dailyScores,
   histories,
   needsAttention,
@@ -173,5 +176,48 @@ describe("needs attention", () => {
     expect(needsAttention(s!, TODAY, 1)).toBe(false);
     expect(weeksStruggling(w!, TODAY, 1)).toBeGreaterThanOrEqual(3);
     expect(weeksStruggling(s!, TODAY, 1)).toBe(0);
+  });
+});
+
+describe("group rate and habit days", () => {
+  it("sums chances across habits", () => {
+    const a = habit({ start_date: "2026-10-18" });
+    const b = habit({ start_date: "2026-10-18" });
+    const hs = input([a, b], [done(a, "2026-10-18"), done(a, "2026-10-19"), done(b, "2026-10-19")]);
+    expect(groupRate(hs, "2026-10-18", TODAY, TODAY, 1)).toBeCloseTo(3 / 4);
+  });
+
+  it("marks done, missed, skipped and pending days", () => {
+    const h = habit({ start_date: "2026-10-17" });
+    const [hh] = input([h], [done(h, "2026-10-17"), done(h, "2026-10-18", { status: "skipped" })]);
+    expect(habitDays(hh!, "2026-10-17", "2026-10-21", TODAY).map((d) => d.score)).toEqual([
+      1,
+      null,
+      0,
+      null,
+      null,
+    ]);
+  });
+});
+
+describe("celebrations", () => {
+  it("FR-STK-4/5: a milestone streak and a perfect day", () => {
+    const h = habit({ start_date: "2026-10-18" });
+    const checkIns = [done(h, "2026-10-18"), done(h, "2026-10-19")];
+    const result = celebrationFor(
+      { today: TODAY, weekStart: 1, habits: [h], versions: [], pauses: [], checkIns },
+      done(h, TODAY),
+    );
+    expect(result).toEqual({ milestone: 3, perfectDay: true });
+  });
+
+  it("nothing to celebrate when the day isn't complete", () => {
+    const a = habit({ start_date: TODAY });
+    const b = habit({ start_date: TODAY });
+    const result = celebrationFor(
+      { today: TODAY, weekStart: 1, habits: [a, b], versions: [], pauses: [], checkIns: [] },
+      done(a, TODAY),
+    );
+    expect(result).toEqual({ milestone: null, perfectDay: false });
   });
 });

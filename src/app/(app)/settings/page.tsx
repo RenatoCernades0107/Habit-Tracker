@@ -5,6 +5,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { PushSettings } from "@/components/push/push-settings";
 import { InstallGuide } from "@/components/pwa/install-guide";
 import { CategoriesSetting } from "@/components/settings/categories-setting";
+import { DataSetting } from "@/components/settings/data-setting";
 import { DaysSetting } from "@/components/settings/days-setting";
 import { LanguageSetting } from "@/components/settings/language-setting";
 import { RoutinesSetting } from "@/components/settings/routines-setting";
@@ -21,12 +22,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Settings, Phase 0 (FR-ACC-3, FR-I18N-1, docs/spec/07-ux.md §4.8). Section ids are link
+ * Settings (FR-ACC-3, FR-ACC-5, FR-DAT-1, FR-I18N-1, docs/spec/07-ux.md §4.8). Section ids are link
  * targets: Today's setup checklist opens #install and #notifications.
  */
 export default async function SettingsPage() {
   const user = await requireUser("/settings");
-  const [t, supabase] = await Promise.all([getTranslations("settings"), createClient()]);
+  const [t, tData, supabase] = await Promise.all([
+    getTranslations("settings"),
+    getTranslations("stats.data"),
+    createClient(),
+  ]);
 
   // RLS returns only this user's row. Only what the page shows is selected.
   const { data: profile, error } = await supabase
@@ -107,6 +112,10 @@ export default async function SettingsPage() {
         description={t("notifications.description")}
       >
         <PushSettings />
+      </SettingsSection>
+
+      <SettingsSection id="data" title={tData("title")} description={tData("description")}>
+        <DataSetting />
       </SettingsSection>
 
       <SettingsSection

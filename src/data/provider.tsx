@@ -122,10 +122,13 @@ export function DataProvider({ userId, children }: { userId: string; children: R
         buster: CACHE_VERSION,
         dehydrateOptions: { shouldDehydrateMutation: () => true },
       }}
-      onSuccess={async () => {
-        // Changes made offline, possibly before a reload, are sent now (FR-CHK-7).
-        await client.resumePausedMutations();
-        void client.invalidateQueries({ queryKey: snapshotKey(userId) });
+      onSuccess={() => {
+        // Changes made offline, possibly before a reload, are sent now (FR-CHK-7). Not awaited:
+        // the provider stays "restoring" until onSuccess settles, and the screen must render
+        // from the cache (pending changes replayed on top) without waiting for the network.
+        void client
+          .resumePausedMutations()
+          .then(() => client.invalidateQueries({ queryKey: snapshotKey(userId) }));
       }}
     >
       <UserIdContext value={userId}>

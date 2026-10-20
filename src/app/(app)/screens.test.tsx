@@ -14,11 +14,13 @@ import commonEn from "@messages/en/common.json";
 import habitsEn from "@messages/en/habits.json";
 import navEn from "@messages/en/nav.json";
 import settingsEn from "@messages/en/settings.json";
+import statsEn from "@messages/en/stats.json";
 import todayEn from "@messages/en/today.json";
 import commonEs from "@messages/es/common.json";
 import habitsEs from "@messages/es/habits.json";
 import navEs from "@messages/es/nav.json";
 import settingsEs from "@messages/es/settings.json";
+import statsEs from "@messages/es/stats.json";
 import todayEs from "@messages/es/today.json";
 
 import RootError from "../error";
@@ -44,6 +46,7 @@ const catalogs = {
     settings: settingsEn,
     auth: authEn,
     habits: habitsEn,
+    stats: statsEn,
   },
   es: {
     common: commonEs,
@@ -52,6 +55,7 @@ const catalogs = {
     settings: settingsEs,
     auth: authEn,
     habits: habitsEs,
+    stats: statsEs,
   },
 };
 
@@ -131,6 +135,12 @@ vi.mock("@/components/settings/routines-setting", () => ({
 }));
 vi.mock("@/components/settings/categories-setting", () => ({
   CategoriesSetting: () => <div data-testid="categories-setting" />,
+}));
+vi.mock("@/components/stats/stats-view", () => ({
+  StatsView: () => <div data-testid="stats-view" />,
+}));
+vi.mock("@/components/settings/data-setting", () => ({
+  DataSetting: () => <div data-testid="data-setting" />,
 }));
 vi.mock("@/components/settings/days-setting", () => ({
   DaysSetting: () => <div data-testid="days-setting" />,
@@ -243,7 +253,7 @@ describe("/today", () => {
 });
 
 describe("/habits and /stats", () => {
-  it("lists habits with a way to add one; stats say what's coming next", async () => {
+  it("lists habits with a way to add one; stats render on the device", async () => {
     show(await HabitsPage());
     expect(mocks.requireUser).toHaveBeenCalledWith("/habits");
     expect(screen.getByRole("heading", { level: 1, name: habitsEn.title })).toBeInTheDocument();
@@ -253,8 +263,8 @@ describe("/habits and /stats", () => {
 
     show(await StatsPage());
     expect(mocks.requireUser).toHaveBeenCalledWith("/stats");
-    expect(screen.getByRole("heading", { level: 1, name: navEn.stats })).toBeInTheDocument();
-    expect(screen.getByText(navEn.placeholder.stats.title)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: statsEn.title })).toBeInTheDocument();
+    expect(screen.getByTestId("stats-view")).toBeInTheDocument();
   });
 });
 
@@ -276,6 +286,7 @@ describe("/settings", () => {
       "days",
       "install",
       "notifications",
+      "data",
       "account",
     ]);
 
@@ -294,6 +305,9 @@ describe("/settings", () => {
       within(screen.getByRole("region", { name: settingsEn.notifications.title })).getByTestId(
         "push-settings",
       ),
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("region", { name: statsEn.data.title })).getByTestId("data-setting"),
     ).toBeInTheDocument();
     const account = screen.getByRole("region", { name: settingsEn.account.title });
     expect(within(account).getByRole("button", { name: "Sign out" })).toBeInTheDocument();

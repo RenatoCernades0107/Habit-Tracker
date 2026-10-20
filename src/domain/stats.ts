@@ -1,7 +1,7 @@
 import { addDays, isoWeekday, weekStartOf, type IsoDate } from "./dates";
-import { weekProgress, type HabitHistory } from "./progress";
+import { currentStreak, weekProgress, type HabitHistory } from "./progress";
 import { fallsOn, isActive, isFixed, scheduleOn } from "./schedule";
-import { credit, occurrenceState } from "./state";
+import { credit, occurrenceState, type OccurrenceState } from "./state";
 import type { CheckInRow, HabitRow, HabitVersionRow, PauseRow } from "./types";
 
 export type StatsInput = {
@@ -128,14 +128,8 @@ function flexibleWeek(h: HabitHistory, week: IsoDate, today: IsoDate, weekStart:
   return { done: p.done, target: p.target };
 }
 
-/** R-SCORE-4: completion rate of one habit over [from, to], or null with nothing to judge. */
-export function completionRate(
-  h: HabitHistory,
-  from: IsoDate,
-  to: IsoDate,
-  today: IsoDate,
-  weekStart: number,
-): number | null {
+/** Done and possible credits behind a completion rate (R-SCORE-4). */
+function rateParts(h: HabitHistory, from: IsoDate, to: IsoDate, today: IsoDate, weekStart: number) {
   let num = 0;
   let den = 0;
   for (let d = from; d <= to && d <= today; d = addDays(d, 1)) {
@@ -152,7 +146,66 @@ export function completionRate(
       den += flex.target;
     }
   }
+  return { num, den };
+}
+
+/** R-SCORE-4: completion rate of one habit over [from, to], or null with nothing to judge. */
+export function completionRate(
+  h: HabitHistory,
+  from: IsoDate,
+  to: IsoDate,
+  today: IsoDate,
+  weekStart: number,
+): number | null {
+  const { num, den } = rateParts(h, from, to, today, weekStart);
   return den === 0 ? null : num / den;
+}
+
+/** Completion rate of several habits together, e.g. a routine or category (FR-STA-3). */
+export function groupRate(
+  hs: readonly HabitHistory[],
+  from: IsoDate,
+  to: IsoDate,
+  today: IsoDate,
+  weekStart: number,
+): number | null {
+  let num = 0;
+  let den = 0;
+  for (const h of hs) {
+    const p = rateParts(h, from, to, today, weekStart);
+    num += p.num;
+    den += p.den;
+  }
+  return den === 0 ? null : num / den;
+}
+
+/**
+ * One habit's days for its heatmap (FR-STA-2): 1 done, 0…1 partly done, 0 missed, null when
+ * nothing was due (not scheduled, paused, skipped, or still pending).
+ */
+export function habitDays(h: HabitHistory, from: IsoDate, to: IsoDate, today: IsoDate) {
+  const out: { date: IsoDate; score: number | null; state: OccurrenceState | null }[] = [];
+  for (let d = from; d <= to; d = addDays(d, 1)) {
+    if (d > today || !isActive(h.habit, h.pauses, d)) {
+      out.push({ date: d, score: null, state: null });
+      continue;
+    }
+    const schedule = scheduleOn(h.habit, h.versions, d);
+    const checkIn = h.checkIns.get(d);
+    const state = occurrenceState(schedule, checkIn, d, today);
+    // Flexible habits have no due days: only what was done shows.
+    if (!isFixed(schedule) || !fallsOn(schedule, d)) {
+      out.push({
+        date: d,
+        score: state === "done" ? 1 : null,
+        state: state === "done" ? state : null,
+      });
+      continue;
+    }
+    const c = credit(state, schedule, checkIn);
+    out.push({ date: d, score: state === "pending" ? null : c, state });
+  }
+  return out;
 }
 
 /** R-STREAK-3: the longest run in the whole history, under the current-streak rules. */
@@ -235,4 +288,24 @@ export function weeksStruggling(h: HabitHistory, today: IsoDate, weekStart: numb
     weeks++;
   }
   return weeks;
+}
+
+/**
+ * What a check-in is worth celebrating (FR-STK-4, FR-STK-5): a streak milestone reached today,
+ * and a perfect day on the check-in's date. `next` is the row as it will be after the change.
+ */
+export function celebrationFor(input: StatsInput, next: CheckInRow) {
+  const key = (c: CheckInRow) => c.habit_id === next.habit_id && c.local_date === next.local_date;
+  const before = histories(input);
+  const after = histories({ ...input, checkIns: [...input.checkIns.filter((c) => !key(c)), next] });
+  const hb = before.find((h) => h.habit.id === next.habit_id);
+  const ha = after.find((h) => h.habit.id === next.habit_id);
+  if (!hb || !ha) return { milestone: null, perfectDay: false };
+  const milestone = reachedMilestone(
+    currentStreak(hb, input.today, input.weekStart),
+    currentStreak(ha, input.today, input.weekStart),
+  );
+  const [sb] = dailyScores(before, next.local_date, next.local_date, input.today);
+  const [sa] = dailyScores(after, next.local_date, next.local_date, input.today);
+  return { milestone, perfectDay: sa?.score === 1 && sb?.score !== 1 };
 }

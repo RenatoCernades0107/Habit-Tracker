@@ -128,12 +128,14 @@ test("archiving hides a habit from Today; restoring brings it back", async ({ pa
 
   await page.goto("/habits");
   await page.getByRole("link", { name: /Floss/ }).click();
+  await page.getByRole("link", { name: "Edit habit" }).click();
   await page.getByRole("button", { name: "Archive" }).click();
   await page.waitForURL(/\/habits$/);
   await expect(page.getByRole("link", { name: /Floss/ })).toHaveCount(0);
 
   await page.getByRole("radio", { name: "Archived" }).click();
   await page.getByRole("link", { name: /Floss/ }).click();
+  await page.getByRole("link", { name: "Edit habit" }).click();
   await page.getByRole("button", { name: "Restore" }).click();
   await page.goto("/today");
   await expect(page.getByRole("button", { name: "Mark Floss done" })).toBeVisible();

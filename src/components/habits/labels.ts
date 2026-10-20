@@ -1,8 +1,10 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useTranslations, type DateTimeFormatOptions } from "next-intl";
+
 import { useCallback } from "react";
 
+import { dateOfHabitDay } from "@/domain/day";
 import type { Tables } from "@/lib/supabase/database.types";
 
 type Named = { system_key: string | null; name: string | null };
@@ -50,6 +52,16 @@ export function useTimeFormat() {
         timeZone: "UTC",
       });
     },
+    [format],
+  );
+}
+
+/** A habit day ("2026-10-20") as localized text; medium date style by default. */
+export function useDayFormat() {
+  const format = useFormatter();
+  return useCallback(
+    (day: string, options: DateTimeFormatOptions = { dateStyle: "medium" }) =>
+      format.dateTime(dateOfHabitDay(day), { ...options, timeZone: "UTC" }),
     [format],
   );
 }
