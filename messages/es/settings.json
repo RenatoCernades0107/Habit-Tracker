@@ -31,5 +31,36 @@
   "account": {
     "title": "Cuenta",
     "description": "Cerrar sesión en todos los dispositivos también la cierra en tus otros teléfonos y computadoras."
+  },
+  "routines": {
+    "title": "Rutinas",
+    "description": "Grupos de hábitos a una hora del día. Si eliminas una, sus hábitos pasan a En cualquier momento.",
+    "name": "Nombre",
+    "start": "Empieza a las",
+    "add": "Añadir rutina",
+    "newName": "Nueva rutina",
+    "delete": "Eliminar {name}",
+    "saved": "Rutina guardada."
+  },
+  "categories": {
+    "title": "Categorías",
+    "description": "Si eliminas una, sus hábitos quedan sin categoría.",
+    "name": "Nombre",
+    "add": "Añadir categoría",
+    "newName": "Nueva categoría",
+    "delete": "Eliminar {name}"
+  },
+  "days": {
+    "title": "Días y límites",
+    "description": "Cómo cuenta Restart tus días.",
+    "dayEnd": "El día termina a las",
+    "dayEndHint": "Hasta esa hora, la noche cuenta para el día anterior.",
+    "weekStart": "La semana empieza el",
+    "monday": "Lunes",
+    "sunday": "Domingo",
+    "editWindow": "Días que puedes editar hacia atrás",
+    "skips": "Saltos por hábito al mes",
+    "timezone": "Zona horaria",
+    "saved": "Guardado."
   }
 }

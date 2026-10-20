@@ -5,7 +5,16 @@ import type { Messages } from "./types";
  * One JSON file per namespace and language: `messages/<locale>/<namespace>.json`.
  * Keeping namespaces in separate files lets features add strings without conflicts.
  */
-export const namespaces = ["common", "nav", "auth", "pwa", "today", "settings", "push"] as const;
+export const namespaces = [
+  "common",
+  "nav",
+  "auth",
+  "pwa",
+  "today",
+  "settings",
+  "push",
+  "habits",
+] as const;
 
 export type Namespace = (typeof namespaces)[number];
 

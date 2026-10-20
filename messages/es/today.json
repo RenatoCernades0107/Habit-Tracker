@@ -38,5 +38,86 @@
         "description": "Ve tus hábitos junto a tus eventos."
       }
     }
+  },
+  "day": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "previous": "Día anterior",
+    "next": "Día siguiente",
+    "backToToday": "Volver a hoy"
+  },
+  "score": {
+    "label": "Puntaje",
+    "value": "{percent}%",
+    "rest": "Descanso",
+    "summary": "{done} de {total} hechos"
+  },
+  "bestStreak": "🔥 {name}: {days, plural, one {# día} other {# días}}",
+  "weekProgress": "{done} de {target} esta semana",
+  "streak": "{days, plural, one {racha de # día} other {racha de # días}}",
+  "attention": {
+    "fixed": "No falles dos veces",
+    "weekly": "Semana en riesgo"
+  },
+  "state": {
+    "done": "hecho",
+    "partial": "a medias",
+    "skipped": "saltado",
+    "pending": "pendiente",
+    "missed": "no hecho"
+  },
+  "row": {
+    "complete": "Marcar {name} como hecho",
+    "clear": "Marcar {name} como no hecho",
+    "add": "Sumar {step} a {name}",
+    "more": "Más opciones de {name}"
+  },
+  "progress": "{value} de {target} {unit}",
+  "skippedBecause": "Saltado · {reason}",
+  "reasons": {
+    "sick": "Enfermedad",
+    "travel": "Viaje",
+    "rest": "Descanso",
+    "other": "Otro"
+  },
+  "sheet": {
+    "value": "Valor",
+    "setValue": "Guardar",
+    "complete": "Marcar como hecho",
+    "skip": "Saltar",
+    "skipReason": "¿Por qué lo saltas?",
+    "skipsLeft": "{count, plural, =0 {No te quedan saltos este mes} one {Te queda # salto este mes} other {Te quedan # saltos este mes}}",
+    "note": "Nota",
+    "notePlaceholder": "¿Cómo te fue?",
+    "saveNote": "Guardar nota",
+    "clear": "Borrar",
+    "edit": "Editar hábito",
+    "close": "Cerrar"
+  },
+  "toast": {
+    "done": "{name} hecho.",
+    "partial": "{name} actualizado.",
+    "skipped": "{name} saltado.",
+    "cleared": "{name} borrado.",
+    "noted": "Nota guardada.",
+    "undo": "Deshacer"
+  },
+  "sync": {
+    "synced": "Sincronizado",
+    "pending": "{count, plural, one {# cambio por sincronizar} other {# cambios por sincronizar}}",
+    "offline": "Sin conexión · guardado en este dispositivo"
+  },
+  "restDay": {
+    "title": "Día de descanso",
+    "description": "No hay nada programado para este día. Disfrútalo."
+  },
+  "loading": "Cargando tus hábitos…",
+  "loadError": "No se pudieron cargar tus hábitos. Revisa tu conexión e inténtalo de nuevo.",
+  "timezone": {
+    "title": "¿Actualizar tu zona horaria?",
+    "description": "Parece que estás en {device}. Tus días se cuentan en {current}.",
+    "update": "Usar {device}",
+    "keep": "Mantener {current}",
+    "updated": "Zona horaria actualizada."
   }
 }

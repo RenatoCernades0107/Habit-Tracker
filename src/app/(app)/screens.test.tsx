@@ -11,10 +11,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppShell } from "@/components/shell/app-shell";
 import authEn from "@messages/en/auth.json";
 import commonEn from "@messages/en/common.json";
+import habitsEn from "@messages/en/habits.json";
 import navEn from "@messages/en/nav.json";
 import settingsEn from "@messages/en/settings.json";
 import todayEn from "@messages/en/today.json";
 import commonEs from "@messages/es/common.json";
+import habitsEs from "@messages/es/habits.json";
 import navEs from "@messages/es/nav.json";
 import settingsEs from "@messages/es/settings.json";
 import todayEs from "@messages/es/today.json";
@@ -35,8 +37,22 @@ const DESKTOP_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36";
 
 const catalogs = {
-  en: { common: commonEn, nav: navEn, today: todayEn, settings: settingsEn, auth: authEn },
-  es: { common: commonEs, nav: navEs, today: todayEs, settings: settingsEs, auth: authEn },
+  en: {
+    common: commonEn,
+    nav: navEn,
+    today: todayEn,
+    settings: settingsEn,
+    auth: authEn,
+    habits: habitsEn,
+  },
+  es: {
+    common: commonEs,
+    nav: navEs,
+    today: todayEs,
+    settings: settingsEs,
+    auth: authEn,
+    habits: habitsEs,
+  },
 };
 
 const request = vi.hoisted(() => ({
@@ -97,6 +113,28 @@ vi.mock("@/lib/supabase/client", () => ({ createClient: vi.fn() }));
 vi.mock("@/i18n/actions", () => ({ setUserLocale: vi.fn() }));
 vi.mock("next-themes", () => ({ useTheme: () => ({ theme: "system", setTheme: vi.fn() }) }));
 vi.mock("sonner", () => ({ toast: Object.assign(vi.fn(), { error: vi.fn() }) }));
+// Client screens that render from the device cache are covered by the e2e tests;
+// here only their placement and the server's decisions matter.
+vi.mock("@/data/provider", () => ({
+  DataProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+vi.mock("@/components/today/today-view", () => ({
+  TodayView: ({ setup }: { setup: React.ReactNode }) => <div data-testid="today-view">{setup}</div>,
+}));
+vi.mock("@/components/today/timezone-prompt", () => ({ TimezonePrompt: () => null }));
+vi.mock("@/components/push/push-subscription-sync", () => ({ PushSubscriptionSync: () => null }));
+vi.mock("@/components/habits/habit-list", () => ({
+  HabitList: () => <div data-testid="habit-list" />,
+}));
+vi.mock("@/components/settings/routines-setting", () => ({
+  RoutinesSetting: () => <div data-testid="routines-setting" />,
+}));
+vi.mock("@/components/settings/categories-setting", () => ({
+  CategoriesSetting: () => <div data-testid="categories-setting" />,
+}));
+vi.mock("@/components/settings/days-setting", () => ({
+  DaysSetting: () => <div data-testid="days-setting" />,
+}));
 // Other areas' components: only their placement matters here.
 vi.mock("@/components/pwa/install-guide", () => ({
   InstallGuide: () => <div data-testid="install-guide" />,
@@ -149,7 +187,12 @@ describe("(app) layout", () => {
   it("checks the session, then renders the shell around the page", async () => {
     const layout = await AppLayout({ children: <p>Page content</p> });
     expect(mocks.requireUser).toHaveBeenCalled();
-    expect(isValidElement(layout) && layout.type).toBe(AppShell);
+    // The local data layer wraps the shell for the signed-in user.
+    expect(isValidElement(layout) && (layout.props as { userId: string }).userId).toBe("user-1");
+    const shell = isValidElement(layout)
+      ? (layout.props as { children: React.ReactElement }).children
+      : null;
+    expect(isValidElement(shell) && shell.type).toBe(AppShell);
 
     show(await AppShell({ children: <p>Page content</p> }));
     const main = screen.getByRole("main");
@@ -175,44 +218,13 @@ describe("(app) layout", () => {
 });
 
 describe("/today", () => {
-  it("shows the habit day, the setup checklist and the empty state", async () => {
-    vi.useFakeTimers({ toFake: ["Date"] });
-    vi.setSystemTime(new Date("2026-10-20T15:00:00Z")); // 10:00 in Lima
-
+  it("checks the session and adds the setup checklist", async () => {
     show(await TodayPage());
 
     expect(mocks.requireUser).toHaveBeenCalledWith("/today");
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent("Tuesday, October 20");
-    expect(heading.querySelector("time")).toHaveAttribute("dateTime", "2026-10-20");
+    expect(screen.getByTestId("today-view")).toBeInTheDocument();
     expect(screen.getByRole("region", { name: todayEn.setup.title })).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 2, name: todayEn.empty.title }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: todayEn.empty.action })).toHaveAttribute(
-      "href",
-      "/habits",
-    );
-  });
-
-  it("is still the previous day before 04:00 (R-DAY-2)", async () => {
-    vi.useFakeTimers({ toFake: ["Date"] });
-    vi.setSystemTime(new Date("2026-10-20T08:30:00Z")); // 03:30 in Lima
-
-    show(await TodayPage());
-
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Monday, October 19");
-  });
-
-  it("prints the date in Spanish", async () => {
-    vi.useFakeTimers({ toFake: ["Date"] });
-    vi.setSystemTime(new Date("2026-10-20T15:00:00Z"));
-    request.locale = "es";
-
-    show(await TodayPage());
-
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("martes, 20 de octubre");
-    expect(screen.getByText(todayEs.empty.title)).toBeInTheDocument();
+    expect(screen.queryByText(todayEn.setup.items.siri.title)).not.toBeInTheDocument();
   });
 
   it("adds the iPhone-only steps for iPhone user agents", async () => {
@@ -226,16 +238,17 @@ describe("/today", () => {
     request.cookies.set("RESTART_SETUP_HIDDEN", "1");
     show(await TodayPage());
     expect(screen.queryByRole("region", { name: todayEn.setup.title })).not.toBeInTheDocument();
-    expect(screen.getByText(todayEn.empty.title)).toBeInTheDocument();
+    expect(screen.getByTestId("today-view")).toBeInTheDocument();
   });
 });
 
 describe("/habits and /stats", () => {
-  it("say what's coming next", async () => {
+  it("lists habits with a way to add one; stats say what's coming next", async () => {
     show(await HabitsPage());
     expect(mocks.requireUser).toHaveBeenCalledWith("/habits");
-    expect(screen.getByRole("heading", { level: 1, name: navEn.habits })).toBeInTheDocument();
-    expect(screen.getByText(navEn.placeholder.habits.title)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: habitsEn.title })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: habitsEn.new })).toHaveAttribute("href", "/habits/new");
+    expect(screen.getByTestId("habit-list")).toBeInTheDocument();
     cleanup();
 
     show(await StatsPage());
@@ -254,7 +267,17 @@ describe("/settings", () => {
     expect(mocks.requireUser).toHaveBeenCalledWith("/settings");
     expect(screen.getByRole("heading", { level: 1, name: settingsEn.title })).toBeInTheDocument();
     const ids = [...document.querySelectorAll("section[id]")].map((section) => section.id);
-    expect(ids).toEqual(["profile", "language", "theme", "install", "notifications", "account"]);
+    expect(ids).toEqual([
+      "profile",
+      "language",
+      "theme",
+      "routines",
+      "categories",
+      "days",
+      "install",
+      "notifications",
+      "account",
+    ]);
 
     const profile = screen.getByRole("region", { name: settingsEn.profile.title });
     expect(within(profile).getByText("ana@example.com")).toBeInTheDocument();

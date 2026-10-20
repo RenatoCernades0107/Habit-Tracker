@@ -1,5 +1,7 @@
 import { PushSubscriptionSync } from "@/components/push/push-subscription-sync";
 import { AppShell } from "@/components/shell/app-shell";
+import { TimezonePrompt } from "@/components/today/timezone-prompt";
+import { DataProvider } from "@/data/provider";
 import { requireUser } from "@/lib/auth/session";
 
 /**
@@ -9,11 +11,14 @@ import { requireUser } from "@/lib/auth/session";
  * with its own path; both share one cached `getUser()` per request.
  */
 export default async function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  await requireUser();
+  const user = await requireUser();
   return (
-    <AppShell>
-      {children}
-      <PushSubscriptionSync />
-    </AppShell>
+    <DataProvider userId={user.id}>
+      <AppShell>
+        {children}
+        <PushSubscriptionSync />
+        <TimezonePrompt />
+      </AppShell>
+    </DataProvider>
   );
 }

@@ -1,5 +1,6 @@
 import type auth from "@messages/en/auth.json";
 import type common from "@messages/en/common.json";
+import type habits from "@messages/en/habits.json";
 import type nav from "@messages/en/nav.json";
 import type push from "@messages/en/push.json";
 import type pwa from "@messages/en/pwa.json";
@@ -15,4 +16,5 @@ export type Messages = {
   today: typeof today;
   settings: typeof settings;
   push: typeof push;
+  habits: typeof habits;
 };

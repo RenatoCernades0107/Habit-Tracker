@@ -31,5 +31,36 @@
   "account": {
     "title": "Account",
     "description": "Signing out of all devices also signs you out on your other phones and computers."
+  },
+  "routines": {
+    "title": "Routines",
+    "description": "Groups of habits at a time of day. Deleting one moves its habits to Anytime.",
+    "name": "Name",
+    "start": "Starts at",
+    "add": "Add routine",
+    "newName": "New routine",
+    "delete": "Delete {name}",
+    "saved": "Routine saved."
+  },
+  "categories": {
+    "title": "Categories",
+    "description": "Deleting one leaves its habits without a category.",
+    "name": "Name",
+    "add": "Add category",
+    "newName": "New category",
+    "delete": "Delete {name}"
+  },
+  "days": {
+    "title": "Days and limits",
+    "description": "How Restart counts your days.",
+    "dayEnd": "Day ends at",
+    "dayEndHint": "Late nights count for the day before until this time.",
+    "weekStart": "Week starts on",
+    "monday": "Monday",
+    "sunday": "Sunday",
+    "editWindow": "Days you can edit back",
+    "skips": "Skips per habit per month",
+    "timezone": "Timezone",
+    "saved": "Saved."
   }
 }

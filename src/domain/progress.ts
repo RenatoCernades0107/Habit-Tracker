@@ -1,11 +1,5 @@
 import { addDays, weekDays, weekStartOf, type IsoDate } from "./dates";
-import {
-  effectiveWeeklyTarget,
-  fallsOn,
-  isActive,
-  isFixed,
-  scheduleOn,
-} from "./schedule";
+import { effectiveWeeklyTarget, fallsOn, isActive, isFixed, scheduleOn } from "./schedule";
 import { occurrenceState } from "./state";
 import type { CheckInRow, HabitRow, HabitVersionRow, PauseRow } from "./types";
 

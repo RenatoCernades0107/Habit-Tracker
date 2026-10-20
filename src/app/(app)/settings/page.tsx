@@ -4,7 +4,10 @@ import { getTranslations } from "next-intl/server";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { PushSettings } from "@/components/push/push-settings";
 import { InstallGuide } from "@/components/pwa/install-guide";
+import { CategoriesSetting } from "@/components/settings/categories-setting";
+import { DaysSetting } from "@/components/settings/days-setting";
 import { LanguageSetting } from "@/components/settings/language-setting";
+import { RoutinesSetting } from "@/components/settings/routines-setting";
 import { ScrollToHash } from "@/components/settings/scroll-to-hash";
 import { sectionHeadingId, SettingsSection } from "@/components/settings/settings-section";
 import { ThemeSetting } from "@/components/settings/theme-setting";
@@ -68,6 +71,26 @@ export default async function SettingsPage() {
 
       <SettingsSection id="theme" title={t("theme.title")} description={t("theme.description")}>
         <ThemeSetting labelledBy={sectionHeadingId("theme")} userId={user.id} />
+      </SettingsSection>
+
+      <SettingsSection
+        id="routines"
+        title={t("routines.title")}
+        description={t("routines.description")}
+      >
+        <RoutinesSetting />
+      </SettingsSection>
+
+      <SettingsSection
+        id="categories"
+        title={t("categories.title")}
+        description={t("categories.description")}
+      >
+        <CategoriesSetting />
+      </SettingsSection>
+
+      <SettingsSection id="days" title={t("days.title")} description={t("days.description")}>
+        <DaysSetting />
       </SettingsSection>
 
       <SettingsSection

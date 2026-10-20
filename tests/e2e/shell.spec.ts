@@ -90,7 +90,7 @@ test.describe("Today", () => {
     // Siri and Apple Health are iPhone-only; the mobile project uses an iPhone user agent.
     const isIPhone = /iPhone/.test(await page.evaluate(() => navigator.userAgent));
     await expect(checklist.getByRole("listitem")).toHaveCount(isIPhone ? 5 : 3);
-    await expect(page.locator('main a[href="/habits"]')).toBeVisible();
+    await expect(page.locator('main a[href="/habits/new"]')).toBeVisible();
 
     // Hydrated and checked once the list is no longer busy.
     await expect(checklist.locator("ul")).not.toHaveAttribute("aria-busy", "true");
