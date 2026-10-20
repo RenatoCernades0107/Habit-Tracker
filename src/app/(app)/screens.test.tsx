@@ -14,12 +14,14 @@ import commonEn from "@messages/en/common.json";
 import habitsEn from "@messages/en/habits.json";
 import navEn from "@messages/en/nav.json";
 import settingsEn from "@messages/en/settings.json";
+import shortcutsEn from "@messages/en/shortcuts.json";
 import statsEn from "@messages/en/stats.json";
 import todayEn from "@messages/en/today.json";
 import commonEs from "@messages/es/common.json";
 import habitsEs from "@messages/es/habits.json";
 import navEs from "@messages/es/nav.json";
 import settingsEs from "@messages/es/settings.json";
+import shortcutsEs from "@messages/es/shortcuts.json";
 import statsEs from "@messages/es/stats.json";
 import todayEs from "@messages/es/today.json";
 
@@ -47,6 +49,7 @@ const catalogs = {
     auth: authEn,
     habits: habitsEn,
     stats: statsEn,
+    shortcuts: shortcutsEn,
   },
   es: {
     common: commonEs,
@@ -56,6 +59,7 @@ const catalogs = {
     auth: authEn,
     habits: habitsEs,
     stats: statsEs,
+    shortcuts: shortcutsEs,
   },
 };
 
@@ -141,6 +145,9 @@ vi.mock("@/components/stats/stats-view", () => ({
 }));
 vi.mock("@/components/settings/notification-prefs", () => ({
   NotificationPrefs: () => <div data-testid="notification-prefs" />,
+}));
+vi.mock("@/components/settings/shortcuts-setting", () => ({
+  ShortcutsSetting: () => <div data-testid="shortcuts-setting" />,
 }));
 vi.mock("@/components/settings/data-setting", () => ({
   DataSetting: () => <div data-testid="data-setting" />,
@@ -289,6 +296,7 @@ describe("/settings", () => {
       "days",
       "install",
       "notifications",
+      "shortcuts",
       "data",
       "account",
     ]);

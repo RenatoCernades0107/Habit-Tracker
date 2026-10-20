@@ -1,9 +1,10 @@
 "use client";
 
-import { Pencil, Trophy } from "lucide-react";
+import { Copy, Pencil, Trophy } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { useMemo } from "react";
+import { toast } from "sonner";
 
 import { EmptyState } from "@/components/shell/empty-state";
 import { Bars } from "@/components/stats/bars";
@@ -28,6 +29,7 @@ const HISTORY_ROWS = 60;
 export function HabitDetail({ habitId }: { habitId: string }) {
   const t = useTranslations("stats");
   const tHabits = useTranslations("habits");
+  const tShortcuts = useTranslations("shortcuts");
   const format = useFormatter();
   const day = useDayFormat();
   const summary = useScheduleSummary();
@@ -107,12 +109,27 @@ export function HabitDetail({ habitId }: { habitId: string }) {
             {habit.cue ? ` · ${habit.cue}` : ""}
           </p>
         </div>
-        <Button asChild variant="outline">
-          <Link href={`/habits/${habit.id}/edit`}>
-            <Pencil aria-hidden="true" />
-            {t("habit.edit")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link href={`/habits/${habit.id}/edit`}>
+              <Pencil aria-hidden="true" />
+              {t("habit.edit")}
+            </Link>
+          </Button>
+          {/* FR-SIR-7: direct shortcuts ("I meditated") use the ID, so renaming doesn't break them. */}
+          <Button
+            variant="ghost"
+            onClick={() =>
+              void navigator.clipboard
+                .writeText(habit.id)
+                .then(() => toast(tShortcuts("copiedId")))
+                .catch(() => {})
+            }
+          >
+            <Copy aria-hidden="true" />
+            {tShortcuts("copyId")}
+          </Button>
+        </div>
       </header>
 
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">

@@ -1,0 +1,83 @@
+{
+  "speech": {
+    "left": "{count, plural, =0 {¡Todo hecho por hoy! 🎉} one {Te queda 1 hábito: {list}.} other {Te quedan # hábitos: {list}.}}",
+    "restDay": "Hoy no hay nada programado.",
+    "done": "Listo, {name} ✅.",
+    "streakDays": "Llevas {count} días seguidos.",
+    "streakWeeks": "Llevas {count} semanas seguidas.",
+    "routineLeft": "{count, plural, one {Queda 1 hábito en {routine}.} other {Quedan # hábitos en {routine}.}}",
+    "dayLeft": "{count, plural, one {Te queda 1 hábito hoy.} other {Te quedan # hábitos hoy.}}",
+    "alreadyDone": "{name} ya estaba hecho hoy.",
+    "progress": "{name}: {value} de {target} {unit}.",
+    "progressDone": "{name}: {value} de {target} {unit} ✅.",
+    "perfect": "¡Día perfecto! 🎉 Completaste todo.",
+    "milestone": "🔥 ¡{count} seguidos!",
+    "skipped": "Salté {name} por hoy.",
+    "undone": "Deshice {name}.",
+    "summary": "Vas {score}%.",
+    "summaryLeft": "Te faltan {list}.",
+    "summaryDone": "Todo hecho.",
+    "weekly": "{name}: {done} de {target} esta semana.",
+    "update": "Hay una nueva versión del atajo en los ajustes de Restart."
+  },
+  "routines": {
+    "morning": "Mañana",
+    "evening": "Noche"
+  },
+  "errors": {
+    "unauthorized": "Tu token de Restart no es válido. Crea uno nuevo en Ajustes.",
+    "forbidden_scope": "Este token no puede hacer eso.",
+    "habit_not_found": "No encontré ningún hábito llamado {query}.",
+    "habit_id_not_found": "Ese hábito ya no existe.",
+    "ambiguous_habit": "¿Cuál? {list}.",
+    "nothing_to_undo": "No hay nada que deshacer hoy.",
+    "validation_error": "Eso no funcionó. Revisa el atajo.",
+    "outside_edit_window": "Ese día ya no se puede editar.",
+    "not_allowed_for_habit": "Eso no es posible para este hábito.",
+    "skip_limit_reached": "No te quedan saltos este mes para este hábito.",
+    "rate_limited": "Demasiadas solicitudes. Inténtalo en un minuto.",
+    "internal": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "settings": {
+    "title": "Siri y Atajos",
+    "description": "Registra hábitos con la voz, un widget o el botón de Acción (iPhone, iPad y Mac).",
+    "steps": {
+      "title": "Configúralo",
+      "one": "Crea un token abajo y cópialo.",
+      "two": "Instala el atajo en tu idioma y pega el token cuando lo pida.",
+      "three": "Di «Oye Siri, Registrar hábito».",
+      "four": "Esta página muestra ✅ Conectado después de la primera llamada."
+    },
+    "install": "Instalar atajos",
+    "installEs": "Español",
+    "installEn": "English",
+    "installSoon": "Los enlaces de iCloud aún no están publicados. Crea los atajos con las recetas del repositorio (shortcuts/).",
+    "names": "Atajos: Registrar hábito, Deshacer hábito, Cómo voy.",
+    "server": "Dirección del servidor",
+    "tokens": "Tokens",
+    "tokenName": "Nombre",
+    "tokenNamePlaceholder": "Mi iPhone",
+    "create": "Crear token",
+    "created": "Cópialo ahora. No se volverá a mostrar.",
+    "copy": "Copiar",
+    "copied": "Copiado.",
+    "revoke": "Revocar {name}",
+    "revoked": "Token revocado.",
+    "none": "Aún no hay tokens.",
+    "lastUsed": "Último uso {date}",
+    "neverUsed": "Aún sin usar",
+    "connected": "✅ Conectado",
+    "waiting": "Esperando la primera llamada…",
+    "limit": "Puedes tener hasta 10 tokens.",
+    "failed": "No se pudo hacer. Inténtalo de nuevo.",
+    "quick": {
+      "title": "Un toque, sin voz",
+      "widget": "Pantalla de inicio: añade el widget de Atajos y elige «Registrar hábito».",
+      "action": "Botón de Acción (iPhone 15 Pro y posteriores): Ajustes → Botón de Acción → Atajo → Registrar hábito.",
+      "backTap": "Toque posterior: Ajustes → Accesibilidad → Tocar → Toque posterior → Registrar hábito.",
+      "direct": "Para un solo hábito («Ya medité»), duplica «Registrar hábito», quita la lista y pega el ID del hábito desde su página en Restart."
+    }
+  },
+  "copyId": "Copiar ID para Atajos",
+  "copiedId": "ID del hábito copiado."
+}

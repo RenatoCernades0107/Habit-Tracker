@@ -23,6 +23,43 @@ export type Database = {
   };
   public: {
     Tables: {
+      api_tokens: {
+        Row: {
+          created_at: string;
+          id: string;
+          last_used_at: string | null;
+          name: string;
+          revoked_at: string | null;
+          scopes: string[];
+          token_hash: string;
+          token_prefix: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          last_used_at?: string | null;
+          name: string;
+          revoked_at?: string | null;
+          scopes?: string[];
+          token_hash: string;
+          token_prefix: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          last_used_at?: string | null;
+          name?: string;
+          revoked_at?: string | null;
+          scopes?: string[];
+          token_hash?: string;
+          token_prefix?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       categories: {
         Row: {
           color: string;
@@ -526,6 +563,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      rate_limits: {
+        Row: {
+          count: number;
+          key: string;
+          window_start: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          count?: number;
+          key: string;
+          window_start: string;
+        };
+        Update: {
+          count?: number;
+          key?: string;
+          window_start?: string;
+        };
+        Relationships: [];
+      };
       routines: {
         Row: {
           created_at: string;
@@ -708,6 +764,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      normalize_text: { Args: { p_text: string }; Returns: string };
       seed_user_defaults: { Args: { p_user_id: string }; Returns: undefined };
       srv_apply_check_in_op: {
         Args: {
@@ -780,13 +837,34 @@ export type Database = {
         Args: { p_at: string; p_day_start_hour: number; p_timezone: string };
         Returns: string;
       };
+      srv_match_habit: {
+        Args: { p_query: string; p_user_id: string };
+        Returns: {
+          habit_id: string;
+          name: string;
+          score: number;
+        }[];
+      };
       srv_nightly_cleanup: { Args: Record<PropertyKey, never>; Returns: number };
+      srv_rate_limit: {
+        Args: { p_key: string; p_max: number; p_window: string };
+        Returns: boolean;
+      };
       srv_replace_plan: {
         Args: { p_from: string; p_rows: Json; p_through: string; p_user_id: string };
         Returns: number;
       };
       srv_tick_if_due: { Args: Record<PropertyKey, never>; Returns: undefined };
+      srv_undo_last_op: { Args: { p_user_id: string }; Returns: Json };
       srv_user_today: { Args: { p_user_id: string }; Returns: string };
+      srv_verify_api_token: {
+        Args: { p_hash: string };
+        Returns: {
+          scopes: string[];
+          token_id: string;
+          user_id: string;
+        }[];
+      };
       undo_last_op: {
         Args: Record<PropertyKey, never>;
         Returns: {

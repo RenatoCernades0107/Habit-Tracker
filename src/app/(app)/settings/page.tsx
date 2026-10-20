@@ -11,6 +11,7 @@ import { LanguageSetting } from "@/components/settings/language-setting";
 import { NotificationPrefs } from "@/components/settings/notification-prefs";
 import { RoutinesSetting } from "@/components/settings/routines-setting";
 import { ScrollToHash } from "@/components/settings/scroll-to-hash";
+import { ShortcutsSetting } from "@/components/settings/shortcuts-setting";
 import { sectionHeadingId, SettingsSection } from "@/components/settings/settings-section";
 import { ThemeSetting } from "@/components/settings/theme-setting";
 import { PageHeader } from "@/components/shell/page-header";
@@ -28,9 +29,10 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function SettingsPage() {
   const user = await requireUser("/settings");
-  const [t, tData, supabase] = await Promise.all([
+  const [t, tData, tShortcuts, supabase] = await Promise.all([
     getTranslations("settings"),
     getTranslations("stats.data"),
+    getTranslations("shortcuts.settings"),
     createClient(),
   ]);
 
@@ -116,6 +118,14 @@ export default async function SettingsPage() {
           <PushSettings />
           <NotificationPrefs />
         </div>
+      </SettingsSection>
+
+      <SettingsSection
+        id="shortcuts"
+        title={tShortcuts("title")}
+        description={tShortcuts("description")}
+      >
+        <ShortcutsSetting />
       </SettingsSection>
 
       <SettingsSection id="data" title={tData("title")} description={tData("description")}>

@@ -5,6 +5,7 @@ import type nav from "@messages/en/nav.json";
 import type push from "@messages/en/push.json";
 import type pwa from "@messages/en/pwa.json";
 import type settings from "@messages/en/settings.json";
+import type shortcuts from "@messages/en/shortcuts.json";
 import type stats from "@messages/en/stats.json";
 import type today from "@messages/en/today.json";
 
@@ -19,4 +20,5 @@ export type Messages = {
   push: typeof push;
   habits: typeof habits;
   stats: typeof stats;
+  shortcuts: typeof shortcuts;
 };

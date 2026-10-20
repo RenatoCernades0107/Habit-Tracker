@@ -210,7 +210,7 @@ Called every minute by `pg_cron`. Header `x-cron-secret`. Runs the steps in [Arc
 | `srv_verify_api_token(hash bytea) → (user_id, token_id, scopes)` | Checks the token isn't revoked and updates `last_used_at` |
 | `srv_rate_limit(key text, max int, window interval) → boolean` | Fixed-window counter on `rate_limits` |
 | `srv_apply_check_in_op(user_id, …)` / `srv_undo_last_op(user_id)` | The same as the app functions, for a given user (Shortcuts API, notification buttons) |
-| `srv_match_habit(user_id uuid, query text) → setof (habit_id, name, score)` | Trigram similarity on `srv_normalize(name)` and aliases; candidates with score ≥ 0.3, best first |
+| `srv_match_habit(user_id uuid, query text) → setof (habit_id, name, score)` | Trigram similarity on `normalize_text(name)` and aliases; candidates with score ≥ 0.3, best first |
 | `srv_apply_health_metrics(user_id uuid, metrics jsonb) → jsonb` | Upserts `health_metric_days` and applies `R-HLT-3` |
 | `srv_claim_due_notifications(max int) → setof scheduled_notifications` | Locks due rows with `FOR UPDATE SKIP LOCKED` and marks them `sending` |
 | `srv_claim_profiles_to_plan(max int) → setof (user_id, today)` | Users with `plan_dirty` or `planned_through` before their tomorrow; clears `plan_dirty` as it claims them |

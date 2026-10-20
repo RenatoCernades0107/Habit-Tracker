@@ -392,7 +392,7 @@ Calendar jobs are **coalesced** by the worker: for the same (habit, op, date), o
 
 ```sql
 create index on habits (user_id) where deleted_at is null;
-create index on habits using gin (srv_normalize(name) gin_trgm_ops);    -- Siri name matching
+create index on habits using gin (normalize_text(name) gin_trgm_ops);    -- Siri name matching
 create index on check_ins (user_id, local_date);
 create index on check_ins (user_id, updated_at);                        -- delta sync
 create index on check_in_events (user_id, created_at desc);             -- undo, history
@@ -405,7 +405,7 @@ create index on push_subscriptions (user_id);
 -- plus (user_id, updated_at) on every other synced table
 ```
 
-`srv_normalize(text)` is an `immutable` wrapper of `lower(unaccent(...))`. `unaccent` itself is not immutable, so it can't be indexed directly.
+`normalize_text(text)` is an `immutable` wrapper of `lower(unaccent(...))`. `unaccent` itself is not immutable, so it can't be indexed directly.
 
 ## 6. Retention
 
@@ -425,7 +425,7 @@ A nightly `pg_cron` job, `restart-cleanup` (pure SQL, `srv_nightly_cleanup()`), 
 |---|---|
 | `srv_local_date(at, timezone, day_start_hour)` | The habit day of an instant (`R-DAY-2`); used by `srv_user_today` |
 | `srv_user_today(user_id)` | `((now() at time zone tz) - make_interval(hours => day_start_hour))::date` (`R-DAY-2`) |
-| `srv_normalize(text)` | Lowercase text without accents, for matching |
+| `normalize_text(text)` | Lowercase text without accents, for matching |
 | `srv_nightly_cleanup()` | The retention job in §6 (cron job `restart-cleanup`); also trims `cron.job_run_details` older than 7 days |
 | `srv_tick_if_due()` | Called by `pg_cron` every minute. Calls `/api/internal/tick` through `pg_net` only if a notification or calendar job is due or a profile needs planning ([Architecture §5](03-architecture.md#5-scheduler)) |
 
