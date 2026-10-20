@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(14);
+select plan(15);
 
 -- Requests queued by this transaction only (other sessions' requests have another xmin).
 create function pg_temp.queued_ticks() returns bigint
@@ -14,8 +14,9 @@ $$;
 
 insert into auth.users (id, email) values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'ana@example.test');
 
--- Start from a known state: no notifications and no scheduler secrets.
+-- Start from a known state: no notifications, every plan current, and no scheduler secrets.
 delete from public.scheduled_notifications;
+update public.profiles set plan_dirty = false, planned_through = date '2999-01-01';
 delete from vault.secrets where name in ('restart_app_url', 'restart_cron_secret');
 
 -- ---------------------------------------------------------------------------
@@ -84,6 +85,11 @@ update public.scheduled_notifications
 
 select public.srv_tick_if_due();
 select is(pg_temp.queued_ticks(), 2::bigint, 'a notification stuck in sending: one more request');
+
+delete from public.scheduled_notifications where dedupe_key = 'pgtap:tick:busy';
+update public.profiles set plan_dirty = true where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+select public.srv_tick_if_due();
+select is(pg_temp.queued_ticks(), 3::bigint, 'a plan that is out of date: one more request');
 
 -- ---------------------------------------------------------------------------
 -- Users can't trigger the scheduler or the cleanup

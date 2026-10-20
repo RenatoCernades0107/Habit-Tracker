@@ -48,14 +48,34 @@
     "title": "Empieza con una plantilla",
     "custom": "Crear el mío",
     "customDescription": "Empieza con un hábito en blanco.",
-    "water": { "name": "Tomar agua", "unit": "vasos" },
-    "walk": { "name": "Caminar", "unit": "pasos" },
-    "meditate": { "name": "Meditar", "unit": "min" },
-    "read": { "name": "Leer", "unit": "páginas" },
-    "workout": { "name": "Entrenar" },
-    "journal": { "name": "Escribir un diario" },
-    "sleep": { "name": "Dormir 7 horas" },
-    "stretch": { "name": "Estirar" }
+    "water": {
+      "name": "Tomar agua",
+      "unit": "vasos"
+    },
+    "walk": {
+      "name": "Caminar",
+      "unit": "pasos"
+    },
+    "meditate": {
+      "name": "Meditar",
+      "unit": "min"
+    },
+    "read": {
+      "name": "Leer",
+      "unit": "páginas"
+    },
+    "workout": {
+      "name": "Entrenar"
+    },
+    "journal": {
+      "name": "Escribir un diario"
+    },
+    "sleep": {
+      "name": "Dormir 7 horas"
+    },
+    "stretch": {
+      "name": "Estirar"
+    }
   },
   "form": {
     "what": "Qué",
@@ -101,7 +121,8 @@
     "saved": "Hábito guardado.",
     "created": "Hábito creado.",
     "summary": "Resumen",
-    "changeNote": "Los cambios de horario o meta aplican desde hoy; los días pasados conservan las reglas anteriores."
+    "changeNote": "Los cambios de horario o meta aplican desde hoy; los días pasados conservan las reglas anteriores.",
+    "reminderQuiet": "Este recordatorio cae en tus horas de silencio, así que no se enviará."
   },
   "actions": {
     "title": "Gestionar",

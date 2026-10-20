@@ -45,7 +45,9 @@ beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
   m.publicKey = VAPID_PUBLIC_KEY;
   m.serverEnvError = false;
-  m.db = new FakeSupabase().onRpc("srv_claim_due_notifications", () => []);
+  m.db = new FakeSupabase()
+    .onRpc("srv_claim_profiles_to_plan", () => [])
+    .onRpc("srv_claim_due_notifications", () => []);
 });
 
 describe("POST /api/internal/tick", () => {
@@ -64,11 +66,12 @@ describe("POST /api/internal/tick", () => {
     expect(m.db?.rpcCalls).toEqual([]);
   });
 
-  it("runs the dispatcher with the right secret and returns its counts", async () => {
+  it("plans, runs the dispatcher with the right secret and returns its counts", async () => {
     const response = await tick({ "x-cron-secret": SECRET });
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("private, no-store");
     expect(await response.json()).toEqual({
+      planned: 0,
       claimed: 0,
       sent: 0,
       suppressed: 0,
@@ -77,7 +80,10 @@ describe("POST /api/internal/tick", () => {
       deferred: 0,
       ms: expect.any(Number),
     });
-    expect(m.db?.rpcCalls).toEqual([{ name: "srv_claim_due_notifications", args: { p_max: 200 } }]);
+    expect(m.db?.rpcCalls).toEqual([
+      { name: "srv_claim_profiles_to_plan", args: { p_max: 200 } },
+      { name: "srv_claim_due_notifications", args: { p_max: 200 } },
+    ]);
   });
 
   it("fails before claiming anything when the VAPID public key is missing", async () => {

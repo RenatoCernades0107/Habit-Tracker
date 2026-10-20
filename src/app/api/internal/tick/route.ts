@@ -5,6 +5,7 @@ import { secretsMatch } from "@/lib/security/constant-time";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { apiError, json } from "@/server/push/http";
 import { getVapidDetails, PushConfigError } from "@/server/push/vapid";
+import { planDueUsers } from "@/server/notifications/planner";
 import { dispatchDueNotifications } from "@/server/tick/dispatch";
 
 // Claims stop after ~25 s and sends after ~40 s; this leaves room to record the outcomes.
@@ -13,7 +14,8 @@ export const maxDuration = 60;
 /**
  * The scheduler tick (docs/spec/03-architecture.md §5, docs/spec/05-api.md §4). pg_cron's
  * srv_tick_if_due() calls it every minute when work is due, with `x-cron-secret` read from
- * Supabase Vault. Phase 0 only sends; planning and calendar jobs arrive in later phases.
+ * Supabase Vault. It plans the users whose plan is out of date, then sends what's due.
+ * Calendar jobs arrive in a later phase.
  * Other methods get 405 from Next.js. Not behind the session proxy (src/proxy.ts).
  */
 export async function POST(request: NextRequest) {
@@ -42,8 +44,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const counts = await dispatchDueNotifications({ admin: createAdminClient(), vapid });
-    if (counts.claimed > 0) console.info("[tick]", JSON.stringify(counts));
+    const admin = createAdminClient();
+    // A planning failure must not hold back what's already due.
+    const planned = await planDueUsers(admin, new Date()).catch((error: unknown) => {
+      console.error("[tick] planning failed:", error instanceof Error ? error.message : "unknown");
+      return 0;
+    });
+    const counts = { planned, ...(await dispatchDueNotifications({ admin, vapid })) };
+    if (counts.claimed > 0 || planned > 0) console.info("[tick]", JSON.stringify(counts));
     return json(counts);
   } catch (error) {
     const code =

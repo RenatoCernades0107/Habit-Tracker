@@ -26,7 +26,32 @@
   },
   "notifications": {
     "title": "Notifications",
-    "description": "Reminders, the daily report and the weekly review on this device."
+    "description": "Reminders, the daily report and the weekly review on this device.",
+    "prefs": {
+      "title": "What to send",
+      "lead": "Remind me before a habit's time",
+      "leadValue": "{minutes, plural, =0 {At the time} other {# min before}}",
+      "report": "Daily report",
+      "reportHint": "Your score and what's left, at the end of the day.",
+      "review": "Weekly review",
+      "reviewDay": "Day",
+      "time": "Time",
+      "quiet": "Quiet hours",
+      "quietHint": "Nothing is sent between these times.",
+      "quietFrom": "From",
+      "quietTo": "To",
+      "quietOff": "Off",
+      "mute": "Mute for today",
+      "muted": "Muted until tomorrow.",
+      "unmute": "Unmute",
+      "saved": "Saved.",
+      "devices": "Your devices",
+      "devicesEmpty": "No device has notifications on.",
+      "deviceLastSeen": "Last delivered {date}",
+      "deviceNever": "Nothing delivered yet",
+      "deviceRemove": "Remove {name}",
+      "deviceUnknown": "Device"
+    }
   },
   "account": {
     "title": "Account",
@@ -40,7 +65,8 @@
     "add": "Add routine",
     "newName": "New routine",
     "delete": "Delete {name}",
-    "saved": "Routine saved."
+    "saved": "Routine saved.",
+    "digest": "Notify me at the start with what's left"
   },
   "categories": {
     "title": "Categories",

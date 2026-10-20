@@ -9,6 +9,7 @@ const m = vi.hoisted(() => ({ send: vi.fn() }));
 
 vi.mock("server-only", () => ({}));
 vi.mock("web-push", () => ({ sendNotification: m.send }));
+vi.mock("@/lib/env.server", () => ({ getServerEnv: () => ({ CRON_SECRET: "c".repeat(40) }) }));
 
 const NOW = Date.parse("2026-10-19T15:00:00.000Z");
 const VAPID = { subject: "mailto:test@example.com", publicKey: "pub", privateKey: "priv" };
@@ -29,6 +30,48 @@ function device(id: string, userId = USER, failureCount = 0) {
     created_at: "2026-10-01T00:00:00.000Z",
   };
 }
+
+const PROFILE = {
+  id: USER,
+  locale: "en",
+  timezone: "America/Lima",
+  day_start_hour: 4,
+  week_start: 1,
+  reminder_lead_min: 5,
+  daily_report_enabled: true,
+  daily_report_time: "22:00:00",
+  weekly_review_enabled: true,
+  weekly_review_dow: 7,
+  weekly_review_time: "19:00:00",
+  quiet_hours_start: null,
+  quiet_hours_end: null,
+  muted_until: null,
+};
+
+const HABIT = {
+  id: "33333333-3333-4333-8333-333333333333",
+  user_id: USER,
+  name: "Meditar",
+  icon: null,
+  color: null,
+  cue: "Después del café",
+  kind: "boolean",
+  target_value: null,
+  unit: null,
+  increment_step: 1,
+  schedule_type: "daily",
+  days_of_week: null,
+  times_per_week: null,
+  time_of_day: "10:05:00",
+  routine_id: null,
+  category_id: null,
+  sort_order: 0,
+  start_date: "2026-10-01",
+  archived_on: null,
+  deleted_at: null,
+  reminder_enabled: true,
+  reminder_lead_min: null,
+};
 
 let nextNotificationId = 100;
 
@@ -74,7 +117,7 @@ function withClaim(db: FakeSupabase) {
 function setup({
   notifications = [notification()],
   devices = [device("dev-1")],
-  profiles = [{ id: USER, locale: "en", timezone: "America/Lima" }],
+  profiles = [PROFILE],
 }: {
   notifications?: Record<string, unknown>[];
   devices?: Record<string, unknown>[];
@@ -286,22 +329,62 @@ describe("dispatchDueNotifications", () => {
     await run(db);
 
     expect(row(db, report.id)).toMatchObject({ suppressed_reason: "stale" });
-    // 3 hours is within the weekly review's 12 hours; it's only not built yet.
-    expect(row(db, review.id)).toMatchObject({ suppressed_reason: "not_implemented" });
+    // 3 hours is within the weekly review's 12 hours.
+    expect(row(db, review.id)).toMatchObject({ status: "sent" });
   });
 
-  it("suppresses kinds that Phase 3 builds", async () => {
-    const reminder = notification({ kind: "habit_reminder" });
-    const digest = notification({ kind: "routine_digest" });
-    const db = setup({ notifications: [reminder, digest] });
+  it("sends a pending habit reminder with Done and Snooze, in the user's language", async () => {
+    const reminder = notification({
+      kind: "habit_reminder",
+      habit_id: HABIT.id,
+      dedupe_key: `habit_reminder:${HABIT.id}:2026-10-19`,
+    });
+    const db = setup({ notifications: [reminder], profiles: [{ ...PROFILE, locale: "es" }] });
+    db.seed("habits", [HABIT]);
+
+    const counts = await run(db);
+
+    expect(counts).toMatchObject({ sent: 1, suppressed: 0 });
+    const payload = JSON.parse(String(m.send.mock.calls[0]?.[1]));
+    expect(payload).toMatchObject({
+      kind: "habit_reminder",
+      title: "⏰ Meditar en 5 min",
+      body: "Después del café",
+      tag: `habit:${HABIT.id}:2026-10-19`,
+      url: `/today?habit=${HABIT.id}`,
+      badge: 1,
+      actions: [
+        { action: "done", title: "Hecho" },
+        { action: "snooze", title: "15 min" },
+      ],
+    });
+    expect(payload.actionToken).toEqual(expect.any(String));
+  });
+
+  it("R-NTF-7: suppresses a reminder that's done, and one for a habit that's gone", async () => {
+    const done = notification({ kind: "habit_reminder", habit_id: HABIT.id });
+    const gone = notification({ kind: "habit_reminder", habit_id: "gone" });
+    const db = setup({ notifications: [done, gone] });
+    db.seed("habits", [HABIT]);
+    db.seed("check_ins", [
+      {
+        user_id: USER,
+        habit_id: HABIT.id,
+        local_date: "2026-10-19",
+        status: "done",
+        value: null,
+        skip_reason: null,
+        note: null,
+        source: "app",
+        deleted_at: null,
+      },
+    ]);
 
     const counts = await run(db);
 
     expect(counts.suppressed).toBe(2);
-    expect(row(db, reminder.id)).toMatchObject({
-      status: "suppressed",
-      suppressed_reason: "not_implemented",
-    });
+    expect(row(db, done.id)).toMatchObject({ status: "suppressed", suppressed_reason: "done" });
+    expect(row(db, gone.id)).toMatchObject({ status: "suppressed", suppressed_reason: "inactive" });
     expect(m.send).not.toHaveBeenCalled();
   });
 

@@ -55,6 +55,37 @@
       "title": "🔔 Restart test",
       "body": "It works! Reminders will arrive on this device.",
       "scheduledBody": "It works! Due {due}, sent {sent}. Reminders will arrive on this device."
+    },
+    "reminder": {
+      "title": "⏰ {name} in {minutes} min",
+      "titleNow": "⏰ Time for {name}",
+      "streakDays": "🔥 {count, plural, one {# day} other {# days}}",
+      "streakWeeks": "🔥 {count, plural, one {# week} other {# weeks}}",
+      "body": "Tap to log it.",
+      "done": "Done",
+      "snooze": "15 min"
+    },
+    "digest": {
+      "morning": "Morning routine",
+      "evening": "Evening routine",
+      "title": "{icon} {routine} · {count, plural, one {# habit} other {# habits}}",
+      "more": "+{count} more"
+    },
+    "report": {
+      "title": "📊 Today: {score, number, percent} ({done}/{total})",
+      "titleFlexible": "📊 How did today go?",
+      "best": "🔥 {name} {days, plural, one {# day} other {# days}}.",
+      "left": "Left: {list}",
+      "attention": "Don't miss twice: {list}",
+      "allDone": "Everything's done.",
+      "perfectTitle": "🎉 Perfect day! 100%",
+      "perfectBody": "How did you feel today?"
+    },
+    "review": {
+      "title": "🗓️ Your week: {score, number, percent}",
+      "titleDelta": "🗓️ Your week: {score, number, percent} ({delta, number, ::sign-always percent})",
+      "titleEmpty": "🗓️ Your weekly review",
+      "body": "Tap to review it and plan the next one."
     }
   }
 }

@@ -55,6 +55,37 @@
       "title": "🔔 Prueba de Restart",
       "body": "¡Funciona! Los recordatorios llegarán a este dispositivo.",
       "scheduledBody": "¡Funciona! Programada para las {due}, enviada a las {sent}. Los recordatorios llegarán a este dispositivo."
+    },
+    "reminder": {
+      "title": "⏰ {name} en {minutes} min",
+      "titleNow": "⏰ Hora de {name}",
+      "streakDays": "🔥 {count, plural, one {# día} other {# días}}",
+      "streakWeeks": "🔥 {count, plural, one {# semana} other {# semanas}}",
+      "body": "Toca para registrarlo.",
+      "done": "Hecho",
+      "snooze": "15 min"
+    },
+    "digest": {
+      "morning": "Rutina de mañana",
+      "evening": "Rutina de noche",
+      "title": "{icon} {routine} · {count, plural, one {# hábito} other {# hábitos}}",
+      "more": "+{count} más"
+    },
+    "report": {
+      "title": "📊 Hoy: {score, number, percent} ({done}/{total})",
+      "titleFlexible": "📊 ¿Cómo te fue hoy?",
+      "best": "🔥 {name} {days, plural, one {# día} other {# días}}.",
+      "left": "Faltan: {list}",
+      "attention": "No falles dos veces: {list}",
+      "allDone": "Todo hecho.",
+      "perfectTitle": "🎉 ¡Día perfecto! 100%",
+      "perfectBody": "¿Cómo te sentiste hoy?"
+    },
+    "review": {
+      "title": "🗓️ Tu semana: {score, number, percent}",
+      "titleDelta": "🗓️ Tu semana: {score, number, percent} ({delta, number, ::sign-always percent})",
+      "titleEmpty": "🗓️ Tu revisión semanal",
+      "body": "Toca para revisarla y planear la próxima."
     }
   }
 }

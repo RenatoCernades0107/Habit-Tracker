@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Play, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { useGroupNames, useTimeFormat } from "@/components/habits/labels";
@@ -43,7 +43,8 @@ export function TodayView({ setup }: { setup: ReactNode }) {
   const params = useSearchParams();
   const { data, today, isLoading, error } = useData();
   const apply = useCheckIns(data);
-  const [sheetFor, setSheetFor] = useState<string | null>(null);
+  // A tapped reminder opens its habit (FR-NTF-10, iPhone): /today?habit=<id>.
+  const [sheetFor, setSheetFor] = useState<string | null>(() => params.get("habit"));
 
   const editWindow = data.profile?.retro_edit_days ?? 7;
   const earliest = addDays(today, -editWindow);
@@ -77,6 +78,27 @@ export function TodayView({ setup }: { setup: ReactNode }) {
     else next.set(DATE_PARAM, day);
     router.replace(next.size ? `${pathname}?${next}` : pathname, { scroll: false });
   };
+
+  // FR-NTF-9: the app icon shows what's still pending today.
+  const pendingToday =
+    date === today
+      ? view.sections
+          .flatMap((s) => s.items)
+          .filter((i) => i.state === "pending" || i.state === "partial").length
+      : null;
+  useEffect(() => {
+    if (pendingToday === null || isLoading || !("setAppBadge" in navigator)) return;
+    const badge =
+      pendingToday > 0 ? navigator.setAppBadge(pendingToday) : navigator.clearAppBadge();
+    badge.catch(() => {});
+  }, [pendingToday, isLoading]);
+
+  // The daily report opens Today with the mood prompt (FR-NTF-5): /today?mood=1.
+  const askMood = params.get("mood") === "1";
+  useEffect(() => {
+    if (!askMood || isLoading) return;
+    document.getElementById("mood-title")?.scrollIntoView({ block: "center" });
+  }, [askMood, isLoading]);
 
   const allItems: DayItem[] = [...view.sections.flatMap((s) => s.items), ...view.weekly];
   const sheetItem = allItems.find((i) => i.habit.id === sheetFor) ?? null;

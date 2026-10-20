@@ -8,6 +8,7 @@ import { CategoriesSetting } from "@/components/settings/categories-setting";
 import { DataSetting } from "@/components/settings/data-setting";
 import { DaysSetting } from "@/components/settings/days-setting";
 import { LanguageSetting } from "@/components/settings/language-setting";
+import { NotificationPrefs } from "@/components/settings/notification-prefs";
 import { RoutinesSetting } from "@/components/settings/routines-setting";
 import { ScrollToHash } from "@/components/settings/scroll-to-hash";
 import { sectionHeadingId, SettingsSection } from "@/components/settings/settings-section";
@@ -111,7 +112,10 @@ export default async function SettingsPage() {
         title={t("notifications.title")}
         description={t("notifications.description")}
       >
-        <PushSettings />
+        <div className="grid gap-5">
+          <PushSettings />
+          <NotificationPrefs />
+        </div>
       </SettingsSection>
 
       <SettingsSection id="data" title={tData("title")} description={tData("description")}>

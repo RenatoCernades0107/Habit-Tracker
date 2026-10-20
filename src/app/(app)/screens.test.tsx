@@ -139,6 +139,9 @@ vi.mock("@/components/settings/categories-setting", () => ({
 vi.mock("@/components/stats/stats-view", () => ({
   StatsView: () => <div data-testid="stats-view" />,
 }));
+vi.mock("@/components/settings/notification-prefs", () => ({
+  NotificationPrefs: () => <div data-testid="notification-prefs" />,
+}));
 vi.mock("@/components/settings/data-setting", () => ({
   DataSetting: () => <div data-testid="data-setting" />,
 }));

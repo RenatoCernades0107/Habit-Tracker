@@ -769,11 +769,22 @@ export type Database = {
           isSetofReturn: true;
         };
       };
+      srv_claim_profiles_to_plan: {
+        Args: { p_max: number };
+        Returns: {
+          today: string;
+          user_id: string;
+        }[];
+      };
       srv_local_date: {
         Args: { p_at: string; p_day_start_hour: number; p_timezone: string };
         Returns: string;
       };
       srv_nightly_cleanup: { Args: Record<PropertyKey, never>; Returns: number };
+      srv_replace_plan: {
+        Args: { p_from: string; p_rows: Json; p_through: string; p_user_id: string };
+        Returns: number;
+      };
       srv_tick_if_due: { Args: Record<PropertyKey, never>; Returns: undefined };
       srv_user_today: { Args: { p_user_id: string }; Returns: string };
       undo_last_op: {

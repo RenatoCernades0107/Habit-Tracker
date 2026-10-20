@@ -48,14 +48,34 @@
     "title": "Start from a template",
     "custom": "Create my own",
     "customDescription": "Start with a blank habit.",
-    "water": { "name": "Drink water", "unit": "glasses" },
-    "walk": { "name": "Walk", "unit": "steps" },
-    "meditate": { "name": "Meditate", "unit": "min" },
-    "read": { "name": "Read", "unit": "pages" },
-    "workout": { "name": "Work out" },
-    "journal": { "name": "Journal" },
-    "sleep": { "name": "Sleep 7 hours" },
-    "stretch": { "name": "Stretch" }
+    "water": {
+      "name": "Drink water",
+      "unit": "glasses"
+    },
+    "walk": {
+      "name": "Walk",
+      "unit": "steps"
+    },
+    "meditate": {
+      "name": "Meditate",
+      "unit": "min"
+    },
+    "read": {
+      "name": "Read",
+      "unit": "pages"
+    },
+    "workout": {
+      "name": "Work out"
+    },
+    "journal": {
+      "name": "Journal"
+    },
+    "sleep": {
+      "name": "Sleep 7 hours"
+    },
+    "stretch": {
+      "name": "Stretch"
+    }
   },
   "form": {
     "what": "What",
@@ -101,7 +121,8 @@
     "saved": "Habit saved.",
     "created": "Habit created.",
     "summary": "Summary",
-    "changeNote": "Changes to the schedule or target apply from today; past days keep the old rules."
+    "changeNote": "Changes to the schedule or target apply from today; past days keep the old rules.",
+    "reminderQuiet": "This reminder falls in your quiet hours, so it won't be sent."
   },
   "actions": {
     "title": "Manage",

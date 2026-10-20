@@ -79,6 +79,15 @@ export function RoutinesSetting() {
             >
               <Trash2 aria-hidden="true" />
             </Button>
+            <label className="col-span-3 flex min-h-9 items-center gap-2 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                className="size-4 accent-[var(--primary)]"
+                checked={r.digest_enabled}
+                onChange={(e) => update(r, { digest_enabled: e.target.checked })}
+              />
+              {t("digest")}
+            </label>
           </li>
         ))}
       </ul>

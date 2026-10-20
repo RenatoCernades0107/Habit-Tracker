@@ -1,9 +1,19 @@
 import "server-only";
 
+import {
+  badgeCount,
+  contentFor,
+  suppressionFor,
+  type DueNotification,
+  type SuppressionReason as RuleReason,
+} from "@/domain/notifications";
 import { defaultLocale } from "@/i18n/config";
 import type { Database } from "@/lib/supabase/database.types";
-import { buildPushPayload } from "@/server/push/payload";
+import { ACTION_TOKEN_TTL_S, signActionToken } from "@/server/notifications/action-token";
+import { loadNotifyData, type UserNotifyData } from "@/server/notifications/data";
+import { buildNotificationPayload, buildPushPayload } from "@/server/push/payload";
 import { DELIVERY_POLICY, isStale } from "@/server/push/policy";
+import type { PushPayloadV1 } from "@/lib/push/payload";
 import { sendAll, type DeviceResult, type SendJob } from "@/server/push/sender";
 import {
   dbError,
@@ -30,7 +40,7 @@ export type TickCounts = {
   ms: number;
 };
 
-export type SuppressedReason = "stale" | "not_implemented" | "no_subscriptions";
+export type SuppressedReason = "stale" | "no_subscriptions" | "no_data" | RuleReason;
 
 export type DispatchOptions = {
   admin: AdminClient;
@@ -119,11 +129,19 @@ async function processBatch(rows: NotificationRow[], ctx: BatchContext): Promise
   const { admin, now, counts } = ctx;
 
   let recipients: Map<string, Recipient>;
+  let users: Map<string, UserNotifyData>;
   try {
-    recipients = await loadRecipients(
-      admin,
-      rows.map((row) => row.user_id),
-    );
+    [recipients, users] = await Promise.all([
+      loadRecipients(
+        admin,
+        rows.map((row) => row.user_id),
+      ),
+      loadNotifyData(
+        admin,
+        rows.filter((row) => row.kind !== "test").map((row) => row.user_id),
+        new Date(now()),
+      ),
+    ]);
   } catch (error) {
     // Nothing was sent: put the batch back untouched rather than waiting 5 minutes for
     // the stuck-row recovery.
@@ -133,7 +151,7 @@ async function processBatch(rows: NotificationRow[], ctx: BatchContext): Promise
   }
 
   const decisions = await Promise.all(
-    rows.map((row) => decide(row, recipients.get(row.user_id), now())),
+    rows.map((row) => decide(row, recipients.get(row.user_id), users.get(row.user_id), now())),
   );
 
   const jobs = decisions.flatMap((decision) => (decision.type === "send" ? decision.jobs : []));
@@ -214,28 +232,21 @@ async function processBatch(rows: NotificationRow[], ctx: BatchContext): Promise
 async function decide(
   row: NotificationRow,
   recipient: Recipient | undefined,
+  user: UserNotifyData | undefined,
   nowMs: number,
 ): Promise<Decision> {
   if (isStale(row.kind, row.send_at, nowMs)) return { type: "suppress", reason: "stale" };
 
-  let payload: string | null;
+  let payload: string;
   try {
-    const built = await buildPushPayload(
-      { id: row.id, kind: row.kind, sendAt: row.send_at },
-      {
-        locale: recipient?.locale ?? defaultLocale,
-        timeZone: recipient?.timeZone ?? "UTC",
-        now: new Date(nowMs),
-      },
-    );
-    payload = built ? JSON.stringify(built) : null;
+    const built = await payloadFor(row, recipient, user, nowMs);
+    if ("reason" in built) return { type: "suppress", reason: built.reason };
+    payload = JSON.stringify(built.payload);
   } catch (error) {
     console.error("[tick] payload failed for notification", row.id, errorCode(error));
     return { type: "retry-or-fail", error: "could not build the payload" };
   }
 
-  // Phase 3 builds reminders, digests, reports and reviews (and their suppression rules).
-  if (payload === null) return { type: "suppress", reason: "not_implemented" };
   if (!recipient || recipient.devices.length === 0) {
     return { type: "suppress", reason: "no_subscriptions" };
   }
@@ -245,6 +256,64 @@ async function decide(
     type: "send",
     jobs: recipient.devices.map((subscription) => ({ subscription, payload, policy })),
   };
+}
+
+/**
+ * What to send, or why not (R-NTF-7). Suppression is decided here, with the user's data as it is
+ * now, not when the notification was planned.
+ */
+async function payloadFor(
+  row: NotificationRow,
+  recipient: Recipient | undefined,
+  user: UserNotifyData | undefined,
+  nowMs: number,
+): Promise<{ payload: PushPayloadV1 } | { reason: SuppressedReason }> {
+  const now = new Date(nowMs);
+  if (row.kind === "test") {
+    const payload = await buildPushPayload(
+      { id: row.id, kind: row.kind, sendAt: row.send_at },
+      {
+        locale: recipient?.locale ?? defaultLocale,
+        timeZone: recipient?.timeZone ?? "UTC",
+        now,
+      },
+    );
+    return payload ? { payload } : { reason: "no_data" };
+  }
+  if (!user) return { reason: "no_data" };
+
+  const due: DueNotification = {
+    kind: row.kind,
+    habitId: row.habit_id,
+    routineId: row.routine_id,
+    localDate: row.local_date,
+    sendAt: new Date(row.send_at),
+  };
+  const reason = suppressionFor(due, user.data, user.today, now);
+  if (reason) return { reason };
+  const content = contentFor(due, user.data, user.today);
+  if (!content) return { reason: "inactive" };
+
+  const actionToken =
+    row.kind === "habit_reminder" && row.habit_id
+      ? signActionToken({
+          u: row.user_id,
+          h: row.habit_id,
+          d: row.local_date,
+          n: row.id,
+          exp: Math.floor(nowMs / 1000) + ACTION_TOKEN_TTL_S,
+        })
+      : undefined;
+  const payload = await buildNotificationPayload(
+    { id: row.id, localDate: row.local_date, content },
+    {
+      locale: user.locale,
+      today: user.today,
+      badge: badgeCount(user.data, user.today),
+      actionToken,
+    },
+  );
+  return { payload };
 }
 
 type Outcome =

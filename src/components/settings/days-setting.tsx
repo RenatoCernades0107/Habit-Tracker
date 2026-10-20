@@ -44,6 +44,7 @@ export function DaysSetting() {
         <select
           id="day-end"
           className={selectClass}
+          key={String(profile.day_start_hour)}
           defaultValue={profile.day_start_hour}
           onChange={(e) => void update({ day_start_hour: Number(e.target.value) })}
         >
@@ -58,6 +59,7 @@ export function DaysSetting() {
         <select
           id="week-start"
           className={selectClass}
+          key={String(profile.week_start)}
           defaultValue={profile.week_start}
           onChange={(e) => void update({ week_start: Number(e.target.value) })}
         >
@@ -69,6 +71,7 @@ export function DaysSetting() {
         <select
           id="edit-window"
           className={selectClass}
+          key={String(profile.retro_edit_days)}
           defaultValue={profile.retro_edit_days}
           onChange={(e) => void update({ retro_edit_days: Number(e.target.value) })}
         >
@@ -83,6 +86,7 @@ export function DaysSetting() {
         <select
           id="skips"
           className={selectClass}
+          key={String(profile.max_skips_per_month)}
           defaultValue={profile.max_skips_per_month}
           onChange={(e) => void update({ max_skips_per_month: Number(e.target.value) })}
         >
@@ -97,6 +101,7 @@ export function DaysSetting() {
         <select
           id="timezone"
           className={selectClass}
+          key={String(profile.timezone)}
           defaultValue={profile.timezone}
           onChange={(e) => void update({ timezone: e.target.value })}
         >

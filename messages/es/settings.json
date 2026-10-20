@@ -26,7 +26,32 @@
   },
   "notifications": {
     "title": "Notificaciones",
-    "description": "Recordatorios, el resumen diario y la revisión semanal en este dispositivo."
+    "description": "Recordatorios, el resumen diario y la revisión semanal en este dispositivo.",
+    "prefs": {
+      "title": "Qué enviar",
+      "lead": "Recordarme antes de la hora del hábito",
+      "leadValue": "{minutes, plural, =0 {A la hora} other {# min antes}}",
+      "report": "Resumen diario",
+      "reportHint": "Tu puntuación y lo que falta, al final del día.",
+      "review": "Revisión semanal",
+      "reviewDay": "Día",
+      "time": "Hora",
+      "quiet": "Horas de silencio",
+      "quietHint": "No se envía nada entre estas horas.",
+      "quietFrom": "Desde",
+      "quietTo": "Hasta",
+      "quietOff": "Desactivadas",
+      "mute": "Silenciar por hoy",
+      "muted": "Silenciado hasta mañana.",
+      "unmute": "Quitar silencio",
+      "saved": "Guardado.",
+      "devices": "Tus dispositivos",
+      "devicesEmpty": "Ningún dispositivo tiene las notificaciones activadas.",
+      "deviceLastSeen": "Última entrega {date}",
+      "deviceNever": "Aún sin entregas",
+      "deviceRemove": "Quitar {name}",
+      "deviceUnknown": "Dispositivo"
+    }
   },
   "account": {
     "title": "Cuenta",
@@ -40,7 +65,8 @@
     "add": "Añadir rutina",
     "newName": "Nueva rutina",
     "delete": "Eliminar {name}",
-    "saved": "Rutina guardada."
+    "saved": "Rutina guardada.",
+    "digest": "Avisarme al empezar con lo que falta"
   },
   "categories": {
     "title": "Categorías",

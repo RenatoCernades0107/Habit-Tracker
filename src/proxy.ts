@@ -39,6 +39,6 @@ export const config = {
   matcher: [
     // Everything except static files, the PWA's own files (these must work signed out and
     // offline), and APIs that authenticate with a secret or token instead of cookies.
-    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|manifest.webmanifest|sw.js|icons/|offline|spikes/|api/internal|api/v1|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|woff2?)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|manifest.webmanifest|sw.js|icons/|offline|spikes/|api/internal|api/v1|api/notifications/action|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|woff2?)$).*)",
   ],
 };

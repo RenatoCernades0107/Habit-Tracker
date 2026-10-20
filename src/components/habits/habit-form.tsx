@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useData, useSave } from "@/data/hooks";
+import { minutesInQuietHours, minutesOf } from "@/domain/zoned";
 import type { Tables } from "@/lib/supabase/database.types";
 import { cn } from "@/lib/utils";
 
@@ -438,6 +439,20 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
               ))}
             </select>
           </Field>
+        ) : null}
+        {draft.reminder_enabled &&
+        draft.time_of_day &&
+        minutesInQuietHours(
+          minutesOf(draft.time_of_day) -
+            (draft.reminder_lead_min === ""
+              ? (data.profile?.reminder_lead_min ?? 5)
+              : Number(draft.reminder_lead_min)),
+          data.profile?.quiet_hours_start ?? null,
+          data.profile?.quiet_hours_end ?? null,
+        ) ? (
+          <p role="status" className="text-sm text-warning-foreground dark:text-warning">
+            {t("form.reminderQuiet")}
+          </p>
         ) : null}
       </FormSection>
 
