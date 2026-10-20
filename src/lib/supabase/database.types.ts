@@ -299,6 +299,8 @@ export type Database = {
           deleted_at: string | null;
           description: string | null;
           duration_min: number | null;
+          health_metric: Database["public"]["Enums"]["health_metric"] | null;
+          health_target: number | null;
           icon: string | null;
           id: string;
           increment_step: number;
@@ -330,6 +332,8 @@ export type Database = {
           deleted_at?: string | null;
           description?: string | null;
           duration_min?: number | null;
+          health_metric?: Database["public"]["Enums"]["health_metric"] | null;
+          health_target?: number | null;
           icon?: string | null;
           id?: string;
           increment_step?: number;
@@ -360,6 +364,8 @@ export type Database = {
           deleted_at?: string | null;
           description?: string | null;
           duration_min?: number | null;
+          health_metric?: Database["public"]["Enums"]["health_metric"] | null;
+          health_target?: number | null;
           icon?: string | null;
           id?: string;
           increment_step?: number;
@@ -395,6 +401,31 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      health_metric_days: {
+        Row: {
+          local_date: string;
+          metric: Database["public"]["Enums"]["health_metric"];
+          synced_at: string;
+          user_id: string;
+          value: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          local_date: string;
+          metric: Database["public"]["Enums"]["health_metric"];
+          synced_at?: string;
+          user_id: string;
+          value: number;
+        };
+        Update: {
+          local_date?: string;
+          metric?: Database["public"]["Enums"]["health_metric"];
+          synced_at?: string;
+          user_id?: string;
+          value?: number;
+        };
+        Relationships: [];
       };
       pauses: {
         Row: {
@@ -800,6 +831,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      srv_apply_health_metrics: { Args: { p_metrics: Json; p_user_id: string }; Returns: Json };
       srv_claim_due_notifications: {
         Args: { p_max: number };
         Returns: {
@@ -923,6 +955,14 @@ export type Database = {
       check_in_source: "app" | "routine_mode" | "siri" | "notification" | "health" | "import";
       check_in_status: "done" | "partial" | "skipped";
       habit_kind: "boolean" | "measurable";
+      health_metric:
+        | "steps"
+        | "exercise_minutes"
+        | "active_energy_kcal"
+        | "distance_km"
+        | "mindful_minutes"
+        | "workouts"
+        | "sleep_hours";
       notification_kind:
         "habit_reminder" | "routine_digest" | "daily_report" | "weekly_review" | "test";
       notification_status: "pending" | "sending" | "sent" | "suppressed" | "failed";
@@ -1045,6 +1085,15 @@ export const Constants = {
       check_in_source: ["app", "routine_mode", "siri", "notification", "health", "import"],
       check_in_status: ["done", "partial", "skipped"],
       habit_kind: ["boolean", "measurable"],
+      health_metric: [
+        "steps",
+        "exercise_minutes",
+        "active_energy_kcal",
+        "distance_km",
+        "mindful_minutes",
+        "workouts",
+        "sleep_hours",
+      ],
       notification_kind: [
         "habit_reminder",
         "routine_digest",

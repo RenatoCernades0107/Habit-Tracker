@@ -108,7 +108,8 @@ export function DataProvider({ userId, children }: { userId: string; children: R
       persister: createAsyncStoragePersister({
         storage: store,
         key: `restart:${userId}`,
-        throttleTime: 500,
+        // Short, so a change survives the app being closed right after it.
+        throttleTime: 100,
       }),
     };
   });

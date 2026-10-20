@@ -137,6 +137,8 @@ test("archiving hides a habit from Today; restoring brings it back", async ({ pa
   await page.getByRole("link", { name: /Floss/ }).click();
   await page.getByRole("link", { name: "Edit habit" }).click();
   await page.getByRole("button", { name: "Restore" }).click();
-  await page.goto("/today");
+  // In-app navigation, as a user would: a full reload in the same instant could drop the change
+  // before it's stored on the device.
+  await page.getByRole("link", { name: "Today" }).first().click();
   await expect(page.getByRole("button", { name: "Mark Floss done" })).toBeVisible();
 });

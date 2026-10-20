@@ -149,6 +149,9 @@ vi.mock("@/components/settings/notification-prefs", () => ({
 vi.mock("@/components/settings/shortcuts-setting", () => ({
   ShortcutsSetting: () => <div data-testid="shortcuts-setting" />,
 }));
+vi.mock("@/components/settings/health-setting", () => ({
+  HealthSetting: () => <div data-testid="health-setting" />,
+}));
 vi.mock("@/components/settings/data-setting", () => ({
   DataSetting: () => <div data-testid="data-setting" />,
 }));
@@ -297,6 +300,7 @@ describe("/settings", () => {
       "install",
       "notifications",
       "shortcuts",
+      "health",
       "data",
       "account",
     ]);

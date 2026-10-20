@@ -122,7 +122,13 @@
     "created": "Hábito creado.",
     "summary": "Resumen",
     "changeNote": "Los cambios de horario o meta aplican desde hoy; los días pasados conservan las reglas anteriores.",
-    "reminderQuiet": "Este recordatorio cae en tus horas de silencio, así que no se enviará."
+    "reminderQuiet": "Este recordatorio cae en tus horas de silencio, así que no se enviará.",
+    "health": "Apple Salud",
+    "healthMetric": "Completarlo solo cuando",
+    "healthNone": "Sin regla de Salud",
+    "healthTarget": "sea al menos",
+    "healthHint": "Necesita un iPhone y el atajo «Sincronizar Salud». Los registros manuales siempre ganan.",
+    "healthTargetRequired": "Pon un mínimo mayor que 0."
   },
   "actions": {
     "title": "Gestionar",
@@ -155,5 +161,14 @@
     "targetRequired": "Pon una meta mayor que 0.",
     "daysRequired": "Elige al menos un día.",
     "notFound": "No se encontró el hábito."
+  },
+  "health": {
+    "steps": "Pasos",
+    "exercise_minutes": "Minutos de ejercicio",
+    "active_energy_kcal": "Energía activa (kcal)",
+    "distance_km": "Distancia caminando y corriendo (km)",
+    "mindful_minutes": "Minutos de atención plena",
+    "workouts": "Entrenamientos",
+    "sleep_hours": "Sueño (horas)"
   }
 }

@@ -160,8 +160,10 @@ select ok(
   (public.undo_op('bbbb0000-0000-4000-8000-000000000010')).deleted_at is not null,
   'undoing the first operation of the day clears the check-in'
 );
-select is(
-  (public.undo_last_op()).status::text, 'done',
+-- The latest operation of today is the skip of habit 2, which had been cleared before it.
+select results_eq(
+  $$ select habit_id, skip_reason::text, deleted_at is not null from public.undo_last_op() $$,
+  $$ values ('aaaa0000-0000-4000-8000-000000000002'::uuid, null::text, true) $$,
   'undo_last_op restores the state before the latest operation of today'
 );
 select throws_ok(

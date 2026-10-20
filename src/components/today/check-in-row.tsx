@@ -25,10 +25,14 @@ const STATE_ICON = {
 /** One habit on Today (docs/spec/07-ux.md §4.1). Tap = done / +step; "…" = more. */
 export function CheckInRow({ item, weekLabel, onTap, onMore }: Props) {
   const t = useTranslations("today");
+  const tShortcuts = useTranslations("shortcuts");
   const time = useTimeFormat();
   const { habit, state, schedule, checkIn } = item;
   const measurable = schedule.kind === "measurable";
   const done = state === "done";
+  // FR-HLT-4: the synced row carries health_verified; the domain type doesn't name it.
+  const verified =
+    done && !!checkIn && "health_verified" in checkIn && checkIn.health_verified === true;
   const tapLabel =
     measurable && !done
       ? t("row.add", { step: habit.increment_step, name: habit.name })
@@ -105,6 +109,12 @@ export function CheckInRow({ item, weekLabel, onTap, onMore }: Props) {
               <Flame aria-hidden="true" className="size-3 text-warning" />
               {t("streak", { days: item.streak })}
             </span>
+          ) : null}
+          {verified ? (
+            <Badge variant="secondary" className="gap-1">
+              <span aria-hidden="true">🩺</span>
+              {tShortcuts("health.verified")}
+            </Badge>
           ) : null}
           {item.attention && !done ? (
             <Badge variant="warning" className="gap-1">

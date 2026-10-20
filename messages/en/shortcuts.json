@@ -18,7 +18,10 @@
     "summaryLeft": "Left: {list}.",
     "summaryDone": "Everything's done.",
     "weekly": "{name}: {done} of {target} this week.",
-    "update": "A new version of the shortcut is available in Restart's settings."
+    "update": "A new version of the shortcut is available in Restart's settings.",
+    "healthSynced": "Health synced.",
+    "healthCompleted": "Completed {list}.",
+    "healthYesterday": "{name} from yesterday"
   },
   "routines": {
     "morning": "Morning",
@@ -79,5 +82,21 @@
     }
   },
   "copyId": "Copy ID for Shortcuts",
-  "copiedId": "Habit ID copied."
+  "copiedId": "Habit ID copied.",
+  "health": {
+    "title": "Apple Health",
+    "description": "Habits with a Health rule complete themselves (iPhone only).",
+    "lastSync": "Last Health sync: {when}",
+    "never": "Health hasn't synced yet.",
+    "stale": "No Health data for over 24 hours. Check the “Sync Health” automations.",
+    "guideTitle": "Set it up",
+    "guide1": "Install the “Sync Health” shortcut (recipe in shortcuts/) and allow it to read Health.",
+    "guide2": "In Shortcuts → Automation, add Time of Day automations at 12:00, 18:00 and 21:00, and 15 minutes before your daily report. Choose Run Immediately and turn off notifications.",
+    "guide3": "Give a habit a Health rule in its editor, e.g. steps ≥ 5,000.",
+    "delete": "Delete Health data",
+    "deleteConfirm": "Delete all stored Health totals? Check-ins stay.",
+    "deleted": "Health data deleted.",
+    "failed": "Couldn't delete it. Try again.",
+    "verified": "Verified by Health"
+  }
 }

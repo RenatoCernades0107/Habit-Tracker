@@ -10,8 +10,7 @@ See [Integrations §1](../docs/spec/06-integrations.md#1-siri-and-shortcuts) for
 | Undo | [deshacer-habito.es.md](deshacer-habito.es.md) | [undo-habit.en.md](undo-habit.en.md) | "Deshacer hábito" / "Undo habit" |
 | How am I doing | [como-voy.es.md](como-voy.es.md) | [how-am-i-doing.en.md](how-am-i-doing.en.md) | "Cómo voy" / "How am I doing" |
 | One habit, no question | in each "Log" recipe, last section | | "Ya medité" / "I meditated" |
-
-"Sync Health" comes with Phase 5 (Apple Health).
+| Sync Health (automations) | [sincronizar-salud.es.md](sincronizar-salud.es.md) | [sync-health.en.md](sync-health.en.md) | run by automations |
 
 ## Publishing (owner)
 

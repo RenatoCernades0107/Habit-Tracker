@@ -18,7 +18,10 @@
     "summaryLeft": "Te faltan {list}.",
     "summaryDone": "Todo hecho.",
     "weekly": "{name}: {done} de {target} esta semana.",
-    "update": "Hay una nueva versión del atajo en los ajustes de Restart."
+    "update": "Hay una nueva versión del atajo en los ajustes de Restart.",
+    "healthSynced": "Salud sincronizada.",
+    "healthCompleted": "Completé {list}.",
+    "healthYesterday": "{name} de ayer"
   },
   "routines": {
     "morning": "Mañana",
@@ -79,5 +82,21 @@
     }
   },
   "copyId": "Copiar ID para Atajos",
-  "copiedId": "ID del hábito copiado."
+  "copiedId": "ID del hábito copiado.",
+  "health": {
+    "title": "Apple Salud",
+    "description": "Los hábitos con una regla de Salud se completan solos (solo iPhone).",
+    "lastSync": "Última sincronización de Salud: {when}",
+    "never": "Salud aún no se ha sincronizado.",
+    "stale": "No hay datos de Salud desde hace más de 24 horas. Revisa las automatizaciones de «Sincronizar Salud».",
+    "guideTitle": "Configúralo",
+    "guide1": "Instala el atajo «Sincronizar Salud» (receta en shortcuts/) y permite que lea Salud.",
+    "guide2": "En Atajos → Automatización, añade automatizaciones por hora a las 12:00, 18:00 y 21:00, y 15 minutos antes de tu resumen diario. Elige Ejecutar inmediatamente y desactiva las notificaciones.",
+    "guide3": "Ponle a un hábito una regla de Salud en su editor, por ejemplo pasos ≥ 5.000.",
+    "delete": "Borrar datos de Salud",
+    "deleteConfirm": "¿Borrar todos los totales de Salud guardados? Los registros se mantienen.",
+    "deleted": "Datos de Salud borrados.",
+    "failed": "No se pudo borrar. Inténtalo de nuevo.",
+    "verified": "Verificado por Salud"
+  }
 }

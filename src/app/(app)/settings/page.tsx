@@ -6,6 +6,7 @@ import { PushSettings } from "@/components/push/push-settings";
 import { InstallGuide } from "@/components/pwa/install-guide";
 import { CategoriesSetting } from "@/components/settings/categories-setting";
 import { DataSetting } from "@/components/settings/data-setting";
+import { HealthSetting } from "@/components/settings/health-setting";
 import { DaysSetting } from "@/components/settings/days-setting";
 import { LanguageSetting } from "@/components/settings/language-setting";
 import { NotificationPrefs } from "@/components/settings/notification-prefs";
@@ -29,10 +30,11 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function SettingsPage() {
   const user = await requireUser("/settings");
-  const [t, tData, tShortcuts, supabase] = await Promise.all([
+  const [t, tData, tShortcuts, tHealth, supabase] = await Promise.all([
     getTranslations("settings"),
     getTranslations("stats.data"),
     getTranslations("shortcuts.settings"),
+    getTranslations("shortcuts.health"),
     createClient(),
   ]);
 
@@ -126,6 +128,10 @@ export default async function SettingsPage() {
         description={tShortcuts("description")}
       >
         <ShortcutsSetting />
+      </SettingsSection>
+
+      <SettingsSection id="health" title={tHealth("title")} description={tHealth("description")}>
+        <HealthSetting />
       </SettingsSection>
 
       <SettingsSection id="data" title={tData("title")} description={tData("description")}>

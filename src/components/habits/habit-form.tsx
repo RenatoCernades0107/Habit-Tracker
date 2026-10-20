@@ -39,9 +39,21 @@ type Draft = {
   cue: string;
   duration_min: string;
   aliases: string;
+  health_metric: "" | NonNullable<Habit["health_metric"]>;
+  health_target: string;
 };
 
-type Errors = Partial<Record<"name" | "target" | "days", string>>;
+type Errors = Partial<Record<"name" | "target" | "days" | "health", string>>;
+
+const HEALTH_METRICS = [
+  "steps",
+  "exercise_minutes",
+  "active_energy_kcal",
+  "distance_km",
+  "mindful_minutes",
+  "workouts",
+  "sleep_hours",
+] as const;
 
 const str = (v: number | string | null | undefined) =>
   v === null || v === undefined ? "" : String(v);
@@ -71,6 +83,8 @@ function draftFrom(habit: Habit): Draft {
     cue: habit.cue ?? "",
     duration_min: str(habit.duration_min),
     aliases: habit.voice_aliases.join(", "),
+    health_metric: habit.health_metric ?? "",
+    health_target: str(habit.health_target),
   };
 }
 
@@ -117,6 +131,8 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
       cue: "",
       duration_min: str(tpl?.duration_min),
       aliases: "",
+      health_metric: tpl?.health_metric ?? "",
+      health_target: str(tpl?.health_target),
     };
   });
   const [errors, setErrors] = useState<Errors>({});
@@ -147,6 +163,9 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
       next.target = t("errors.targetRequired");
     if (draft.schedule_type === "days_of_week" && draft.days_of_week.length === 0)
       next.days = t("errors.daysRequired");
+    const healthTarget = num(draft.health_target);
+    if (draft.health_metric && !(healthTarget && healthTarget > 0))
+      next.health = t("form.healthTargetRequired");
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -187,6 +206,8 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
         .map((a) => a.trim())
         .filter(Boolean)
         .slice(0, 10),
+      health_metric: draft.health_metric || null,
+      health_target: draft.health_metric ? healthTarget : null,
     };
     save({ table: "habits", row });
     toast.success(existing ? t("form.saved") : t("form.created"));
@@ -454,6 +475,38 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
             {t("form.reminderQuiet")}
           </p>
         ) : null}
+      </FormSection>
+
+      <FormSection title={t("form.health")}>
+        <div className="grid gap-3 sm:grid-cols-[1fr_10rem]">
+          <Field id="habit-health-metric" label={t("form.healthMetric")}>
+            <select
+              id="habit-health-metric"
+              className={selectClass}
+              value={draft.health_metric}
+              onChange={(e) => set("health_metric", e.target.value as Draft["health_metric"])}
+            >
+              <option value="">{t("form.healthNone")}</option>
+              {HEALTH_METRICS.map((m) => (
+                <option key={m} value={m}>
+                  {t(`health.${m}`)}
+                </option>
+              ))}
+            </select>
+          </Field>
+          {draft.health_metric ? (
+            <Field id="habit-health-target" label={t("form.healthTarget")} error={errors.health}>
+              <Input
+                id="habit-health-target"
+                inputMode="decimal"
+                value={draft.health_target}
+                aria-invalid={errors.health ? true : undefined}
+                onChange={(e) => set("health_target", e.target.value)}
+              />
+            </Field>
+          ) : null}
+        </div>
+        <p className="text-xs text-muted-foreground">{t("form.healthHint")}</p>
       </FormSection>
 
       <div className="rounded-xl border bg-card">

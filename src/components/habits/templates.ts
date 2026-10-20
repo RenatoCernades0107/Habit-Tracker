@@ -13,6 +13,8 @@ type TemplateFields = Partial<
     | "schedule_type"
     | "times_per_week"
     | "duration_min"
+    | "health_metric"
+    | "health_target"
   >
 > & {
   routine?: "morning" | "evening";
@@ -38,6 +40,9 @@ export const TEMPLATES: Record<TemplateKey, TemplateFields> = {
     increment_step: 1000,
     category: "fitness",
     hasUnit: true,
+    // FR-HLT-7: "walk 5,000 steps a day" completes itself from Apple Health.
+    health_metric: "steps",
+    health_target: 5000,
   },
   meditate: {
     icon: "🧘",
@@ -58,7 +63,14 @@ export const TEMPLATES: Record<TemplateKey, TemplateFields> = {
     category: "learning",
     hasUnit: true,
   },
-  workout: { icon: "🏋️", schedule_type: "times_per_week", times_per_week: 4, category: "fitness" },
+  workout: {
+    icon: "🏋️",
+    schedule_type: "times_per_week",
+    times_per_week: 4,
+    category: "fitness",
+    health_metric: "workouts",
+    health_target: 1,
+  },
   journal: { icon: "✍️", routine: "evening", category: "mind" },
   sleep: { icon: "😴", routine: "evening", category: "health" },
   stretch: { icon: "🤸", routine: "morning", category: "fitness", duration_min: 5 },
