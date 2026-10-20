@@ -221,3 +221,14 @@ describe("celebrations", () => {
     expect(result).toEqual({ milestone: null, perfectDay: false });
   });
 });
+
+describe("habit days on a day off", () => {
+  it("a fixed habit done on an unscheduled day shows, but isn't an occurrence", () => {
+    // 2026-10-17 is a Saturday; the habit is Mondays only.
+    const h = habit({ schedule_type: "days_of_week", days_of_week: [1], start_date: "2026-10-12" });
+    const [hh] = input([h], [done(h, "2026-10-17")]);
+    expect(habitDays(hh!, "2026-10-17", "2026-10-17", TODAY)).toEqual([
+      { date: "2026-10-17", score: 1, state: null },
+    ]);
+  });
+});

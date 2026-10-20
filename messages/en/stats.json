@@ -157,6 +157,7 @@
     "suggestion": "{name} has been under 50% for {weeks, plural, one {# week} other {# weeks}}.",
     "suggestTarget": "Lower target to {value}",
     "suggestTimes": "Make it {count, plural, one {once a week} other {# times a week}}",
+    "suggestDays": "Drop {day}",
     "suggestEdit": "Edit habit",
     "applied": "Updated {name}.",
     "habitProgress": "{done} of {total}",

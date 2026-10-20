@@ -4,7 +4,7 @@ import { addDays, diffDays, isoWeekday, weekStartOf } from "./dates";
 import { buildDayView } from "./day-view";
 import { currentStreak, needsAttention, weekProgress, type HabitHistory } from "./progress";
 import { effectiveWeeklyTarget, isScheduled, scheduleOn } from "./schedule";
-import { skipsLeft, skipsUsed } from "./skips";
+import { skipsInMonth, skipsLeft, skipsUsed } from "./skips";
 import { occurrenceState } from "./state";
 import type { CheckInRow, HabitRow, HabitVersionRow, PauseRow, RoutineRow } from "./types";
 
@@ -246,6 +246,8 @@ describe("R-SKIP", () => {
     ];
     expect(skipsUsed(h.id, rows, TODAY)).toBe(2);
     expect(skipsUsed(h.id, rows, "2026-10-09")).toBe(1);
+    // For display, the day itself counts too.
+    expect(skipsInMonth(h.id, rows, "2026-10-09")).toBe(2);
     expect(skipsLeft(4, 2)).toBe(2);
     expect(skipsLeft(1, 2)).toBe(0);
   });

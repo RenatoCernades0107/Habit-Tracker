@@ -3,7 +3,8 @@
 import { Flame, Minus, Pause, Play, Plus, Timer, X } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 import { useGroupNames } from "@/components/habits/labels";
 import { useCelebrate } from "@/components/today/celebrate";
@@ -93,7 +94,7 @@ export function RoutineMode({ routineId }: { routineId: string }) {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-background pt-safe pr-safe pb-safe pl-safe">
+    <FullScreen>
       <header className="flex items-center justify-between gap-3 px-4 py-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-primary">{names.routine(routine)}</p>
@@ -127,7 +128,7 @@ export function RoutineMode({ routineId }: { routineId: string }) {
         </ol>
       ) : null}
 
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 overflow-y-auto px-6 py-8">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 overflow-y-auto px-6 py-8">
         {current ? (
           <Step
             key={current.habit.id}
@@ -145,8 +146,8 @@ export function RoutineMode({ routineId }: { routineId: string }) {
         ) : (
           <Summary total={total} results={results} items={items} nothingToDo={total === 0} />
         )}
-      </main>
-    </div>
+      </div>
+    </FullScreen>
   );
 }
 
@@ -174,20 +175,28 @@ function Step({
   const { habit, schedule } = item;
   const measurable = schedule.kind === "measurable";
   const target = schedule.target ?? 1;
-  const [value, setValue] = useState(() =>
-    item.checkIn?.value && item.checkIn.value > 0 ? item.checkIn.value : target,
-  );
+  // "Done" means done: start from the target, or from more if more was logged.
+  const [value, setValue] = useState(() => Math.max(item.checkIn?.value ?? 0, target));
+  const heading = useRef<HTMLHeadingElement>(null);
+  // Each step is a new screen: move focus to its name (keyboard and screen readers).
+  useEffect(() => heading.current?.focus(), []);
   const [skipping, setSkipping] = useState(false);
 
   return (
-    <div className="grid gap-6 text-center">
+    <div className="my-auto grid gap-6 text-center">
       <div className="grid gap-2">
         {habit.icon ? (
           <span aria-hidden="true" className="text-6xl">
             {habit.icon}
           </span>
         ) : null}
-        <h1 className="text-3xl font-semibold tracking-tight text-balance">{habit.name}</h1>
+        <h1
+          ref={heading}
+          tabIndex={-1}
+          className="text-3xl font-semibold tracking-tight text-balance outline-none"
+        >
+          {habit.name}
+        </h1>
         {fullHabit?.cue ? <p className="text-muted-foreground">{fullHabit.cue}</p> : null}
         {fullHabit?.description ? (
           <p className="text-sm whitespace-pre-wrap text-muted-foreground">
@@ -336,13 +345,20 @@ function Summary({
   const done = Object.values(results).filter((r) => r === "done").length;
   const streaks = items.filter((i) => results[i.habit.id] === "done" && i.streak > 0);
 
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => heading.current?.focus(), []);
+
   return (
-    <div className="grid gap-6 text-center">
+    <div className="my-auto grid gap-6 text-center">
       <div className="grid gap-2">
         <span aria-hidden="true" className="text-6xl">
           {nothingToDo ? "✨" : "🎉"}
         </span>
-        <h1 className="text-3xl font-semibold tracking-tight">
+        <h1
+          ref={heading}
+          tabIndex={-1}
+          className="text-3xl font-semibold tracking-tight outline-none"
+        >
           {nothingToDo ? t("allDone") : t("summaryTitle")}
         </h1>
         {!nothingToDo ? (
@@ -398,4 +414,38 @@ function useWakeLock(active: boolean) {
       void lock?.release();
     };
   }, [active]);
+}
+
+/**
+ * Routine mode covers the whole app (docs/spec/07-ux.md §3): drawn on <body> above the tab bar,
+ * with the app behind it made inert so focus can't reach it.
+ */
+function FullScreen({ children }: { children: ReactNode }) {
+  // Only rendered on the client (after the cache is restored), so `document` exists.
+  const [host] = useState(() =>
+    typeof document === "undefined" ? null : document.createElement("div"),
+  );
+  useEffect(() => {
+    if (!host) return;
+    const behind = [...document.body.children].filter(
+      (c): c is HTMLElement => c instanceof HTMLElement && !c.inert,
+    );
+    document.body.appendChild(host);
+    behind.forEach((c) => (c.inert = true));
+    return () => {
+      behind.forEach((c) => (c.inert = false));
+      host.remove();
+    };
+  }, [host]);
+  if (!host) return null;
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex flex-col bg-background pt-safe pr-safe pb-safe pl-safe"
+    >
+      {children}
+    </div>,
+    host,
+  );
 }

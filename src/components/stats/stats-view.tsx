@@ -49,7 +49,8 @@ export function StatsView() {
     const heatFrom =
       addDays(to, -(HEATMAP_DAYS - 1)) > from ? addDays(to, -(HEATMAP_DAYS - 1)) : from;
     const scores = dailyScores(hs, from, to, today);
-    const judged = scores.filter((s) => s.score !== null);
+    // Today counts once everything is done, so the average doesn't dip each morning.
+    const judged = scores.filter((s) => s.score !== null && (s.date < today || s.done === s.total));
     const average = judged.length
       ? judged.reduce((sum, s) => sum + (s.score ?? 0), 0) / judged.length
       : null;

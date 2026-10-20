@@ -193,13 +193,10 @@ export function habitDays(h: HabitHistory, from: IsoDate, to: IsoDate, today: Is
     const schedule = scheduleOn(h.habit, h.versions, d);
     const checkIn = h.checkIns.get(d);
     const state = occurrenceState(schedule, checkIn, d, today);
-    // Flexible habits have no due days: only what was done shows.
+    // Flexible habits have no due days, and fixed ones may be done on a day off: only what was
+    // done shows, with no state, so it never counts as an occurrence.
     if (!isFixed(schedule) || !fallsOn(schedule, d)) {
-      out.push({
-        date: d,
-        score: state === "done" ? 1 : null,
-        state: state === "done" ? state : null,
-      });
+      out.push({ date: d, score: state === "done" ? 1 : null, state: null });
       continue;
     }
     const c = credit(state, schedule, checkIn);

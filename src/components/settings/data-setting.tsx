@@ -1,6 +1,7 @@
 "use client";
 
 import { Download, Loader2, Trash2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { del } from "idb-keyval";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -24,6 +25,7 @@ import { clearPageCaches } from "@/lib/pwa/sw-client";
 export function DataSetting() {
   const t = useTranslations("stats.data");
   const userId = useUserId();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState("");
   const [busy, setBusy] = useState(false);
@@ -40,7 +42,10 @@ export function DataSetting() {
         body: JSON.stringify({ confirm: word }),
       });
       if (!res.ok) throw new Error(String(res.status));
-      // Nothing of this account may stay on the device.
+      // Nothing of this account may stay on the device. Empty the cache first, so the persister
+      // can't write the data back after it's deleted.
+      queryClient.getMutationCache().clear();
+      queryClient.clear();
       await Promise.allSettled([clearPageCaches(), del(`restart:${userId}`)]);
       // A full page load, so nothing of this account stays in memory either.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination

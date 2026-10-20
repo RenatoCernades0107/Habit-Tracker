@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { addDays } from "@/domain/dates";
 import { currentStreak } from "@/domain/progress";
 import { isFixed, scheduleOn } from "@/domain/schedule";
-import { skipsUsed } from "@/domain/skips";
+import { skipsInMonth } from "@/domain/skips";
 import { occurrenceState } from "@/domain/state";
 import { bestStreak, completionRate, habitDays, weekdayRates } from "@/domain/stats";
 
@@ -122,7 +122,7 @@ export function HabitDetail({ habitId }: { habitId: string }) {
           className="col-span-2 sm:col-span-1"
           label={t("habit.skipsUsed")}
           value={t("habit.skipsValue", {
-            used: skipsUsed(habit.id, data.checkIns, today),
+            used: skipsInMonth(habit.id, data.checkIns, today),
             max: data.profile?.max_skips_per_month ?? 4,
           })}
         />
@@ -246,10 +246,12 @@ export function HabitDetail({ habitId }: { habitId: string }) {
                   {editable ? (
                     <Link
                       href={c.local_date === today ? "/today" : `/today?day=${c.local_date}`}
-                      aria-label={t("habit.openDay", { date: day(c.local_date) })}
                       className="flex min-h-11 items-center gap-3 rounded-md px-1 py-2 text-sm outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     >
                       {text}
+                      <span className="sr-only">
+                        {t("habit.openDay", { date: day(c.local_date) })}
+                      </span>
                     </Link>
                   ) : (
                     <div className="flex min-h-11 items-center gap-3 px-1 py-2 text-sm">{text}</div>

@@ -228,11 +228,18 @@ export function TodayView({ setup }: { setup: ReactNode }) {
     );
   } else if (view.sections.length === 0 && view.weekly.length === 0) {
     body = (
-      <EmptyState
-        illustration={<RestIllustration />}
-        title={t("restDay.title")}
-        description={t("restDay.description")}
-      />
+      <div className="grid gap-4">
+        <EmptyState
+          illustration={<RestIllustration />}
+          title={t("restDay.title")}
+          description={t("restDay.description")}
+        />
+        <MoodCard
+          key={date}
+          date={date}
+          entry={data.dailyEntries.find((e) => e.local_date === date)}
+        />
+      </div>
     );
   } else {
     body = (

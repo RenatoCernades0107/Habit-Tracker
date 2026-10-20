@@ -6,7 +6,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { useDayFormat } from "@/components/habits/labels";
+import { useDayFormat, useWeekdayNames } from "@/components/habits/labels";
 import { RateBar } from "@/components/stats/bars";
 import { Tile } from "@/components/stats/stats-view";
 import { useStats } from "@/components/stats/use-stats";
@@ -16,7 +16,14 @@ import { useUserId } from "@/data/provider";
 import { addDays, weekStartOf } from "@/domain/dates";
 import { currentStreak, weekProgress } from "@/domain/progress";
 import { isFixed, scheduleOn } from "@/domain/schedule";
-import { dailyScores, habitDays, perfectDays, weeklyScores, weeksStruggling } from "@/domain/stats";
+import {
+  dailyScores,
+  habitDays,
+  perfectDays,
+  weekdayRates,
+  weeklyScores,
+  weeksStruggling,
+} from "@/domain/stats";
 import type { Tables } from "@/lib/supabase/database.types";
 
 const MOOD_EMOJI = ["", "😞", "🙁", "😐", "🙂", "😄"];
@@ -57,7 +64,9 @@ export function WeeklyReview({ week: requested }: { week: string | null }) {
         const fixed = isFixed(scheduleOn(h.habit, h.versions, last));
         if (!fixed) {
           const p = weekProgress(h, week, today, weekStart);
-          return { h, done: p.done, total: p.target, missed: 0, fixed };
+          // A finished week that didn't reach the target is a miss (R-STREAK-2).
+          const missed = end < today ? Math.max(0, p.target - p.rawDone) : 0;
+          return { h, done: p.done, total: p.target, missed, fixed };
         }
         const days = habitDays(h, week, end, today);
         const judged = days.filter(
@@ -67,14 +76,20 @@ export function WeeklyReview({ week: requested }: { week: string | null }) {
           h,
           done: judged.filter((d) => d.state === "done").length,
           total: judged.length,
-          missed: judged.filter((d) => d.state === "missed").length,
+          // Partly done counts as a miss, as it does for streaks (R-STREAK-1).
+          missed: judged.filter((d) => d.state === "missed" || d.state === "partial").length,
           fixed,
         };
       })
       .filter((r) => r.total > 0);
     const wins = perHabit
       .filter((r) => r.missed === 0 && r.done > 0)
-      .map((r) => ({ ...r, streak: currentStreak(r.h, last, weekStart) }))
+      // Judge streaks as of the day after a finished week, so that week counts as complete and
+      // not as "in progress" (R-STREAK-1/2).
+      .map((r) => ({
+        ...r,
+        streak: currentStreak(r.h, end < today ? addDays(end, 1) : today, weekStart),
+      }))
       .filter((r) => r.streak > 0);
     const notes = [
       ...data.dailyEntries
@@ -329,24 +344,44 @@ function Reflection({
 /** FR-REV-4: one-tap changes for a habit that has struggled for weeks. */
 function Suggestion({ habitId, weeks }: { habitId: string; weeks: number }) {
   const t = useTranslations("stats.review");
+  const format = useFormatter();
+  const weekday = useWeekdayNames();
   const save = useSave();
-  const { data } = useStats();
-  const habit = data.habits.find((h) => h.id === habitId);
-  if (!habit) return null;
+  const { hs, today, weekStart } = useStats();
+  const [applied, setApplied] = useState(false);
+  const h = hs.find((x) => x.habit.id === habitId);
+  if (!h || applied) return null;
+  // Full row: histories keep the row as cached.
+  const habit = h.habit as Tables<"habits">;
 
+  const step = habit.increment_step;
+  const decimals = (String(step).split(".")[1] ?? "").length;
   const lowerTarget =
-    habit.kind === "measurable" && habit.target_value && habit.target_value > habit.increment_step
-      ? Math.max(
-          habit.increment_step,
-          Math.round((habit.target_value * 0.75) / habit.increment_step) * habit.increment_step,
+    habit.kind === "measurable" && habit.target_value && habit.target_value > step
+      ? Number(
+          Math.max(step, Math.round((habit.target_value * 0.75) / step) * step).toFixed(decimals),
         )
       : null;
+  // Fixed schedules: drop the weekday that went worst over the last 3 weeks.
+  const days =
+    habit.schedule_type === "daily"
+      ? [1, 2, 3, 4, 5, 6, 7]
+      : habit.schedule_type === "days_of_week"
+        ? (habit.days_of_week ?? [])
+        : [];
+  const weakest =
+    days.length > 1
+      ? weekdayRates([h], addDays(weekStartOf(today, weekStart), -21), addDays(today, -1), today)
+          .filter((w) => days.includes(w.weekday) && w.rate !== null)
+          .sort((a, b) => (a.rate ?? 0) - (b.rate ?? 0))[0]?.weekday
+      : undefined;
   const fewerTimes =
     habit.schedule_type === "times_per_week" && (habit.times_per_week ?? 0) > 1
       ? (habit.times_per_week ?? 0) - 1
       : null;
   const apply = (row: Tables<"habits">) => {
     save({ table: "habits", row });
+    setApplied(true);
     toast(t("applied", { name: habit.name }));
   };
 
@@ -360,7 +395,24 @@ function Suggestion({ habitId, weeks }: { habitId: string; weeks: number }) {
             variant="secondary"
             onClick={() => apply({ ...habit, target_value: lowerTarget })}
           >
-            {t("suggestTarget", { value: `${lowerTarget} ${habit.unit ?? ""}`.trim() })}
+            {t("suggestTarget", {
+              value: `${format.number(lowerTarget)} ${habit.unit ?? ""}`.trim(),
+            })}
+          </Button>
+        ) : null}
+        {weakest !== undefined ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              apply({
+                ...habit,
+                schedule_type: "days_of_week",
+                days_of_week: days.filter((d) => d !== weakest),
+              })
+            }
+          >
+            {t("suggestDays", { day: weekday(weakest, "long") })}
           </Button>
         ) : null}
         {fewerTimes !== null ? (

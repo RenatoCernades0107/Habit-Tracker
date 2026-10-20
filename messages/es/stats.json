@@ -157,6 +157,7 @@
     "suggestion": "{name} lleva {weeks, plural, one {# semana} other {# semanas}} por debajo del 50%.",
     "suggestTarget": "Bajar la meta a {value}",
     "suggestTimes": "Dejarlo en {count, plural, one {una vez por semana} other {# veces por semana}}",
+    "suggestDays": "Quitar el {day}",
     "suggestEdit": "Editar hábito",
     "applied": "{name} actualizado.",
     "habitProgress": "{done} de {total}",
