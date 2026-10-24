@@ -1,0 +1,15 @@
+{
+  "appName": "Restart",
+  "tagline": "Pequeños hábitos, cada día.",
+  "loading": "Cargando…",
+  "retry": "Intentar de nuevo",
+  "cancel": "Cancelar",
+  "close": "Cerrar",
+  "save": "Guardar",
+  "back": "Volver",
+  "comingSoon": "Próximamente",
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "offline": "Estás sin conexión. Los cambios se sincronizarán cuando vuelvas a conectarte."
+  }
+}

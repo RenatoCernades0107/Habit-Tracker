@@ -1,0 +1,48 @@
+{
+  "spike": {
+    "id": "S4",
+    "note": "Static sample for spike S4 (docs/spikes/S4-shortcuts-distribution.md). Shaped like GET /api/v1/today (docs/spec/05-api.md §2). Fake habits and IDs, no personal data. Not a real API: it ignores the token and never changes.",
+    "version": 1
+  },
+  "date": "2026-10-20",
+  "score": 56,
+  "pending_count": 3,
+  "choices": {
+    "🧘 Meditar · Mañana": "00000000-0000-4000-8000-000000000001",
+    "📖 Leer (10/20) · Mañana": "00000000-0000-4000-8000-000000000002",
+    "💧 Agua (6/8)": "00000000-0000-4000-8000-000000000003"
+  },
+  "items": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Meditar",
+      "routine": "Mañana",
+      "kind": "boolean",
+      "state": "pending",
+      "value": null,
+      "target": null,
+      "streak": 11
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "Leer",
+      "routine": "Mañana",
+      "kind": "measurable",
+      "state": "partial",
+      "value": 10,
+      "target": 20,
+      "streak": 4
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "Agua",
+      "routine": null,
+      "kind": "measurable",
+      "state": "partial",
+      "value": 6,
+      "target": 8,
+      "streak": 0
+    }
+  ],
+  "speech": "Te quedan 3 hábitos: Meditar, Leer y Agua."
+}

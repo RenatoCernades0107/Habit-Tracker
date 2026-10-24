@@ -1,0 +1,78 @@
+{
+  "privacy": {
+    "title": "Privacidad",
+    "updated": "Última actualización: octubre de 2026",
+    "intro": "Restart es un pequeño registro de hábitos, gratuito, para quien lo administra, su familia y sus amigos. No hay anuncios, y tus datos nunca se venden ni se comparten.",
+    "sections": [
+      {
+        "title": "Qué se guarda",
+        "items": [
+          "Tu correo, para iniciar sesión.",
+          "Tus ajustes, hábitos, rutinas y categorías, registros, notas, ánimo y reflexiones semanales.",
+          "Apple Salud: solo totales diarios (por ejemplo, 6.234 pasos el 20 de octubre) de las métricas que usan tus hábitos. Las demás se descartan al llegar. Nunca se lee nada más detallado.",
+          "Notificaciones: la dirección push de cada dispositivo donde las activaste.",
+          "Siri y Atajos: tokens, guardados solo como huella (hash).",
+          "Google Calendar: una clave cifrada que permite a Restart gestionar el calendario «Hábitos» que creó, y los ID de sus eventos. Restart no puede ver tus otros calendarios."
+        ]
+      },
+      {
+        "title": "Dónde se guarda",
+        "items": [
+          "La base de datos es Supabase y la app funciona en Vercel. Ambos cifran los datos en tránsito y en reposo.",
+          "Los datos de cada persona están separados en la base de datos: una cuenta nunca puede leer los de otra.",
+          "Quien administra Restart administra la base de datos. No mirará tus datos salvo que le pidas ayuda."
+        ]
+      },
+      {
+        "title": "Datos de usuario de Google",
+        "items": [
+          "Restart solo pide acceso a los calendarios que crea él mismo (calendar.app.created) y a tu correo, para mostrar qué cuenta está conectada.",
+          "Usa ese acceso solo para mostrar tus hábitos en ese calendario. Los datos no se comparten, no se venden ni se usan para nada más, conforme a la Política de datos de usuario de los servicios de API de Google, incluidos sus requisitos de uso limitado."
+        ]
+      },
+      {
+        "title": "Tú decides",
+        "items": [
+          "Ajustes → Tus datos: descarga todo (JSON) o tus registros (CSV).",
+          "Ajustes → Apple Salud: borra los totales de Salud guardados.",
+          "Ajustes → Google Calendar: desconecta y, si quieres, borra el calendario Hábitos.",
+          "Ajustes → Tus datos: borra tu cuenta. Todo se borra para siempre, se revoca el acceso a Google y los dispositivos dejan de recibir notificaciones."
+        ]
+      },
+      {
+        "title": "Preguntas",
+        "items": ["Pregúntale a quien te invitó a Restart."]
+      }
+    ],
+    "back": "Volver"
+  },
+  "start": {
+    "title": "Primeros pasos",
+    "intro": "Cinco minutos para que Restart forme parte de tu día.",
+    "steps": [
+      {
+        "title": "Instálala",
+        "body": "iPhone: abre el enlace en Safari, toca Compartir → Añadir a pantalla de inicio y abre Restart desde ahí. Android y computadoras: usa «Instalar» en el menú del navegador."
+      },
+      {
+        "title": "Inicia sesión",
+        "body": "Escribe tu correo y el código de 6 dígitos que te llega. También puedes usar Google."
+      },
+      {
+        "title": "Añade un hábito",
+        "body": "Empieza poco a poco: elige una plantilla como «Beber agua» y ajústala. Las rutinas de mañana y noche ya están creadas."
+      },
+      {
+        "title": "Activa las notificaciones",
+        "body": "Ajustes → Notificaciones. Solo recibes recordatorios de lo que te falta, y un resumen corto por la noche."
+      },
+      {
+        "title": "Extras opcionales",
+        "body": "Registra con Siri (Ajustes → Siri y Atajos), deja que Apple Salud marque pasos y entrenamientos, y ve tus hábitos en Google Calendar."
+      }
+    ],
+    "tip": "Toca un hábito para marcarlo; «…» es para valores, saltos y notas. Todo funciona sin conexión y se sincroniza después.",
+    "cta": "Iniciar sesión",
+    "privacy": "Privacidad"
+  }
+}

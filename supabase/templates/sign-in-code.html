@@ -1,0 +1,158 @@
+<!doctype html>
+<!--
+  Sign-in code email (magic_link and confirmation templates, see supabase/config.toml).
+  - Shows only the 6-digit Token: no sign-in link, because the code is typed inside the
+    installed app (docs/spec/03-architecture.md §6).
+  - Language from the sign-up metadata: "es" → Spanish (tú), anything else → English (FR-I18N-2).
+  - The code must be the only 6-digit number in the email (e2e tests read it with /\b(\d{6})\b/),
+    so colors are never written as all-digit hex values.
+  - "10 minutes" matches auth.email.otp_expiry = 600.
+-->
+<html lang="{{ if eq .Data.locale `es` }}es{{ else }}en{{ end }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <title>
+      {{ if eq .Data.locale `es` }}Tu código de Restart{{ else }}Your Restart code{{ end }}
+    </title>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .page {
+          background-color: #0e1513 !important;
+        }
+        .card {
+          background-color: #17201d !important;
+          border-color: #2a3633 !important;
+        }
+        .text {
+          color: #eef3f1 !important;
+        }
+        .muted {
+          color: #a9b8b3 !important;
+        }
+        .code {
+          background-color: #0e1513 !important;
+          color: #eef3f1 !important;
+          border-color: #2a3633 !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="page" style="margin: 0; padding: 0; background-color: #f6f8f7">
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      class="page"
+      style="background-color: #f6f8f7"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 16px">
+          <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            class="card"
+            style="
+              max-width: 480px;
+              background-color: #ffffff;
+              border: 1px solid #e3e9e7;
+              border-radius: 16px;
+            "
+          >
+            <tr>
+              <td
+                style="
+                  padding: 32px 28px;
+                  font-family:
+                    -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+                "
+              >
+                <p
+                  class="text"
+                  style="
+                    margin: 0 0 4px;
+                    font-size: 15px;
+                    font-weight: 700;
+                    letter-spacing: 0.02em;
+                    color: #0f766e;
+                  "
+                >
+                  Restart
+                </p>
+                {{ if eq .Data.locale `es` }}
+                <h1
+                  class="text"
+                  style="margin: 0 0 16px; font-size: 22px; line-height: 1.3; color: #1c2321"
+                >
+                  Tu código para entrar
+                </h1>
+                <p
+                  class="muted"
+                  style="margin: 0 0 24px; font-size: 16px; line-height: 1.5; color: #4f5e59"
+                >
+                  Escribe este código en la app para entrar. Caduca en 10 minutos.
+                </p>
+                {{ else }}
+                <h1
+                  class="text"
+                  style="margin: 0 0 16px; font-size: 22px; line-height: 1.3; color: #1c2321"
+                >
+                  Your sign-in code
+                </h1>
+                <p
+                  class="muted"
+                  style="margin: 0 0 24px; font-size: 16px; line-height: 1.5; color: #4f5e59"
+                >
+                  Type this code in the app to sign in. It expires in 10 minutes.
+                </p>
+                {{ end }}
+                <p
+                  class="code"
+                  style="
+                    margin: 0 0 24px;
+                    padding: 16px;
+                    text-align: center;
+                    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+                    font-size: 34px;
+                    line-height: 1.2;
+                    font-weight: 700;
+                    letter-spacing: 0.3em;
+                    color: #1c2321;
+                    background-color: #f6f8f7;
+                    border: 1px solid #e3e9e7;
+                    border-radius: 12px;
+                  "
+                >
+                  {{ .Token }}
+                </p>
+                {{ if eq .Data.locale `es` }}
+                <p
+                  class="muted"
+                  style="margin: 0; font-size: 14px; line-height: 1.5; color: #4f5e59"
+                >
+                  Si no lo pediste, puedes ignorar este correo. Nadie podrá entrar sin el código.
+                </p>
+                {{ else }}
+                <p
+                  class="muted"
+                  style="margin: 0; font-size: 14px; line-height: 1.5; color: #4f5e59"
+                >
+                  If you didn't ask for it, you can ignore this email. Nobody can sign in without
+                  it.
+                </p>
+                {{ end }}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

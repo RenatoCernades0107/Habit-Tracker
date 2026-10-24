@@ -1,0 +1,118 @@
+{
+  "title": "Ajustes",
+  "profile": {
+    "title": "Perfil",
+    "description": "La cuenta con la que iniciaste sesión.",
+    "name": "Nombre",
+    "email": "Correo electrónico"
+  },
+  "language": {
+    "title": "Idioma",
+    "description": "Se usa en la app, en las notificaciones y en los correos de acceso.",
+    "es": "Español",
+    "en": "English",
+    "changed": "Idioma cambiado a {language}."
+  },
+  "theme": {
+    "title": "Tema",
+    "description": "Sistema sigue el modo claro u oscuro de tu dispositivo.",
+    "system": "Sistema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "install": {
+    "title": "Instala la app",
+    "description": "Añade Restart a tu pantalla de inicio para abrirla como cualquier otra app. En iPhone, la necesitas para recibir notificaciones."
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "description": "Recordatorios, el resumen diario y la revisión semanal en este dispositivo.",
+    "prefs": {
+      "title": "Qué enviar",
+      "lead": "Recordarme antes de la hora del hábito",
+      "leadValue": "{minutes, plural, =0 {A la hora} other {# min antes}}",
+      "report": "Resumen diario",
+      "reportHint": "Tu puntuación y lo que falta, al final del día.",
+      "review": "Revisión semanal",
+      "reviewDay": "Día",
+      "time": "Hora",
+      "quiet": "Horas de silencio",
+      "quietHint": "No se envía nada entre estas horas.",
+      "quietFrom": "Desde",
+      "quietTo": "Hasta",
+      "quietOff": "Desactivadas",
+      "mute": "Silenciar por hoy",
+      "muted": "Silenciado hasta mañana.",
+      "unmute": "Quitar silencio",
+      "saved": "Guardado.",
+      "devices": "Tus dispositivos",
+      "devicesEmpty": "Ningún dispositivo tiene las notificaciones activadas.",
+      "deviceLastSeen": "Última entrega {date}",
+      "deviceNever": "Aún sin entregas",
+      "deviceRemove": "Quitar {name}",
+      "deviceUnknown": "Dispositivo"
+    }
+  },
+  "account": {
+    "title": "Cuenta",
+    "description": "Cerrar sesión en todos los dispositivos también la cierra en tus otros teléfonos y computadoras."
+  },
+  "routines": {
+    "title": "Rutinas",
+    "description": "Grupos de hábitos a una hora del día. Si eliminas una, sus hábitos pasan a En cualquier momento.",
+    "name": "Nombre",
+    "start": "Empieza a las",
+    "add": "Añadir rutina",
+    "newName": "Nueva rutina",
+    "delete": "Eliminar {name}",
+    "saved": "Rutina guardada.",
+    "digest": "Avisarme al empezar con lo que falta"
+  },
+  "categories": {
+    "title": "Categorías",
+    "description": "Si eliminas una, sus hábitos quedan sin categoría.",
+    "name": "Nombre",
+    "add": "Añadir categoría",
+    "newName": "Nueva categoría",
+    "delete": "Eliminar {name}"
+  },
+  "days": {
+    "title": "Días y límites",
+    "description": "Cómo cuenta Restart tus días.",
+    "dayEnd": "El día termina a las",
+    "dayEndHint": "Hasta esa hora, la noche cuenta para el día anterior.",
+    "weekStart": "La semana empieza el",
+    "monday": "Lunes",
+    "sunday": "Domingo",
+    "editWindow": "Días que puedes editar hacia atrás",
+    "skips": "Saltos por hábito al mes",
+    "timezone": "Zona horaria",
+    "saved": "Guardado."
+  },
+  "calendar": {
+    "title": "Google Calendar",
+    "description": "Ve tus hábitos junto a tus eventos, en un calendario propio.",
+    "notConfigured": "Google Calendar aún no está configurado en este servidor (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, TOKEN_ENCRYPTION_KEY).",
+    "intro": "Restart crea un calendario «Hábitos» y solo toca ese. Los hábitos con días fijos y una hora aparecen como eventos repetidos; los días hechos llevan ✅.",
+    "connect": "Conectar Google Calendar",
+    "unverified": "Google puede decir que la app no está verificada: elige Avanzado → Ir a Restart.",
+    "connectedAs": "Conectado como {email}",
+    "connectedAnon": "Conectado",
+    "needsReauth": "El acceso a Google caducó. Vuelve a conectar para mantener tu calendario al día.",
+    "reconnect": "Volver a conectar",
+    "resync": "Resincronizar",
+    "resyncQueued": "Reconstruyendo tu calendario…",
+    "disconnect": "Desconectar",
+    "disconnectTitle": "¿Desconectar Google Calendar?",
+    "disconnectDescription": "Se detiene la sincronización y se revoca el acceso de Restart.",
+    "deleteCalendar": "Borrar también el calendario Hábitos de Google",
+    "cancel": "Cancelar",
+    "disconnected": "Google Calendar desconectado.",
+    "connectedToast": "Google Calendar conectado. Tus hábitos aparecerán en un minuto.",
+    "errorToast": "No se pudo conectar Google Calendar. Inténtalo de nuevo.",
+    "deniedToast": "Google Calendar no se conectó.",
+    "failed": "No se pudo hacer. Inténtalo de nuevo.",
+    "banner": "Google Calendar necesita que vuelvas a conectarlo.",
+    "bannerAction": "Volver a conectar"
+  }
+}

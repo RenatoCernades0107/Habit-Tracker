@@ -1,0 +1,173 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+import { SignOutButton } from "@/components/auth/sign-out-button";
+import { PushSettings } from "@/components/push/push-settings";
+import { InstallGuide } from "@/components/pwa/install-guide";
+import { CalendarSetting } from "@/components/settings/calendar-setting";
+import { CategoriesSetting } from "@/components/settings/categories-setting";
+import { DataSetting } from "@/components/settings/data-setting";
+import { HealthSetting } from "@/components/settings/health-setting";
+import { DaysSetting } from "@/components/settings/days-setting";
+import { LanguageSetting } from "@/components/settings/language-setting";
+import { NotificationPrefs } from "@/components/settings/notification-prefs";
+import { RoutinesSetting } from "@/components/settings/routines-setting";
+import { ScrollToHash } from "@/components/settings/scroll-to-hash";
+import { ShortcutsSetting } from "@/components/settings/shortcuts-setting";
+import { sectionHeadingId, SettingsSection } from "@/components/settings/settings-section";
+import { ThemeSetting } from "@/components/settings/theme-setting";
+import { PageHeader } from "@/components/shell/page-header";
+import { requireUser } from "@/lib/auth/session";
+import { getServerEnv } from "@/lib/env.server";
+import { createClient } from "@/lib/supabase/server";
+
+/** Whether the Google client and the token key are set (the button needs both). */
+function calendarConfigured(): boolean {
+  try {
+    const env = getServerEnv();
+    return !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.TOKEN_ENCRYPTION_KEY);
+  } catch {
+    return false;
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("settings");
+  return { title: t("title") };
+}
+
+/**
+ * Settings (FR-ACC-3, FR-ACC-5, FR-DAT-1, FR-I18N-1, docs/spec/07-ux.md §4.8). Section ids are link
+ * targets: Today's setup checklist opens #install and #notifications.
+ */
+export default async function SettingsPage() {
+  const user = await requireUser("/settings");
+  const [t, tData, tShortcuts, tHealth, supabase] = await Promise.all([
+    getTranslations("settings"),
+    getTranslations("stats.data"),
+    getTranslations("shortcuts.settings"),
+    getTranslations("shortcuts.health"),
+    createClient(),
+  ]);
+
+  // RLS returns only this user's row. Only what the page shows is selected.
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (error) console.warn("[settings] profile not loaded:", error.code);
+  const displayName = profile?.display_name?.trim();
+
+  return (
+    <div className="grid gap-6 lg:max-w-3xl">
+      <ScrollToHash />
+      <PageHeader title={t("title")} />
+
+      <SettingsSection
+        id="profile"
+        title={t("profile.title")}
+        description={t("profile.description")}
+      >
+        <dl className="grid gap-4 text-sm">
+          {displayName ? (
+            <div className="grid gap-1">
+              <dt className="text-muted-foreground">{t("profile.name")}</dt>
+              <dd className="font-medium">{displayName}</dd>
+            </div>
+          ) : null}
+          <div className="grid gap-1">
+            <dt className="text-muted-foreground">{t("profile.email")}</dt>
+            <dd className="font-medium break-all">{user.email}</dd>
+          </div>
+        </dl>
+      </SettingsSection>
+
+      <SettingsSection
+        id="language"
+        title={t("language.title")}
+        description={t("language.description")}
+      >
+        <LanguageSetting labelledBy={sectionHeadingId("language")} />
+      </SettingsSection>
+
+      <SettingsSection id="theme" title={t("theme.title")} description={t("theme.description")}>
+        <ThemeSetting labelledBy={sectionHeadingId("theme")} userId={user.id} />
+      </SettingsSection>
+
+      <SettingsSection
+        id="routines"
+        title={t("routines.title")}
+        description={t("routines.description")}
+      >
+        <RoutinesSetting />
+      </SettingsSection>
+
+      <SettingsSection
+        id="categories"
+        title={t("categories.title")}
+        description={t("categories.description")}
+      >
+        <CategoriesSetting />
+      </SettingsSection>
+
+      <SettingsSection id="days" title={t("days.title")} description={t("days.description")}>
+        <DaysSetting />
+      </SettingsSection>
+
+      <SettingsSection
+        id="install"
+        title={t("install.title")}
+        description={t("install.description")}
+      >
+        <InstallGuide />
+      </SettingsSection>
+
+      <SettingsSection
+        id="notifications"
+        title={t("notifications.title")}
+        description={t("notifications.description")}
+      >
+        <div className="grid gap-5">
+          <PushSettings />
+          <NotificationPrefs />
+        </div>
+      </SettingsSection>
+
+      <SettingsSection
+        id="shortcuts"
+        title={tShortcuts("title")}
+        description={tShortcuts("description")}
+      >
+        <ShortcutsSetting />
+      </SettingsSection>
+
+      <SettingsSection
+        id="calendar"
+        title={t("calendar.title")}
+        description={t("calendar.description")}
+      >
+        <CalendarSetting configured={calendarConfigured()} />
+      </SettingsSection>
+
+      <SettingsSection id="health" title={tHealth("title")} description={tHealth("description")}>
+        <HealthSetting />
+      </SettingsSection>
+
+      <SettingsSection id="data" title={tData("title")} description={tData("description")}>
+        <DataSetting />
+      </SettingsSection>
+
+      <SettingsSection
+        id="account"
+        title={t("account.title")}
+        description={t("account.description")}
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <SignOutButton />
+          <SignOutButton everywhere variant="ghost" />
+        </div>
+      </SettingsSection>
+    </div>
+  );
+}

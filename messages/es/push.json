@@ -1,0 +1,91 @@
+{
+  "settings": {
+    "checking": "Revisando este dispositivo…",
+    "statusLabel": "Este dispositivo",
+    "status": {
+      "on": "Activadas",
+      "off": "Desactivadas",
+      "blocked": "Bloqueadas",
+      "unavailable": "No disponibles"
+    },
+    "intro": "Recibe recordatorios en este dispositivo, aunque Restart esté cerrada.",
+    "enable": "Activar notificaciones",
+    "enabling": "Activando…",
+    "enabled": "Las notificaciones están activadas en este dispositivo.",
+    "testIntro": "Envía una prueba para comprobar que llegan.",
+    "testNow": "Enviar prueba ahora",
+    "testScheduled": "Enviar prueba en 1 minuto",
+    "testScheduledHint": "Pasa por el programador, como un recordatorio de verdad. Cierra la app o bloquea el teléfono para probarlo.",
+    "sending": "Enviando…",
+    "disable": "Desactivar en este dispositivo",
+    "disabling": "Desactivando…",
+    "disabled": "Las notificaciones están desactivadas en este dispositivo.",
+    "testSent": "{sent, plural, one {Prueba enviada a # dispositivo.} other {Prueba enviada a # dispositivos.}}",
+    "testPartial": "Prueba enviada a {sent} de {total} dispositivos. Los demás no respondieron.",
+    "testNoDevices": "Aún no hay dispositivos con notificaciones activadas.",
+    "testNotDelivered": "No se pudo entregar la prueba. Desactiva y vuelve a activar las notificaciones en este dispositivo.",
+    "testScheduledFor": "Prueba programada para las {time}. Ya puedes cerrar la app.",
+    "rateLimited": "Ya tienes 5 pruebas en espera. Inténtalo de nuevo en unos minutos.",
+    "ios": {
+      "title": "Primero instala Restart",
+      "body": "En iPhone y iPad, las notificaciones solo funcionan en la app de tu pantalla de inicio. Instálala, ábrela desde ahí y actívalas en Ajustes."
+    },
+    "iosTooOld": "Las notificaciones necesitan iOS 16.4 o posterior. Actualiza en Ajustes → General → Actualización de software.",
+    "unsupported": "Este navegador no puede mostrar notificaciones. Prueba con Safari, Chrome, Edge o Firefox.",
+    "denied": {
+      "title": "Las notificaciones están bloqueadas",
+      "ios": "Abre la app Ajustes → Notificaciones → Restart y activa Permitir notificaciones. Luego vuelve aquí.",
+      "android": "Mantén pulsado el icono de Restart → Información de la app → Notificaciones, y permítelas. En el navegador: toca el icono junto a la dirección → Permisos → Notificaciones.",
+      "desktop": "Haz clic en el icono junto a la dirección → Configuración del sitio → Notificaciones → Permitir. Luego recarga esta página."
+    },
+    "missingKey": "Push no está configurado en este servidor: falta NEXT_PUBLIC_VAPID_PUBLIC_KEY o no es válida. Genera las claves con npx web-push generate-vapid-keys y reinicia la app.",
+    "errors": {
+      "permissionDismissed": "No se permitieron las notificaciones. Toca Activar cuando quieras.",
+      "noServiceWorker": "No se pudieron iniciar las notificaciones en este dispositivo. Recarga la página e inténtalo de nuevo.",
+      "noServiceWorkerDev": "El service worker no está activo. En desarrollo está apagado salvo que definas NEXT_PUBLIC_ENABLE_SW_IN_DEV=1; o prueba con npm run build && npm start.",
+      "subscribeFailed": "No se pudieron activar las notificaciones. Inténtalo de nuevo.",
+      "saveFailed": "No se pudo guardar este dispositivo. Revisa tu conexión e inténtalo de nuevo.",
+      "signedOut": "Tu sesión terminó. Vuelve a iniciar sesión.",
+      "testFailed": "No se pudo enviar la prueba. Inténtalo de nuevo.",
+      "disableFailed": "No se pudieron desactivar las notificaciones. Inténtalo de nuevo."
+    }
+  },
+  "notifications": {
+    "test": {
+      "title": "🔔 Prueba de Restart",
+      "body": "¡Funciona! Los recordatorios llegarán a este dispositivo.",
+      "scheduledBody": "¡Funciona! Programada para las {due}, enviada a las {sent}. Los recordatorios llegarán a este dispositivo."
+    },
+    "reminder": {
+      "title": "⏰ {name} en {minutes} min",
+      "titleNow": "⏰ Hora de {name}",
+      "streakDays": "🔥 {count, plural, one {# día} other {# días}}",
+      "streakWeeks": "🔥 {count, plural, one {# semana} other {# semanas}}",
+      "body": "Toca para registrarlo.",
+      "done": "Hecho",
+      "snooze": "15 min"
+    },
+    "digest": {
+      "morning": "Rutina de mañana",
+      "evening": "Rutina de noche",
+      "title": "{icon} {routine} · {count, plural, one {# hábito} other {# hábitos}}",
+      "more": "+{count} más"
+    },
+    "report": {
+      "title": "📊 Hoy: {score, number, percent} ({done}/{total})",
+      "titleFlexible": "📊 ¿Cómo te fue hoy?",
+      "best": "🔥 {name} {days, plural, one {# día} other {# días}}.",
+      "left": "Faltan: {list}",
+      "attention": "No falles dos veces: {list}",
+      "allDone": "Todo hecho.",
+      "perfectTitle": "🎉 ¡Día perfecto! 100%",
+      "perfectBody": "¿Cómo te sentiste hoy?"
+    },
+    "review": {
+      "title": "🗓️ Tu semana: {score, number, percent}",
+      "titleDelta": "🗓️ Tu semana: {score, number, percent} ({delta, number, ::sign-always percent})",
+      "titleEmpty": "🗓️ Tu revisión semanal",
+      "body": "Toca para revisarla y planear la próxima."
+    }
+  }
+}

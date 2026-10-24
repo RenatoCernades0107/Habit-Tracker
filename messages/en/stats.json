@@ -1,0 +1,180 @@
+{
+  "title": "Stats",
+  "periods": {
+    "label": "Period",
+    "7d": "7 days",
+    "30d": "30 days",
+    "90d": "90 days",
+    "12m": "12 months",
+    "all": "All"
+  },
+  "empty": {
+    "title": "Nothing to show yet",
+    "description": "Log a few days and your trends will appear here."
+  },
+  "overview": {
+    "score": "Average score",
+    "perfectDays": "Perfect days",
+    "thisWeek": "This week",
+    "lastWeek": "Last week",
+    "change": "{delta, number, ::sign-always percent} vs last week",
+    "noChange": "Same as last week"
+  },
+  "heatmap": {
+    "title": "Daily score",
+    "description": "Each square is a day. Darker means more done.",
+    "less": "Less",
+    "more": "More",
+    "rest": "Rest day",
+    "cell": "{date}: {score}",
+    "cellRest": "{date}: rest day",
+    "table": "Show as table",
+    "date": "Date",
+    "scoreCol": "Score"
+  },
+  "weekly": {
+    "title": "Weekly score",
+    "description": "The last 12 weeks.",
+    "bar": "Week of {date}: {score}"
+  },
+  "weekdays": {
+    "title": "By weekday",
+    "best": "Best: {day}",
+    "worst": "Hardest: {day}"
+  },
+  "groups": {
+    "routines": "By routine",
+    "categories": "By category"
+  },
+  "attention": {
+    "title": "Needs attention",
+    "description": "Under 50% over the last 3 weeks.",
+    "none": "Nothing here. Nice."
+  },
+  "strongest": {
+    "title": "Strongest streaks",
+    "none": "Streaks appear after a few days in a row."
+  },
+  "rate": "{rate, number, percent}",
+  "noData": "–",
+  "reviewLink": "Weekly review",
+  "habit": {
+    "current": "Current streak",
+    "best": "Best streak",
+    "days": "{count, plural, one {# day} other {# days}}",
+    "weeks": "{count, plural, one {# week} other {# weeks}}",
+    "rates": "Completion",
+    "rate7": "7 days",
+    "rate30": "30 days",
+    "rate90": "90 days",
+    "rateAll": "All time",
+    "values": "Values",
+    "target": "Target {value}",
+    "history": "History",
+    "historyEmpty": "No check-ins yet.",
+    "notes": "Notes",
+    "edit": "Edit habit",
+    "skipsUsed": "Skips this month",
+    "skipsValue": "{used} of {max}",
+    "state": {
+      "done": "Done",
+      "partial": "Partly done",
+      "skipped": "Skipped",
+      "missed": "Missed",
+      "pending": "Pending"
+    },
+    "openDay": "Open {date} on Today",
+    "source": {
+      "app": "App",
+      "routine_mode": "Routine mode",
+      "siri": "Siri",
+      "notification": "Notification",
+      "health": "Apple Health",
+      "import": "Import"
+    }
+  },
+  "routine": {
+    "start": "Start",
+    "startLabel": "Start {name}",
+    "progress": "Step {current} of {total}",
+    "done": "Done",
+    "skip": "Skip",
+    "later": "Later",
+    "subtract": "Subtract {step} from {name}",
+    "timer": "Start timer",
+    "timerRunning": "{time} left",
+    "timerDone": "Time's up",
+    "pause": "Pause timer",
+    "exit": "Exit routine",
+    "summaryTitle": "Routine finished",
+    "summary": "{done} of {total} done",
+    "allDone": "Nothing left in this routine.",
+    "streaks": "Streaks kept",
+    "backToToday": "Back to Today",
+    "skipReason": "Skipped from routine mode"
+  },
+  "celebrate": {
+    "milestone": "🔥 {days}-day streak on {name}!",
+    "milestoneWeeks": "🔥 {days}-week streak on {name}!",
+    "perfectDay": "🎉 Perfect day! Everything done."
+  },
+  "mood": {
+    "title": "How was today?",
+    "note": "A note about your day",
+    "notePlaceholder": "Anything worth remembering?",
+    "save": "Save",
+    "saved": "Saved.",
+    "labels": {
+      "1": "Awful",
+      "2": "Bad",
+      "3": "Okay",
+      "4": "Good",
+      "5": "Great"
+    }
+  },
+  "review": {
+    "title": "Weekly review",
+    "week": "Week of {date}",
+    "previous": "Previous week",
+    "next": "Next week",
+    "score": "Week score",
+    "vsLast": "{delta, number, ::sign-always percent} vs the week before",
+    "perHabit": "Habits",
+    "wins": "Wins",
+    "misses": "Misses",
+    "perfectDays": "{count, plural, =0 {No perfect days} one {# perfect day} other {# perfect days}}",
+    "streakKept": "{name}: {days, plural, one {# day} other {# days}} streak",
+    "missed": "{name}: missed {count, plural, one {# time} other {# times}}",
+    "noWins": "Keep going, wins will show here.",
+    "noMisses": "No misses. 👏",
+    "notes": "Notes from the week",
+    "moodTrend": "Mood",
+    "reflection": "Reflection",
+    "reflectionPrompt": "What worked? What will you change?",
+    "save": "Save reflection",
+    "saved": "Reflection saved.",
+    "suggestions": "Suggestions",
+    "suggestion": "{name} has been under 50% for {weeks, plural, one {# week} other {# weeks}}.",
+    "suggestTarget": "Lower target to {value}",
+    "suggestTimes": "Make it {count, plural, one {once a week} other {# times a week}}",
+    "suggestDays": "Drop {day}",
+    "suggestEdit": "Edit habit",
+    "applied": "Updated {name}.",
+    "habitProgress": "{done} of {total}",
+    "noHabits": "No habits that week."
+  },
+  "data": {
+    "title": "Your data",
+    "description": "Download everything, or delete your account.",
+    "exportJson": "Export everything (JSON)",
+    "exportCsv": "Export check-ins (CSV)",
+    "delete": "Delete account",
+    "deleteTitle": "Delete your account?",
+    "deleteDescription": "All your habits, check-ins and settings are deleted for good. This can't be undone.",
+    "deleteConfirmLabel": "Type {word} to confirm",
+    "deleteWord": "DELETE",
+    "deleteConfirm": "Delete my account",
+    "deleteFailed": "Couldn't delete the account. Try again.",
+    "close": "Cancel"
+  }
+}

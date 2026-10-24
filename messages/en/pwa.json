@@ -1,0 +1,50 @@
+{
+  "manifest": {
+    "description": "Small habits, every day: reminders, streaks and a daily report.",
+    "today": "Today",
+    "settings": "Settings"
+  },
+  "update": {
+    "available": "Update available",
+    "description": "A new version of Restart is ready.",
+    "action": "Update"
+  },
+  "offline": {
+    "metaTitle": "Offline",
+    "title": "You're offline",
+    "description": "Restart can't reach the internet right now. Check your connection and try again.",
+    "hint": "Pages you opened recently still work without a connection.",
+    "retry": "Try again",
+    "retrying": "Trying again…"
+  },
+  "install": {
+    "description": "Add Restart to your Home Screen to open it in one tap and get reminders.",
+    "compact": "Install Restart for one-tap access and reminders.",
+    "showSteps": "Show me how",
+    "hideSteps": "Hide steps",
+    "stepsLabel": "How to install Restart",
+    "installed": "Restart is installed on this device.",
+    "installedHint": "Open it from your Home Screen or app list.",
+    "justInstalled": "Done! Restart is now on this device.",
+    "button": "Install app",
+    "installing": "Installing…",
+    "ios": {
+      "step1": "Tap <icon></icon> <b>Share</b> in Safari's toolbar. On iOS 26, tap <b>•••</b> first.",
+      "step2": "Choose <icon></icon> <b>Add to Home Screen</b>. You may need to scroll down.",
+      "step3": "Tap <b>Add</b>, then open Restart from your Home Screen.",
+      "notifications": "Notifications on iPhone need iOS 16.4 or later, and Restart opened from the Home Screen.",
+      "oldIos": "This iPhone can't get notifications from web apps yet. Update to iOS 16.4 or later to get reminders.",
+      "otherBrowser": "Don't see Add to Home Screen? Open this page in Safari."
+    },
+    "android": {
+      "step1": "Open your browser's menu <icon></icon>.",
+      "step2": "Choose <b>Install app</b> or <b>Add to Home screen</b>.",
+      "step3": "Confirm, then open Restart from your Home Screen."
+    },
+    "desktop": {
+      "chromium": "<b>Chrome or Edge:</b> click the install icon <icon></icon> in the address bar, or open the browser menu and choose <b>Install Restart</b>.",
+      "safari": "<b>Safari on Mac:</b> choose <b>File</b> → <b>Add to Dock</b>.",
+      "other": "Other browsers may not install web apps. Restart works in any browser tab too."
+    }
+  }
+}

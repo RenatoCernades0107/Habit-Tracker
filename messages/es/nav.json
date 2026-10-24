@@ -1,0 +1,31 @@
+{
+  "label": "Principal",
+  "skipToContent": "Saltar al contenido",
+  "today": "Hoy",
+  "habits": "Hábitos",
+  "stats": "Estadísticas",
+  "settings": "Ajustes",
+  "placeholder": {
+    "habits": {
+      "title": "Aquí vivirán tus hábitos",
+      "description": "Crear y editar hábitos llega en la próxima actualización. Cuando llegue, empieza con algo pequeño."
+    },
+    "stats": {
+      "title": "Las estadísticas están en camino",
+      "description": "Rachas, puntuaciones y tendencias llegan en una próxima actualización, cuando lleves unos días registrando."
+    }
+  },
+  "notFound": {
+    "metaTitle": "Página no encontrada",
+    "title": "No encontramos esa página",
+    "description": "Puede que el enlace sea antiguo o tenga un error. Volvamos al camino.",
+    "action": "Volver a Hoy"
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "description": "No es culpa tuya. Inténtalo de nuevo o vuelve a Hoy.",
+    "retry": "Intentar de nuevo",
+    "action": "Volver a Hoy",
+    "code": "Código de error: {digest}"
+  }
+}
