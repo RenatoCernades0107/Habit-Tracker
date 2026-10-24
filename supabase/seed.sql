@@ -1,5 +1,5 @@
 -- Local seed, run by `npm run db:reset` after the migrations. Keep it minimal and free of secrets:
--- users and profiles are created by signing in (Mailpit at http://127.0.0.1:54324 shows the code).
+-- users and profiles are created by signing in (Mailpit at http://127.0.0.1:55424 shows the code).
 --
 -- Scheduler (pg_cron → /api/internal/tick) for local push testing. srv_tick_if_due() does nothing
 -- until both Vault secrets exist. Set them once per reset in `psql` or Studio's SQL editor:

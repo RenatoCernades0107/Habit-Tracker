@@ -10,7 +10,7 @@ vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { signInWithOAuth: m.signInWithOAuth } }),
 }));
 
-vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://127.0.0.1:54321");
+vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://127.0.0.1:55421");
 vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "sb_publishable_test");
 vi.stubEnv("NEXT_PUBLIC_APP_URL", "http://localhost:3000");
 
@@ -41,7 +41,7 @@ describe("startGoogleSignIn", () => {
     expect(await startGoogleSignIn({ next: "/stats", weekStart: 7 })).toBeNull();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://127.0.0.1:54321/auth/v1/settings",
+      "http://127.0.0.1:55421/auth/v1/settings",
       expect.objectContaining({ headers: { apikey: "sb_publishable_test" } }),
     );
     expect(m.signInWithOAuth).toHaveBeenCalledWith({

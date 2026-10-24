@@ -8,7 +8,7 @@ import { expect, type Page } from "@playwright/test";
  * languages.
  */
 
-const MAILPIT_URL = (process.env.MAILPIT_URL ?? "http://127.0.0.1:54324").replace(/\/$/, "");
+const MAILPIT_URL = (process.env.MAILPIT_URL ?? "http://127.0.0.1:55424").replace(/\/$/, "");
 
 /** The email template shows the code as a standalone 6-digit number. */
 const CODE_PATTERN = /\b(\d{6})\b/;

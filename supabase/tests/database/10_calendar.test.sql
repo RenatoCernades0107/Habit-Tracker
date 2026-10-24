@@ -7,6 +7,8 @@ select plan(13);
 insert into auth.users (id, email) values
   ('77777777-7777-4777-8777-777777777777', 'gc@example.test'),
   ('88888888-8888-4888-8888-888888888888', 'nc@example.test');
+-- current_date is the habit day only with a midnight day start (else it fails before 04:00 UTC).
+update public.profiles set timezone = 'UTC', day_start_hour = 0;
 
 -- Not connected: nothing is queued.
 insert into public.habits (id, user_id, name, time_of_day, calendar_sync, start_date) values

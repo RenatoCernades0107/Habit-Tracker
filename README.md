@@ -18,7 +18,7 @@ Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind CSS 4 w
 npm ci
 npm run db:start            # local Supabase in Docker
 cp .env.example .env.local  # then fill it in, see docs/setup.md
-npm run dev                 # http://localhost:3000, sign-in codes arrive in Mailpit (http://127.0.0.1:54324)
+npm run dev                 # http://localhost:3000, sign-in codes arrive in Mailpit (http://127.0.0.1:55424)
 ```
 
 Putting it online (Supabase project, Vercel, iPhone install) is covered step by step in [docs/setup.md](docs/setup.md).

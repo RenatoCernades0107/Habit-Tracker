@@ -26,7 +26,7 @@ vi.mock("@supabase/ssr", () => ({
   },
 }));
 
-vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://127.0.0.1:54321");
+vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://127.0.0.1:55421");
 vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "sb_publishable_test");
 vi.stubEnv("NEXT_PUBLIC_APP_URL", "http://localhost:3100");
 

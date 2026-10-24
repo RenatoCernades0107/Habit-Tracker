@@ -62,7 +62,7 @@ You need **Node 22** (see `.nvmrc`) and **Docker** running.
    npm run dev
    ```
 
-   Open http://localhost:3000, enter any email and click **Continue**. The sign-in code arrives in **Mailpit** at http://127.0.0.1:54324, not in a real inbox.
+   Open http://localhost:3000, enter any email and click **Continue**. The sign-in code arrives in **Mailpit** at http://127.0.0.1:55424, not in a real inbox.
 
 5. Checks before you push:
 
@@ -162,7 +162,7 @@ You need **Node 22** (see `.nvmrc`) and **Docker** running.
 ## E. Troubleshooting
 
 **No sign-in email.**
-- Locally, emails are in Mailpit (http://127.0.0.1:54324).
+- Locally, emails are in Mailpit (http://127.0.0.1:55424).
 - In production, check *Auth → Logs* in Supabase. The built-in email service has a very low hourly limit: set up custom SMTP (B7).
 - Sign-in runs on the server, so Supabase sees Vercel's IP address for every user. If many sign-ins fail with "too many attempts", raise the limits under *Auth → Rate Limits*.
 

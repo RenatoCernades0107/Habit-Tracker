@@ -7,6 +7,8 @@ select plan(2);
 insert into auth.users (id, email) values
   ('12121212-1212-4212-8212-121212121212', 'a@example.test'),
   ('34343434-3434-4434-8434-343434343434', 'b@example.test');
+-- current_date is the habit day only with a midnight day start (else it fails before 04:00 UTC).
+update public.profiles set timezone = 'UTC', day_start_hour = 0;
 insert into public.habits (id, user_id, name, start_date) values
   ('56565656-5656-4656-8656-565656565656', '12121212-1212-4212-8212-121212121212', 'Mine', current_date),
   ('78787878-7878-4878-8878-787878787878', '34343434-3434-4434-8434-343434343434', 'Theirs', current_date);
