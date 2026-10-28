@@ -144,6 +144,10 @@ You need **Node 22** (see `.nvmrc`) and **Docker** running.
    | `CRON_SECRET` | `openssl rand -hex 32`, the same value as the Vault secret `restart_cron_secret` |
    | `VAPID_PRIVATE_KEY` | From the same `web-push` command |
    | `VAPID_SUBJECT` | `mailto:<your email>` |
+   | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional, Google Calendar (B9) |
+   | `TOKEN_ENCRYPTION_KEY` | Optional, Google Calendar: `openssl rand -base64 32` |
+
+   Before pasting, check your values with `npm run env:check -- <file>` (it prints variable names, never values). One invalid server variable breaks every feature that uses the secret key: saving notification devices, Siri tokens and Google Calendar. The Vercel logs then show `[env] Invalid server environment: <variables>`. Vercel only applies variable changes to new deployments: **redeploy** after any change.
 
    Generate production VAPID keys once and keep them: changing them invalidates every device's notifications.
 

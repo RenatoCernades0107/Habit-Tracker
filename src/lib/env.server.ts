@@ -1,36 +1,37 @@
 import "server-only";
 
-import { z } from "zod";
+import { type ServerEnv, serverEnvInput, serverEnvIssues, serverSchema } from "@/lib/env.schema";
 
-const serverSchema = z.object({
-  SUPABASE_SECRET_KEY: z.string().min(1),
-  CRON_SECRET: z.string().min(32, "CRON_SECRET must be at least 32 characters"),
-  VAPID_PRIVATE_KEY: z.string().min(1),
-  VAPID_SUBJECT: z
-    .string()
-    .refine((v) => v.startsWith("mailto:") || v.startsWith("https://"), "Use mailto: or https://"),
-  // Later phases. Optional until the feature that needs them exists.
-  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
-  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
-  TOKEN_ENCRYPTION_KEY: z.string().min(1).optional(),
-  ACTION_TOKEN_SECRET: z.string().min(1).optional(),
-});
+export type { ServerEnv };
 
-export type ServerEnv = z.infer<typeof serverSchema>;
+/**
+ * Thrown when a server variable is missing or invalid. `code` lists the variable names so
+ * the routes' existing error logs (name + code) say which one, never its value.
+ */
+export class ServerEnvError extends Error {
+  readonly code: string;
+
+  constructor(issues: { name: string; problem: string }[]) {
+    super(
+      `Invalid server environment: ${issues.map((i) => `${i.name} (${i.problem})`).join(", ")}`,
+    );
+    this.name = "ServerEnvError";
+    this.code = issues.map((i) => i.name).join(",");
+  }
+}
 
 let serverEnv: ServerEnv | undefined;
 
 /** Server-only secrets. Validated on first use. Never import this from client code. */
 export function getServerEnv(): ServerEnv {
-  serverEnv ??= serverSchema.parse({
-    SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
-    CRON_SECRET: process.env.CRON_SECRET,
-    VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
-    VAPID_SUBJECT: process.env.VAPID_SUBJECT,
-    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || undefined,
-    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || undefined,
-    TOKEN_ENCRYPTION_KEY: process.env.TOKEN_ENCRYPTION_KEY || undefined,
-    ACTION_TOKEN_SECRET: process.env.ACTION_TOKEN_SECRET || undefined,
-  });
+  if (serverEnv) return serverEnv;
+  const result = serverSchema.safeParse(serverEnvInput(process.env));
+  if (!result.success) {
+    const error = new ServerEnvError(serverEnvIssues(result.error));
+    // Logged here too because some callers (the settings page) catch it to degrade quietly.
+    console.error(`[env] ${error.message}`);
+    throw error;
+  }
+  serverEnv = result.data;
   return serverEnv;
 }

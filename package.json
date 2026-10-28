@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "i18n:check": "tsx scripts/check-i18n.ts",
+    "env:check": "tsx scripts/check-env.ts",
     "size": "tsx scripts/bundle-size.ts",
     "icons": "tsx scripts/generate-icons.ts",
     "db:start": "supabase start -x studio,imgproxy,edge-runtime,logflare,vector,storage-api,supavisor",
