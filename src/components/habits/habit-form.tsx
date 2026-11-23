@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCalendarConnection } from "@/components/settings/calendar-setting";
 import { useData, useSave } from "@/data/hooks";
+import { useUserId } from "@/data/provider";
 import { minutesInQuietHours, minutesOf } from "@/domain/zoned";
 import type { Tables } from "@/lib/supabase/database.types";
 import { cn } from "@/lib/utils";
@@ -99,6 +100,7 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
   const day = useWeekdayNames();
   const summary = useScheduleSummary();
   const { data, today } = useData();
+  const userId = useUserId();
   const save = useSave();
   const existing = habitId
     ? data.habits.find((h) => h.id === habitId && h.deleted_at === null)
@@ -191,7 +193,7 @@ export function HabitForm({ habitId, template }: { habitId?: string; template?: 
     const row: Habit = {
       ...(existing ?? {
         id: crypto.randomUUID(),
-        user_id: data.profile?.id ?? "",
+        user_id: userId,
         sort_order: data.habits.length,
         archived_on: null,
         created_at: now,
