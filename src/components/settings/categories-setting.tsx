@@ -7,6 +7,7 @@ import { useGroupNames } from "@/components/habits/labels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useData, useSave } from "@/data/hooks";
+import { useUserId } from "@/data/provider";
 import type { Tables } from "@/lib/supabase/database.types";
 
 /** Categories (FR-HAB-3): rename, add, delete. */
@@ -14,6 +15,7 @@ export function CategoriesSetting() {
   const t = useTranslations("settings.categories");
   const names = useGroupNames();
   const { data, isLoading } = useData();
+  const userId = useUserId();
   const save = useSave();
   if (isLoading) return null;
 
@@ -29,7 +31,7 @@ export function CategoriesSetting() {
       table: "categories",
       row: {
         id: crypto.randomUUID(),
-        user_id: data.profile?.id ?? "",
+        user_id: userId,
         system_key: null,
         name: t("newName"),
         color: "slate",

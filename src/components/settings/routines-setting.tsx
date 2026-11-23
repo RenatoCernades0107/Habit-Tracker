@@ -7,6 +7,7 @@ import { useGroupNames } from "@/components/habits/labels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useData, useSave } from "@/data/hooks";
+import { useUserId } from "@/data/provider";
 import type { Tables } from "@/lib/supabase/database.types";
 
 /** Routines (FR-RTN-1, FR-RTN-2, FR-RTN-4): rename, change the start time, add, delete. */
@@ -14,6 +15,7 @@ export function RoutinesSetting() {
   const t = useTranslations("settings.routines");
   const names = useGroupNames();
   const { data, isLoading } = useData();
+  const userId = useUserId();
   const save = useSave();
   if (isLoading) return null;
 
@@ -29,7 +31,7 @@ export function RoutinesSetting() {
       table: "routines",
       row: {
         id: crypto.randomUUID(),
-        user_id: data.profile?.id ?? "",
+        user_id: userId,
         system_key: null,
         name: t("newName"),
         icon: null,
