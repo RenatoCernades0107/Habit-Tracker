@@ -10,14 +10,14 @@ insert into auth.users (id, email) values
 
 -- Not connected: nothing is queued.
 insert into public.habits (id, user_id, name, time_of_day, calendar_sync, start_date) values
-  ('cccc0000-0000-4000-8000-000000000009', '88888888-8888-4888-8888-888888888888', 'Leer', '21:00', true, current_date);
+  ('cccc0000-0000-4000-8000-000000000009', '88888888-8888-4888-8888-888888888888', 'Leer', '21:00', true, public.srv_user_today('88888888-8888-4888-8888-888888888888'));
 select is((select count(*)::int from public.calendar_sync_jobs), 0, 'without a connection nothing is queued');
 
 insert into public.calendar_connections (user_id, google_email, calendar_id, refresh_token_enc) values
   ('77777777-7777-4777-8777-777777777777', 'gc@gmail.example', 'cal-1', '\x00');
 
 insert into public.habits (id, user_id, name, time_of_day, calendar_sync, start_date) values
-  ('cccc0000-0000-4000-8000-000000000001', '77777777-7777-4777-8777-777777777777', 'Meditar', '07:00', true, current_date - 5);
+  ('cccc0000-0000-4000-8000-000000000001', '77777777-7777-4777-8777-777777777777', 'Meditar', '07:00', true, public.srv_user_today('77777777-7777-4777-8777-777777777777') - 5);
 select results_eq($$ select op from public.calendar_sync_jobs order by id $$, $$ values ('sync_series') $$,
   'a synced habit queues its series');
 
@@ -27,22 +27,22 @@ select is((select count(*)::int from public.calendar_sync_jobs where op = 'sync_
   'a time change re-syncs; an unrelated change does not');
 
 select public.srv_apply_check_in_op('77777777-7777-4777-8777-777777777777', gen_random_uuid(),
-  'cccc0000-0000-4000-8000-000000000001', current_date, 'complete', '{}', 'siri');
+  'cccc0000-0000-4000-8000-000000000001', public.srv_user_today('77777777-7777-4777-8777-777777777777'), 'complete', '{}', 'siri');
 select results_eq($$ select op, local_date from public.calendar_sync_jobs where op = 'mark_instance' $$,
-  $$ values ('mark_instance'::text, current_date) $$, 'a check-in marks that day');
+  $$ values ('mark_instance'::text, public.srv_user_today('77777777-7777-4777-8777-777777777777')) $$, 'a check-in marks that day');
 select public.srv_apply_check_in_op('77777777-7777-4777-8777-777777777777', gen_random_uuid(),
-  'cccc0000-0000-4000-8000-000000000001', current_date, 'set_note', '{"note": "bien"}', 'app');
+  'cccc0000-0000-4000-8000-000000000001', public.srv_user_today('77777777-7777-4777-8777-777777777777'), 'set_note', '{"note": "bien"}', 'app');
 select is((select count(*)::int from public.calendar_sync_jobs where op = 'mark_instance'), 1,
   'a note alone does not re-mark');
 
 insert into public.pauses (user_id, habit_id, start_date, end_date) values
-  ('77777777-7777-4777-8777-777777777777', 'cccc0000-0000-4000-8000-000000000001', current_date + 1, current_date + 3);
+  ('77777777-7777-4777-8777-777777777777', 'cccc0000-0000-4000-8000-000000000001', public.srv_user_today('77777777-7777-4777-8777-777777777777') + 1, public.srv_user_today('77777777-7777-4777-8777-777777777777') + 3);
 select is((select count(*)::int from public.calendar_sync_jobs where op = 'sync_series'), 3,
   'a pause re-syncs the series');
 
 insert into public.calendar_series (user_id, habit_id, google_event_id, valid_from, rrule) values
-  ('77777777-7777-4777-8777-777777777777', 'cccc0000-0000-4000-8000-000000000001', 'evt-1', current_date - 5, 'RRULE:FREQ=DAILY');
-update public.habits set archived_on = current_date where id = 'cccc0000-0000-4000-8000-000000000001';
+  ('77777777-7777-4777-8777-777777777777', 'cccc0000-0000-4000-8000-000000000001', 'evt-1', public.srv_user_today('77777777-7777-4777-8777-777777777777') - 5, 'RRULE:FREQ=DAILY');
+update public.habits set archived_on = public.srv_user_today('77777777-7777-4777-8777-777777777777') where id = 'cccc0000-0000-4000-8000-000000000001';
 select is((select count(*)::int from public.calendar_sync_jobs where op = 'end_series'), 1,
   'archiving ends the series');
 update public.habits set deleted_at = now() where id = 'cccc0000-0000-4000-8000-000000000001';
